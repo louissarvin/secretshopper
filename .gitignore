@@ -1,0 +1,91 @@
+# Secrets: every .env variant except the committed examples
+.env
+.env.*
+!.env.example
+!.env.tester.example
+
+# NEAR keys and other key material
+.near-credentials/
+near-credentials/
+neardev/
+*.pem
+*.key
+*.p12
+*.keystore
+id_rsa*
+id_ed25519*
+.npmrc
+
+# Agent and local state
+state.json
+state.json.tmp
+agent-state*.json
+.claude/scheduled_tasks.lock
+
+# Local Claude Code agent memory (session notes, not project docs)
+.claude/agent-memory/
+**/.claude/agent-memory/
+
+# Build output and deps
+node_modules/
+target/
+dist/
+backend/prisma/generated/
+scripts/out/
+
+# Logs are scratch output; logs under docs/ are evidence cited by README and CLAIMS and stay tracked
+*.log
+!docs/*.log
+
+# Scratch and OS files
+scratch/
+tmp/
+*.tmp
+*.swp
+.DS_Store
+
+# Internal submission working notes (kept local)
+docs/SUBMISSION_DRAFT.md
+docs/PUBLISH.md
+
+# Local research notes: pre-build idea research at the root, and the separate Fair Warning project
+memory/
+/[0-9][0-9]_*.md
+/[0-9][0-9][a-z]_*.md
+# v2/: publish only the Secret Shopper spec, build log, design, cost, docs reviews and audits; the rest is pre-pick research and Fair Warning
+v2/*
+!v2/README.md
+!v2/16a_secret_shopper_research.md
+!v2/16b_secret_shopper_build.md
+!v2/19_testnet_path.md
+!v2/20_backend_build_log.md
+!v2/21_security_audit.md
+!v2/24_contract_v2_design.md
+!v2/25_security_audit_v2.md
+!v2/26_cost_profile.md
+!v2/27_security_audit_v2_1.md
+!v2/28_near_docs_contract_review.md
+!v2/29_partner_docs_backend_review.md
+!v2/31_intents_rail_notes.md
+!v2/32_delivery_proof_design.md
+!v2/33_audit_230.md
+!v2/34_backend_audit_230.md
+!v2/35_agent_audit.md
+!v2/36_audit_new_features.md
+!v2/37_multi_vault_design.md
+
+# Local mirror of official docs (third-party content, not ours to publish)
+reference/
+
+# Editor and scaffolding metadata, not needed to build, test or deploy
+**/.vscode/
+web/.mcp.json
+web/.cta.json
+web/components.json
+web/FRONTEND_STRUCTURE_GUIDE.md
+
+# Local browser automation output
+.playwright-mcp/
+
+# Starter scaffolding instructions for coding agents, not the web app
+web/CLAUDE.md
