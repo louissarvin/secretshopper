@@ -1,0 +1,12 @@
+{
+  "name": "secret-shopper",
+  "private": true,
+  "description": "Root entry points. Packages: backend/, agent/, scripts/, web/, contracts/shop.",
+  "scripts": {
+    "demo": "cd scripts && bun demo.ts",
+    "setup": "cd backend && bun install && DATABASE_URL=${DATABASE_URL:-postgresql://build:build@localhost:5432/build} bun run db:generate && cd ../agent && bun install && cd ../scripts && bun install",
+    "live": "cd scripts && bun live.ts",
+    "live:preflight": "cd scripts && bun live.ts --preflight",
+    "verify": "cd scripts && bun verify-all.ts"
+  }
+}
