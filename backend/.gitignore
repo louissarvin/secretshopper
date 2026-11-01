@@ -1,0 +1,17 @@
+node_modules
+# Keep environment variables out of version control
+.env
+.env.*
+!.env.example
+!.env.tester.example
+
+# Prisma generated client
+prisma/generated
+
+# Local test fixtures with real receipts are fine to commit; scratch output is not
+*.log
+
+# Vercel build output for the hosted demo (vercel.json)
+hosted-docs/
+public/
+.vercel/
