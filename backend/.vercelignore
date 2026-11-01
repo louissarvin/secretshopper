@@ -1,0 +1,13 @@
+# Upload list for `vercel deploy` from backend/ (docs/HOSTING.md). The CLI does not skip .env files by default.
+.env
+.env.*
+node_modules
+prisma/generated
+test
+tester.ts
+src/tester
+Dockerfile
+.vscode
+.claude
+.vercel
+*.log
