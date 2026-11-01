@@ -1,0 +1,20 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "bunVersion": "1.4.x",
+  "installCommand": "bun install",
+  "buildCommand": "bunx prisma generate --config prisma/prisma.config.ts && mkdir -p public",
+  "outputDirectory": "public",
+  "functions": {
+    "api/server.ts": {
+      "maxDuration": 30,
+      "includeFiles": "{data/**,prisma/generated/**}"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/:path*",
+      "destination": "/api/server?__path=:path*"
+    }
+  ]
+}
