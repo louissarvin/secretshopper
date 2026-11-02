@@ -1,0 +1,370 @@
+// Secret Shopper schema. Never run reset commands; the user applies changes with `bun run db:push`.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["public", "tester"] // tester: sealed preimages and generation attempts, no API grant (SS-B04, prisma/roles.sql)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  walletAddress String    @unique // NEAR account id
+  nonce         String? // unused: NEP-413 challenges live in AuthChallenge
+  lastSignIn    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@schema("public")
+}
+
+model ErrorLog {
+  id         String   @id @default(cuid())
+  errorCode  String
+  message    String
+  statusCode Int
+  stack      String?  @db.Text
+  context    String?  @db.Text
+  userId     String?
+  method     String?
+  path       String?
+  userAgent  String?  @db.Text
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  @@index([errorCode])
+  @@index([createdAt])
+
+  @@schema("public")
+}
+
+model Company {
+  id              String      @id @default(cuid())
+  ownerUserId     String
+  name            String
+  shopContractId  String      @unique // the vault account
+  vendorAccountId String // agent vendor account
+  deployBlock     BigInt // indexer start height
+  createdAt       DateTime    @default(now())
+  createdTxHash        String? // vault creation tx (first tx it received), null for the legacy default vault
+  inboxTokenHash       String?   @unique // sha256 hex of the agent inbox token; plaintext is shown once
+  inboxTokenCreatedAt  DateTime?
+  testerEnabled        Boolean   @default(false) // owner opt-in; the default vault is tested from env regardless
+  testerEnabledAt      DateTime? // capacity order (TESTER_MAX_VAULTS)
+  testerSignerId       String? // vault owner holding the tester FC key, checked on chain at enable
+  testPercent          Int       @default(50) // per-slot test probability for this vault
+  commitCron           String? // null: TESTER_COMMIT_CRON
+  testerPublicKey      String? // written by the tester process only
+  testerState          String? // written by the tester process only: see TESTER_STATES
+  testerCheckedAt      DateTime? // written by the tester process only
+  vendors         Vendor[]
+  invoices        Invoice[]
+  tests           TestSlot[]
+  batches         TestBatch[]
+  payments        Payment[]
+  proposals       Proposal[]
+  keys            AgentKey[]
+  aiReceipts      AiReceipt[]
+  genLog          GenLogEntry[]
+
+  @@index([ownerUserId])
+  @@index([vendorAccountId])
+  @@map("companies")
+
+  @@schema("public")
+}
+
+model Vendor {
+  id             String   @id @default(cuid())
+  companyId      String
+  company        Company  @relation(fields: [companyId], references: [id])
+  legalName      String
+  contactEmail   String
+  approvedPayees Json // list of account, rail, addedAt; advisory, the vault's get_payees is the authority (v2)
+  sampleInvoices Json // private reference, never sent to the generator (SS-B05)
+  styleSet       Json     @default("[]") // owner-approved public style samples; published with every revealed test
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([companyId])
+  @@map("vendors")
+  @@schema("public")
+}
+
+// No source or test column on purpose: the inbox must not be able to tell.
+model Invoice {
+  id        String   @id @default(cuid())
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id])
+  invoiceId String   @unique // sha256(canonical(document)), what the agent sees
+  document  Json
+  email     Json
+  deliverAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([companyId, deliverAt, invoiceId])
+  @@map("invoices")
+
+  @@schema("public")
+}
+
+model TestBatch {
+  id         String   @id @default(cuid())
+  companyId  String
+  company    Company  @relation(fields: [companyId], references: [id])
+  batchIndex Int
+  firstSlot  Int
+  count      Int
+  txHash     String
+  signerId   String? // commit tx signer, for tx lookups by keeper and verify-evidence
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  @@unique([companyId, batchIndex])
+  @@map("commitments")
+
+  @@schema("public")
+}
+
+model TestSlot {
+  id                String    @id @default(cuid())
+  companyId         String
+  company           Company   @relation(fields: [companyId], references: [id])
+  slotIndex         Int? // null while Prepared (sealed before the commit tx lands)
+  commitment        String
+  sealed            String?   @db.Text // v1 only; v2 keeps preimages in tester.sealed_slots
+  invoiceRowId      String?   @unique // v2: written only at reveal (published linkage)
+  aiReceiptId       String? // v2: written only at reveal
+  batchIndex        Int?
+  tlockRound        BigInt? // drand quicknet round the preimage opens at
+  ciphertextSha256  String?
+  receiptHash       String? // v2: written only at reveal
+  status            String    @default("Prepared") // Prepared | Committed | Passed | Failed | Unanswered | Void | Invalid | Misdirected | Abandoned
+  contained         Boolean   @default(false)
+  expiresAt         DateTime?
+  revealedPayee     String?
+  revealedSalt      String?
+  revealedInvoiceId String?
+  revealTxHash      String?
+  revealedAt        DateTime?
+  sweptTxHash       String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([companyId, slotIndex])
+  @@unique([companyId, commitment])
+  @@index([status])
+  @@map("tests")
+
+  @@schema("public")
+}
+
+model Payment {
+  id          String   @id @default(cuid())
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id])
+  paymentId   Int // on-chain index
+  invoiceId   String
+  payee       String
+  amount      String // token base units
+  rail        String
+  byOwner     Boolean
+  status      String   @default("Pending")
+  receiptId   String
+  txHash      String // explorer links use the tx hash; NearBlocks web does not resolve receipt ids
+  blockHeight BigInt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([companyId, paymentId])
+  @@index([companyId, payee])
+  @@map("payments")
+
+  @@schema("public")
+}
+
+model Proposal {
+  id          String   @id @default(cuid())
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id])
+  proposalId  Int
+  invoiceId   String
+  payee       String
+  amount      String
+  status      String   @default("Pending")
+  receiptId   String
+  txHash      String
+  blockHeight BigInt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([companyId, proposalId])
+  @@index([companyId, status])
+  @@map("proposals")
+
+  @@schema("public")
+}
+
+model AgentKey {
+  id          String   @id @default(cuid())
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id])
+  publicKey   String?
+  role        String // Pay | Propose | Deleted
+  event       String // agent_armed | agent_demoted | agent_frozen
+  receiptId   String
+  txHash      String
+  blockHeight BigInt
+  createdAt   DateTime @default(now())
+
+  @@unique([receiptId, event])
+  @@index([companyId, blockHeight])
+  @@map("keys")
+
+  @@schema("public")
+}
+
+model AiReceipt {
+  id             String   @id @default(cuid())
+  companyId      String
+  company        Company  @relation(fields: [companyId], references: [id])
+  purpose        String // test_generation | b1_judge
+  responseId     String   @unique // verified.id from the inference SDK (completionId is deprecated)
+  model          String
+  signatureKind  String // provider_tee | gateway
+  signingAlgo    String
+  signingAddress String
+  signedText     String   @db.Text
+  signature      String
+  requestBody    String   @db.Text // exact bytes, published after reveal
+  responseBody   String   @db.Text
+  attestation    Json? // StoredAttestation the SDK verified before the call; binds the signer to a TEE
+  createdAt      DateTime @default(now())
+
+  @@map("ai_receipts")
+
+  @@schema("public")
+}
+
+model AuthChallenge {
+  id        String    @id @default(cuid())
+  nonce     String    @unique
+  accountId String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([expiresAt])
+
+  @@schema("public")
+}
+
+model ChainCursor {
+  id          String   @id
+  blockHeight BigInt
+  updatedAt   DateTime @updatedAt
+
+  @@schema("public")
+}
+
+model ContractEvent {
+  id          String    @id @default(cuid())
+  receiptId   String
+  logIndex    Int
+  txHash      String
+  blockHeight BigInt
+  blockTime   DateTime
+  contractId  String
+  standard    String
+  version     String
+  event       String
+  data        Json
+  projectedAt DateTime? // set by shopProjector once applied to the read tables
+  createdAt   DateTime  @default(now())
+
+  @@unique([receiptId, logIndex])
+  @@index([contractId, event, blockHeight])
+  @@index([projectedAt, blockHeight])
+
+  @@schema("public")
+}
+
+// B9: every signed generation per batch, published once the batch is fully revealed (earlier would leak the test count).
+model GenLogEntry {
+  id          String   @id @default(cuid())
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id])
+  batchIndex  Int
+  position    Int
+  receiptHash String
+  model       String
+  accepted    Boolean
+  createdAt   DateTime @default(now())
+
+  @@unique([companyId, batchIndex, position])
+  @@schema("public")
+  @@map("gen_log")
+}
+
+// Tester-only tables (schema "tester"). The API role has no grant on this schema; only src/tester/** may use them.
+
+model SealedSlot {
+  id               String    @id @default(cuid())
+  companyId        String
+  runId            String // one commit run (a batch before it has an on-chain index)
+  commitment       String    @unique
+  sealed           String    @db.Text // AES-GCM blob: preimage, payee key, linkage (attemptId, invoice)
+  ciphertext       String    @db.Text // tlock age file, base64 (also public in the commit tx args)
+  ciphertextSha256 String
+  tlockRound       BigInt
+  slotIndex        Int?
+  batchIndex       Int?
+  status           String    @default("Prepared") // Prepared | Committed | Revealed | Abandoned
+  expiresAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([companyId, status])
+  @@schema("tester")
+  @@map("sealed_slots")
+}
+
+model GenerationAttempt {
+  id          String   @id @default(cuid())
+  companyId   String
+  runId       String
+  position    Int // order within the run
+  model       String
+  receiptHash String   @unique
+  accepted    Boolean
+  error       String?
+  receipt     Json // exact request and response bytes plus signature; published only at reveal
+  createdAt   DateTime @default(now())
+
+  @@index([companyId, runId])
+  @@schema("tester")
+  @@map("generation_attempts")
+}
+
+// Shared payee blocklist: every entry carries a tx whose on-chain events prove the account was a lure payee that
+// failed a test, was paid under one, or was declined under one (verified before insert).
+model BlocklistEntry {
+  id           String   @id @default(cuid())
+  accountId    String // the unique index below leads with it, so lookups by account use it
+  reason       String   @db.VarChar(280)
+  evidenceTx   String
+  evidenceKind String // failed_reveal | paid_lure | declined_invoice | other
+  reporterKind String // owner | agent | tester
+  reporterId   String
+  vault        String // shop the evidence comes from
+  verified     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@unique([accountId, evidenceTx])
+  @@index([createdAt, id])
+  @@map("blocklist_entries")
+  @@schema("public")
+}
