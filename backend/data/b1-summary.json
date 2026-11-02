@@ -1,0 +1,14 @@
+{
+  "run": "Vendor layouts (2026-11-11 evening)",
+  "judge": "z-ai/glm-5.3-flash",
+  "accuracy": 0.586,
+  "wilsonLow": 0.487,
+  "wilsonHigh": 0.678,
+  "auc": 0.633,
+  "n": 99,
+  "limitAccuracy": 0.6,
+  "limitAuc": 0.65,
+  "date": "2026-11-11",
+  "pass": "yes, narrowly",
+  "note": "Latest B1 blind test run (scripts/b1-blind.ts): the last results row and the pass limits of the B1 write-up b1-blind-2026-11-10.md, copied as the API parsed them on 2026-11-13."
+}
