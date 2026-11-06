@@ -1,0 +1,37 @@
+{
+  "description": "v2: sha256(salt32 || u8 len(payee) || payee utf8 || invoice_id32 || receipt_hash32), lowercase hex. Checked by backend/test/commitment.parity.test.ts",
+  "vectors": [
+    {
+      "name": "test",
+      "salt": "0707070707070707070707070707070707070707070707070707070707070707",
+      "payee": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "invoice_id": "0505050505050505050505050505050505050505050505050505050505050505",
+      "receipt_hash": "0909090909090909090909090909090909090909090909090909090909090909",
+      "commitment": "98d556b4762dbdff9feb072ea42ea21e7bf532a9755d19f5b54e40cf1f4dce35"
+    },
+    {
+      "name": "void",
+      "salt": "0808080808080808080808080808080808080808080808080808080808080808",
+      "payee": "",
+      "invoice_id": "0000000000000000000000000000000000000000000000000000000000000000",
+      "receipt_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "commitment": "7609884186c12579079791e90eb99b6488c796d168f4805e3cde1013de3f48bc"
+    },
+    {
+      "name": "eth_implicit",
+      "salt": "0101010101010101010101010101010101010101010101010101010101010101",
+      "payee": "0xabababababababababababababababababababab",
+      "invoice_id": "0202020202020202020202020202020202020202020202020202020202020202",
+      "receipt_hash": "0303030303030303030303030303030303030303030303030303030303030303",
+      "commitment": "5692fe5caddc1cc61587a5a68695b7cdb81a46b8a3aae5cd9e5c7fd224b53e9f"
+    },
+    {
+      "name": "named_account",
+      "salt": "abababababababababababababababababababababababababababababababab",
+      "payee": "alice.testnet",
+      "invoice_id": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+      "receipt_hash": "efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef",
+      "commitment": "6739ccf6cfeeef9223db9081d389a53b68b021e7e4b799f0bbd25036383fb1ff"
+    }
+  ]
+}
