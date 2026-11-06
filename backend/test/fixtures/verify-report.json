@@ -1,0 +1,80 @@
+{
+  "ranAt": "2026-11-12T14:43:21.035Z",
+  "platform": "darwin arm64",
+  "bun": "1.4.4",
+  "passed": true,
+  "results": [
+    {
+      "step": "contract wasm build (equals shop4 code hash)",
+      "status": "pass",
+      "seconds": 2.8,
+      "summary": "SHA-256 checksum bs58: 5pxQNdWnhTJiaTKs6HrVv4SadLi1tWuACeeYmyaxgHAs"
+    },
+    {
+      "step": "contract ft fixture build",
+      "status": "pass",
+      "seconds": 0.7,
+      "summary": "built"
+    },
+    {
+      "step": "contract tests (unit, audit, costs, sandbox)",
+      "status": "pass",
+      "seconds": 339.2,
+      "summary": "test result: ok. 18 passed; 0 failed; test result: ok. 4 passed; 0 failed; test result: ok. 1 passed; 0 failed; test result: ok. 35 passed; 0 failed; test result: ok. 0 passed; 0 failed"
+    },
+    {
+      "step": "contract clippy",
+      "status": "pass",
+      "seconds": 1.1,
+      "summary": "clean"
+    },
+    {
+      "step": "backend tests",
+      "status": "pass",
+      "seconds": 13.5,
+      "summary": "251 pass; 24 skip; 0 fail"
+    },
+    {
+      "step": "backend typecheck",
+      "status": "pass",
+      "seconds": 4,
+      "summary": "clean"
+    },
+    {
+      "step": "backend lint",
+      "status": "pass",
+      "seconds": 1.5,
+      "summary": "clean"
+    },
+    {
+      "step": "agent tests",
+      "status": "pass",
+      "seconds": 1.3,
+      "summary": "87 pass; 0 fail"
+    },
+    {
+      "step": "agent typecheck",
+      "status": "pass",
+      "seconds": 2.4,
+      "summary": "clean"
+    },
+    {
+      "step": "scripts typecheck",
+      "status": "pass",
+      "seconds": 3.2,
+      "summary": "clean"
+    },
+    {
+      "step": "end-to-end demo (local sandbox)",
+      "status": "pass",
+      "seconds": 78.1,
+      "summary": "PASS: all 33 checks held in 76.1s."
+    },
+    {
+      "step": "bring-your-own-agent over MCP (local sandbox)",
+      "status": "pass",
+      "seconds": 19.9,
+      "summary": "PASS: all 35 checks held in 18.9s."
+    }
+  ]
+}
