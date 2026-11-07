@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "network": "testnet",
+  "shop": "shop2.ss-owner-e9c3db.testnet",
+  "generated_at": "2026-11-02T16:04:08.993Z",
+  "batches": [
+    {
+      "batch": 0,
+      "first_slot": 0,
+      "count": 3,
+      "tx": "2Xu3LiTgX4tamKoYtFXvGr41aU7UE7brkzLE2p9q5Ym5",
+      "signer_id": "ss-owner-e9c3db.testnet",
+      "gen_log": null
+    }
+  ],
+  "slots": [
+    {
+      "slot": 0,
+      "status": "Void",
+      "preimage": {
+        "salt": "74cd79f81be43409e767a3b4d075535f2522f358308f9e8d89bfa2d24bbbf6d2",
+        "payee": "",
+        "invoice_id": "fd5e1928c2dda9196be9c2df5fd92d3f4f82196134d2884385ce3a28c023c387",
+        "receipt_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "reveal_tx": "AbNJbxcsz8EB4aQDQZrExQeHgd8BtP7UvaWiH53ohGKe",
+      "sweep_tx": null
+    },
+    {
+      "slot": 1,
+      "status": "Void",
+      "preimage": {
+        "salt": "4d1940df51188576493505db6a5f3b4868bc8a85d932d4008bba09d47c3d0c53",
+        "payee": "",
+        "invoice_id": "d1ecbfb70d481c7822b54525cd7d6bde63a3b7e22f9355f8f149807358dd64c6",
+        "receipt_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "reveal_tx": "8d46ipEPgJKF8s8ESikRX2HV3VQYn7EL5wKxpoYy6FVG",
+      "sweep_tx": null
+    },
+    {
+      "slot": 2,
+      "status": "Void",
+      "preimage": {
+        "salt": "a8a3184a8b84fae6840ab0d2c1805704cf0b6188df5966f3ac9386bd07575b3b",
+        "payee": "",
+        "invoice_id": "9d8f078f254b3e5256f3a9e46891fc05e30f2f2d790ba0c45000ad3fb2029a6c",
+        "receipt_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "reveal_tx": "FdmwefHjDLH1E3b7fLnF2FYYT4PdbJa6nrJxa5bBBd7s",
+      "sweep_tx": null
+    }
+  ]
+}
