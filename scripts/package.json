@@ -1,0 +1,40 @@
+{
+  "name": "secret-shopper-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local demo, day-1 kill tests, B1 blind test and the attack demo. Each script reads its own env; see the header of each file.",
+  "engines": {
+    "bun": ">=1.4.4"
+  },
+  "scripts": {
+    "demo": "bun demo.ts",
+    "typecheck": "tsc --noEmit",
+    "attack-demo": "bun attack-demo.ts",
+    "k2": "bun k2-pay.ts",
+    "k3": "bun k3-generator.ts",
+    "k5": "bun k5-agent.ts",
+    "b1": "bun b1-blind.ts",
+    "keeper": "bun keeper.ts",
+    "verify-evidence": "bun verify-evidence.ts",
+    "global-vault": "bun global-vault.ts",
+    "create-vault": "bun create-vault.ts",
+    "evidence:export": "bun evidence-export.ts",
+    "ledger": "bun ledger-csv.ts",
+    "pass-rate": "bun pass-rate.ts"
+  },
+  "dependencies": {
+    "ethers": "6.16.0",
+    "near-api-js": "7.4.0",
+    "near-sandbox": "0.3.4",
+    "openai": "7.39.0",
+    "tlock-js": "0.9.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "2.4.0",
+    "@types/bun": "latest",
+    "bun-types": "latest",
+    "typescript": "^5.7.3"
+  }
+}
