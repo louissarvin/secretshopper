@@ -1,0 +1,19 @@
+{
+  "daily_cap": "5000000",
+  "max_per_payment": "2000000",
+  "max_new_payees_per_day": 5,
+  "max_payments_per_day": 20,
+  "max_decisions_per_day": 100,
+  "batch_size": 3,
+  "batch_interval": "21600000000000",
+  "test_ttl": "43200000000000",
+  "reveal_grace": "21600000000000",
+  "rearm_cooldown": "3600000000000",
+  "payee_delay": "3600000000000",
+  "limits_delay": "86400000000000",
+  "key_allowance": "250000000000000000000000",
+  "key_nonces": 4,
+  "min_answer": "14400000000000",
+  "storage_deposit": "1250000000000000000000",
+  "min_near_float": "500000000000000000000000"
+}
