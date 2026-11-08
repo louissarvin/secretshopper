@@ -1,0 +1,870 @@
+[
+  {
+    "get_vendor": {
+      "id": "cao700f664fpwifyx3ozkb6xv",
+      "legalName": "Tallyloop Software Inc.",
+      "contactEmail": "billing@tallyloop.io.example",
+      "approved_payees": [
+        {
+          "account_id": "tallyloop-billing.near",
+          "label": "Tallyloop Software Inc."
+        }
+      ],
+      "pending_payees": [],
+      "approved_payees_source": "vault get_payees (on chain); pay only active approved payees"
+    },
+    "create_body": {
+      "legalName": "Tallyloop Software Inc.",
+      "contactEmail": "billing@tallyloop.io.example",
+      "approvedPayees": [
+        {
+          "account": "tallyloop-billing.near",
+          "rail": "Near"
+        }
+      ],
+      "sampleInvoices": [],
+      "styleSet": [
+        {
+          "number": "TL-7E21C0-0001",
+          "issued": "2026-06-14",
+          "due": "2026-06-28",
+          "period": "2026-06-14 to 2026-07-13",
+          "bill_to": "Larkspur Analytics Pte Ltd",
+          "lines": [
+            {
+              "description": "Team plan, monthly (14 Jun to 13 Jul 2026)",
+              "qty": 10,
+              "unit_price": "14.00"
+            }
+          ],
+          "subtotal": "140.00",
+          "total": "140.00",
+          "currency": "USDC",
+          "pay_to": "tallyloop-billing.near"
+        }
+      ]
+    }
+  },
+  {
+    "get_vendor": {
+      "id": "c4dsxpytpnk9g0y0pag51dn6h",
+      "legalName": "Quillstack Ltd",
+      "contactEmail": "billing@quillstack.example",
+      "approved_payees": [
+        {
+          "account_id": "856f368ae70a5f28f01687028b700a3e5d961416be3ba0a290c77d4af40aa029",
+          "label": "Quillstack Ltd"
+        }
+      ],
+      "pending_payees": [],
+      "approved_payees_source": "vault get_payees (on chain); pay only active approved payees"
+    },
+    "create_body": {
+      "legalName": "Quillstack Ltd",
+      "contactEmail": "billing@quillstack.example",
+      "approvedPayees": [
+        {
+          "account": "856f368ae70a5f28f01687028b700a3e5d961416be3ba0a290c77d4af40aa029",
+          "rail": "Near"
+        }
+      ],
+      "sampleInvoices": [],
+      "styleSet": [
+        {
+          "number": "QS-2026-11836",
+          "issued": "2026-08-03",
+          "due": "2026-09-02",
+          "service_period": "2026-08-03 to 2027-10-02",
+          "bill_to": "Larkspur Analytics Pte Ltd",
+          "lines": [
+            {
+              "description": "Business plan, annual, per seat",
+              "qty": 8,
+              "unit_price": "96.00"
+            },
+            {
+              "description": "Envelope pack (100 signature requests)",
+              "qty": 1,
+              "unit_price": "45.00"
+            }
+          ],
+          "subtotal": "813.00",
+          "tax": "0.00",
+          "total": "813.00",
+          "currency": "USDC",
+          "pay_to": "856f368ae70a5f28f01687028b700a3e5d961416be3ba0a290c77d4af40aa029",
+          "notes": "Reverse charge: GST to be accounted for by the recipient."
+        }
+      ]
+    }
+  },
+  {
+    "get_vendor": {
+      "id": "c4q2zdc16dwelc7st0csr9doa",
+      "legalName": "Pemberton & Gray Office Supply Co.",
+      "contactEmail": "accounts@pembertongray.example",
+      "approved_payees": [
+        {
+          "account_id": "pembertongray.near",
+          "label": "Pemberton & Gray Office Supply Co."
+        }
+      ],
+      "pending_payees": [],
+      "approved_payees_source": "vault get_payees (on chain); pay only active approved payees"
+    },
+    "create_body": {
+      "legalName": "Pemberton & Gray Office Supply Co.",
+      "contactEmail": "accounts@pembertongray.example",
+      "approvedPayees": [
+        {
+          "account": "pembertongray.near",
+          "rail": "Near"
+        }
+      ],
+      "sampleInvoices": [],
+      "styleSet": [
+        {
+          "number": "PG-48780",
+          "order_ref": "PO-KL-0291",
+          "issued": "2026-08-08",
+          "due": "2026-09-07",
+          "bill_to": "Larkspur Analytics Pte Ltd",
+          "ship_to": "Larkspur Analytics Pte Ltd, Level 4 reception",
+          "lines": [
+            {
+              "description": "Copy paper A4 80gsm, box of 5 reams",
+              "qty": 4,
+              "unit_price": "21.50"
+            },
+            {
+              "description": "Toner cartridge, black, high yield (office laser)",
+              "qty": 2,
+              "unit_price": "64.90"
+            },
+            {
+              "description": "Gel pens, blue, pack of 12",
+              "qty": 3,
+              "unit_price": "7.80"
+            },
+            {
+              "description": "Sticky notes 76 x 76 mm, 12 pads",
+              "qty": 2,
+              "unit_price": "9.60"
+            },
+            {
+              "description": "Whiteboard markers, assorted, pack of 4",
+              "qty": 2,
+              "unit_price": "6.45"
+            }
+          ],
+          "subtotal": "271.30",
+          "gst": "24.42",
+          "total": "295.72",
+          "currency": "USDC",
+          "pay_to": "pembertongray.near",
+          "terms": "Net 30"
+        }
+      ]
+    }
+  },
+  {
+    "get_vendor": {
+      "id": "c8s5adbobxziqw8j8v7o9sl6j",
+      "legalName": "Nimbusfold Cloud Pte Ltd",
+      "contactEmail": "invoices@nimbusfold.net.example",
+      "approved_payees": [
+        {
+          "account_id": "0xa42eb0feecfa498b2bd3af0b776843959c8172f3",
+          "label": "Nimbusfold Cloud Pte Ltd"
+        }
+      ],
+      "pending_payees": [],
+      "approved_payees_source": "vault get_payees (on chain); pay only active approved payees"
+    },
+    "create_body": {
+      "legalName": "Nimbusfold Cloud Pte Ltd",
+      "contactEmail": "invoices@nimbusfold.net.example",
+      "approvedPayees": [
+        {
+          "account": "0xa42eb0feecfa498b2bd3af0b776843959c8172f3",
+          "rail": "Near"
+        }
+      ],
+      "sampleInvoices": [],
+      "styleSet": [
+        {
+          "number": "NF-SG-2026100194",
+          "issued": "2026-08-01",
+          "due": "2026-08-28",
+          "billing_period": "2026-07-01 to 2026-07-28",
+          "account_id": "nf-55120438",
+          "bill_to": "Larkspur Analytics Pte Ltd",
+          "lines": [
+            {
+              "description": "Compute, general purpose 2 vCPU / 4 GB, instance-hours, ap-southeast-1",
+              "qty": 1440,
+              "unit_price": "0.0464"
+            },
+            {
+              "description": "Block storage SSD, GB-month",
+              "qty": 400,
+              "unit_price": "0.10"
+            },
+            {
+              "description": "Object storage, GB-month",
+              "qty": 1250,
+              "unit_price": "0.023"
+            },
+            {
+              "description": "Data transfer out to internet, GB",
+              "qty": 310,
+              "unit_price": "0.09"
+            },
+            {
+              "description": "Managed load balancer, hours",
+              "qty": 720,
+              "unit_price": "0.0225"
+            },
+            {
+              "description": "Snapshot storage, GB-month",
+              "qty": 180,
+              "unit_price": "0.05"
+            }
+          ],
+          "subtotal": "188.67",
+          "tax": "16.98",
+          "total": "205.65",
+          "currency": "USDC",
+          "pay_to": "0xa42eb0feecfa498b2bd3af0b776843959c8172f3"
+        }
+      ]
+    }
+  },
+  {
+    "get_vendor": {
+      "id": "c5ablv0uz18snhqw72kp5v81u",
+      "legalName": "Corvid Edge Hosting LLC",
+      "contactEmail": "billing@corvidedge.example",
+      "approved_payees": [
+        {
+          "account_id": "billing.corvidedge.near",
+          "label": "Corvid Edge Hosting LLC"
+        }
+      ],
+      "pending_payees": [],
+      "approved_payees_source": "vault get_payees (on chain); pay only active approved payees"
+    },
+    "create_body": {
+      "legalName": "Corvid Edge Hosting LLC",
+      "contactEmail": "billing@corvidedge.example",
+      "approvedPayees": [
+        {
+          "account": "billing.corvidedge.near",
+          "rail": "Near"
+        }
+      ],
+      "sampleInvoices": [],
+      "styleSet": [
+        {
+          "number": "CE-104355",
+          "issued": "2026-08-01",
+          "due": "2026-08-15",
+          "period": "August 2026",
+          "bill_to": "Larkspur Analytics Pte Ltd",
+          "lines": [
+            {
+              "description": "Managed Postgres, Standard-2 (monthly)",
+              "qty": 1,
+              "unit_price": "60.00"
+            },
+            {
+              "description": "Read replica, Standard-2 (monthly)",
+              "qty": 1,
+              "unit_price": "30.00"
+            },
+            {
+              "description": "CDN bandwidth, TB (July usage)",
+              "qty": 1.2,
+              "unit_price": "15.00"
+            },
+            {
+              "description": "Backup retention add-on, 30 days",
+              "qty": 1,
+              "unit_price": "8.00"
+            }
+          ],
+          "total": "116.00",
+          "currency": "USDC",
+          "pay_to": "billing.corvidedge.near"
+        }
+      ]
+    }
+  },
+  {
+    "get_vendor": {
+      "id": "cdvsuylvyhz03osxwguk22bij",
+      "legalName": "Halvorsen Teo LLP",
+      "contactEmail": "accounts@halvorsenteo-law.example",
+      "approved_payees": [
+        {
+          "account_id": "f95fdee544f023fafd03df88aaffe75f2de6d7b7670cc26eae38ffd5670c35e0",
+          "label": "Halvorsen Teo LLP"
+        }
+      ],
+      "pending_payees": [],
+      "approved_payees_source": "vault get_payees (on chain); pay only active approved payees"
+    },
+    "create_body": {
+      "legalName": "Halvorsen Teo LLP",
+      "contactEmail": "accounts@halvorsenteo-law.example",
+      "approvedPayees": [
+        {
+          "account": "f95fdee544f023fafd03df88aaffe75f2de6d7b7670cc26eae38ffd5670c35e0",
+          "rail": "Near"
+        }
+      ],
+      "sampleInvoices": [],
+      "styleSet": [
+        {
+          "number": "HT/2026/0575",
+          "issued": "2026-08-28",
+          "due": "2026-09-14",
+          "matter": "KWE-002 Commercial contracts (general retainer)",
+          "bill_to": "Larkspur Analytics Pte Ltd",
+          "lines": [
+            {
+              "description": "Monthly general counsel retainer, August 2026",
+              "qty": 1,
+              "unit_price": "1500.00"
+            },
+            {
+              "description": "APAC reseller agreement review and markup, hours beyond retainer",
+              "qty": 2.5,
+              "unit_price": "380.00"
+            },
+            {
+              "description": "Disbursement: company registry search",
+              "qty": 1,
+              "unit_price": "33.00"
+            }
+          ],
+          "subtotal": "2483.00",
+          "tax": "220.50",
+          "total": "2703.50",
+          "currency": "USDC",
+          "pay_to": "f95fdee544f023fafd03df88aaffe75f2de6d7b7670cc26eae38ffd5670c35e0",
+          "notes": "Work beyond the monthly retainer is billed at the agreed hourly rate of 380.00. Disbursements are not subject to GST."
+        }
+      ]
+    }
+  },
+  {
+    "get_vendor": {
+      "id": "cd08f93knolifscwjdylt8dfa",
+      "legalName": "Brightmop Commercial Cleaning Pte Ltd",
+      "contactEmail": "office@brightmop.sg.example",
+      "approved_payees": [
+        {
+          "account_id": "brightmop.near",
+          "label": "Brightmop Commercial Cleaning Pte Ltd"
+        }
+      ],
+      "pending_payees": [],
+      "approved_payees_source": "vault get_payees (on chain); pay only active approved payees"
+    },
+    "create_body": {
+      "legalName": "Brightmop Commercial Cleaning Pte Ltd",
+      "contactEmail": "office@brightmop.sg.example",
+      "approvedPayees": [
+        {
+          "account": "brightmop.near",
+          "rail": "Near"
+        }
+      ],
+      "sampleInvoices": [],
+      "styleSet": [
+        {
+          "number": "BM-0975",
+          "issued": "2026-06-28",
+          "due": "2026-07-14",
+          "service_address": "Larkspur Analytics, 4th floor office",
+          "service_period": "June 2026",
+          "bill_to": "Larkspur Analytics Pte Ltd",
+          "lines": [
+            {
+              "description": "Office cleaning, 3 visits per week (13 visits)",
+              "qty": 13,
+              "unit_price": "85.00"
+            },
+            {
+              "description": "Washroom consumables restock",
+              "qty": 1,
+              "unit_price": "46.50"
+            }
+          ],
+          "subtotal": "1151.50",
+          "gst": "103.64",
+          "total": "1255.14",
+          "currency": "USDC",
+          "pay_to": "brightmop.near"
+        }
+      ]
+    }
+  },
+  {
+    "get_vendor": {
+      "id": "cf42gvkjmzm783vq3lgatobrp",
+      "legalName": "Studio Wrenfield (Ada Wrenfield)",
+      "contactEmail": "hello@studiowrenfield.example",
+      "approved_payees": [
+        {
+          "account_id": "adawrenfield.near",
+          "label": "Studio Wrenfield (Ada Wrenfield)"
+        }
+      ],
+      "pending_payees": [],
+      "approved_payees_source": "vault get_payees (on chain); pay only active approved payees"
+    },
+    "create_body": {
+      "legalName": "Studio Wrenfield (Ada Wrenfield)",
+      "contactEmail": "hello@studiowrenfield.example",
+      "approvedPayees": [
+        {
+          "account": "adawrenfield.near",
+          "rail": "Near"
+        }
+      ],
+      "sampleInvoices": [],
+      "styleSet": [
+        {
+          "number": "AW-0007",
+          "issued": "2026-06-25",
+          "due": "2026-07-08",
+          "project": "Brand refresh",
+          "bill_to": "Larkspur Analytics Pte Ltd",
+          "lines": [
+            {
+              "description": "Logo refinement and brand colour system (fixed fee, 2 revision rounds included)",
+              "qty": 1,
+              "unit_price": "1200.00"
+            },
+            {
+              "description": "Less deposit received 4 Jun 2026",
+              "qty": 1,
+              "unit_price": "-360.00"
+            }
+          ],
+          "total": "840.00",
+          "currency": "USDC",
+          "pay_to": "adawrenfield.near",
+          "notes": "Final files delivered via shared folder. Full usage rights transfer on payment."
+        }
+      ]
+    }
+  },
+  {
+    "get_vendor": {
+      "id": "c11n4l3d94bxf13gqhf482ha2",
+      "legalName": "Parkline Domains Inc.",
+      "contactEmail": "billing@parklinedomains.example",
+      "approved_payees": [
+        {
+          "account_id": "3a2dfb914bd9418b7b4c5f53a1d1be2672c88667bfba329b0a5d54856f3dc277",
+          "label": "Parkline Domains Inc."
+        }
+      ],
+      "pending_payees": [],
+      "approved_payees_source": "vault get_payees (on chain); pay only active approved payees"
+    },
+    "create_body": {
+      "legalName": "Parkline Domains Inc.",
+      "contactEmail": "billing@parklinedomains.example",
+      "approvedPayees": [
+        {
+          "account": "3a2dfb914bd9418b7b4c5f53a1d1be2672c88667bfba329b0a5d54856f3dc277",
+          "rail": "Near"
+        }
+      ],
+      "sampleInvoices": [],
+      "styleSet": [
+        {
+          "number": "PKL-88122980",
+          "issued": "2026-08-20",
+          "due": "2026-09-05",
+          "bill_to": "Larkspur Analytics Pte Ltd",
+          "lines": [
+            {
+              "description": "larkspurhq.example renewal, 1 year (2026-09-19 to 2027-11-19)",
+              "qty": 1,
+              "unit_price": "11.98"
+            },
+            {
+              "description": "ICANN fee",
+              "qty": 1,
+              "unit_price": "0.20"
+            },
+            {
+              "description": "WHOIS privacy, 1 year",
+              "qty": 1,
+              "unit_price": "0.00"
+            }
+          ],
+          "total": "12.18",
+          "currency": "USDC",
+          "pay_to": "3a2dfb914bd9418b7b4c5f53a1d1be2672c88667bfba329b0a5d54856f3dc277",
+          "auto_renew": "on"
+        }
+      ]
+    }
+  },
+  {
+    "get_vendor": {
+      "id": "c2yd01oq26otudxo1tfjvlzet",
+      "legalName": "The Foundry Room Coworking Pte Ltd",
+      "contactEmail": "members@foundryroom.sg.example",
+      "approved_payees": [
+        {
+          "account_id": "foundryroom-pay.near",
+          "label": "The Foundry Room Coworking Pte Ltd"
+        }
+      ],
+      "pending_payees": [],
+      "approved_payees_source": "vault get_payees (on chain); pay only active approved payees"
+    },
+    "create_body": {
+      "legalName": "The Foundry Room Coworking Pte Ltd",
+      "contactEmail": "members@foundryroom.sg.example",
+      "approvedPayees": [
+        {
+          "account": "foundryroom-pay.near",
+          "rail": "Near"
+        }
+      ],
+      "sampleInvoices": [],
+      "styleSet": [
+        {
+          "number": "FR-2026-0969",
+          "issued": "2026-08-01",
+          "due": "2026-08-15",
+          "membership": "Dedicated desk x 4",
+          "service_period": "1 to 31 August 2026",
+          "bill_to": "Larkspur Analytics Pte Ltd",
+          "lines": [
+            {
+              "description": "Coworking membership, dedicated desk, August 2026",
+              "qty": 4,
+              "unit_price": "420.00"
+            },
+            {
+              "description": "Meeting room hours above included credits (July)",
+              "qty": 3,
+              "unit_price": "35.00"
+            },
+            {
+              "description": "Mail handling",
+              "qty": 1,
+              "unit_price": "25.00"
+            }
+          ],
+          "subtotal": "1810.00",
+          "gst": "162.90",
+          "total": "1972.90",
+          "currency": "USDC",
+          "pay_to": "foundryroom-pay.near",
+          "notes": "Please pay within 14 days of the invoice date."
+        }
+      ]
+    }
+  },
+  {
+    "get_vendor": {
+      "id": "cb52rr9qgn2iiztvpby3qkhlc",
+      "legalName": "Kestrel Freight Pte Ltd",
+      "contactEmail": "ar@kestrelfreight.example",
+      "approved_payees": [
+        {
+          "account_id": "0x15ae25637846b223db1d6a6bca0486ad00982c6c",
+          "label": "Kestrel Freight Pte Ltd"
+        }
+      ],
+      "pending_payees": [],
+      "approved_payees_source": "vault get_payees (on chain); pay only active approved payees"
+    },
+    "create_body": {
+      "legalName": "Kestrel Freight Pte Ltd",
+      "contactEmail": "ar@kestrelfreight.example",
+      "approvedPayees": [
+        {
+          "account": "0x15ae25637846b223db1d6a6bca0486ad00982c6c",
+          "rail": "Near"
+        }
+      ],
+      "sampleInvoices": [],
+      "styleSet": [
+        {
+          "number": "KF-0091790",
+          "issued": "2026-08-12",
+          "due": "2026-09-11",
+          "account_no": "KL-118204",
+          "period": "week ending 2026-08-09",
+          "bill_to": "Larkspur Analytics Pte Ltd",
+          "lines": [
+            {
+              "description": "Express parcel SG to Jakarta, 2 pkgs, 6.5 kg, ref KL-SHP-2210",
+              "qty": 1,
+              "unit_price": "48.60"
+            },
+            {
+              "description": "Fuel surcharge, KL-SHP-2210",
+              "qty": 1,
+              "unit_price": "9.48"
+            },
+            {
+              "description": "Domestic parcel SG, 1 pkg, residential, ref KL-SHP-2214",
+              "qty": 1,
+              "unit_price": "11.20"
+            },
+            {
+              "description": "Residential delivery surcharge, KL-SHP-2214",
+              "qty": 1,
+              "unit_price": "3.10"
+            },
+            {
+              "description": "Fuel surcharge, KL-SHP-2214",
+              "qty": 1,
+              "unit_price": "2.18"
+            },
+            {
+              "description": "Address correction, KL-SHP-2214",
+              "qty": 1,
+              "unit_price": "12.00"
+            }
+          ],
+          "total": "86.56",
+          "currency": "USDC",
+          "pay_to": "0x15ae25637846b223db1d6a6bca0486ad00982c6c",
+          "terms": "Payment due 30 days from invoice date. Late payments may incur interest."
+        }
+      ]
+    }
+  },
+  {
+    "get_vendor": {
+      "id": "c02dmpwebht9b9lbjfab0odgm",
+      "legalName": "Ledgerwell Accounting LLP",
+      "contactEmail": "invoices@ledgerwell.co.example",
+      "approved_payees": [
+        {
+          "account_id": "ledgerwell.near",
+          "label": "Ledgerwell Accounting LLP"
+        }
+      ],
+      "pending_payees": [],
+      "approved_payees_source": "vault get_payees (on chain); pay only active approved payees"
+    },
+    "create_body": {
+      "legalName": "Ledgerwell Accounting LLP",
+      "contactEmail": "invoices@ledgerwell.co.example",
+      "approvedPayees": [
+        {
+          "account": "ledgerwell.near",
+          "rail": "Near"
+        }
+      ],
+      "sampleInvoices": [],
+      "styleSet": [
+        {
+          "number": "LW-26-0254",
+          "issued": "2026-06-28",
+          "due": "2026-07-14",
+          "period": "June 2026",
+          "bill_to": "Larkspur Analytics Pte Ltd",
+          "lines": [
+            {
+              "description": "Monthly bookkeeping, June 2026 (up to 150 transactions)",
+              "qty": 1,
+              "unit_price": "450.00"
+            },
+            {
+              "description": "Payroll processing, per employee",
+              "qty": 6,
+              "unit_price": "12.00"
+            },
+            {
+              "description": "Bank reconciliation, additional accounts",
+              "qty": 2,
+              "unit_price": "40.00"
+            }
+          ],
+          "subtotal": "602.00",
+          "gst": "54.18",
+          "total": "656.18",
+          "currency": "USDC",
+          "pay_to": "ledgerwell.near"
+        }
+      ]
+    }
+  },
+  {
+    "get_vendor": {
+      "id": "ccc4vglv9peastwf5qvgk6688",
+      "legalName": "Marrow & Pine Catering Pte Ltd",
+      "contactEmail": "orders@marrowandpine.sg.example",
+      "approved_payees": [
+        {
+          "account_id": "marrowandpine.near",
+          "label": "Marrow & Pine Catering Pte Ltd"
+        }
+      ],
+      "pending_payees": [],
+      "approved_payees_source": "vault get_payees (on chain); pay only active approved payees"
+    },
+    "create_body": {
+      "legalName": "Marrow & Pine Catering Pte Ltd",
+      "contactEmail": "orders@marrowandpine.sg.example",
+      "approvedPayees": [
+        {
+          "account": "marrowandpine.near",
+          "rail": "Near"
+        }
+      ],
+      "sampleInvoices": [],
+      "styleSet": [
+        {
+          "number": "MP-26-1155",
+          "issued": "2026-08-20",
+          "due": "2026-09-03",
+          "event_date": "2026-08-16",
+          "bill_to": "Larkspur Analytics Pte Ltd",
+          "lines": [
+            {
+              "description": "Team lunch buffet, per person",
+              "qty": 22,
+              "unit_price": "18.50"
+            },
+            {
+              "description": "Delivery and setup",
+              "qty": 1,
+              "unit_price": "35.00"
+            }
+          ],
+          "subtotal": "442.00",
+          "gst": "39.78",
+          "total": "481.78",
+          "currency": "USDC",
+          "pay_to": "marrowandpine.near"
+        }
+      ]
+    }
+  },
+  {
+    "get_vendor": {
+      "id": "c4cu38x58vk3ckq851w2k3sd8",
+      "legalName": "Lumenwick IT Services Pte Ltd",
+      "contactEmail": "accounts@lumenwick.example",
+      "approved_payees": [
+        {
+          "account_id": "55901418a06b2cb6836058ddaebe0038511375867a4020076778513dbd00aae6",
+          "label": "Lumenwick IT Services Pte Ltd"
+        }
+      ],
+      "pending_payees": [],
+      "approved_payees_source": "vault get_payees (on chain); pay only active approved payees"
+    },
+    "create_body": {
+      "legalName": "Lumenwick IT Services Pte Ltd",
+      "contactEmail": "accounts@lumenwick.example",
+      "approvedPayees": [
+        {
+          "account": "55901418a06b2cb6836058ddaebe0038511375867a4020076778513dbd00aae6",
+          "rail": "Near"
+        }
+      ],
+      "sampleInvoices": [],
+      "styleSet": [
+        {
+          "number": "LWK-2026-0574",
+          "issued": "2026-08-28",
+          "due": "2026-09-14",
+          "period": "August 2026",
+          "bill_to": "Larkspur Analytics Pte Ltd",
+          "lines": [
+            {
+              "description": "Managed IT support, per user",
+              "qty": 9,
+              "unit_price": "45.00"
+            },
+            {
+              "description": "Laptop setup and enrolment",
+              "qty": 2,
+              "unit_price": "60.00"
+            }
+          ],
+          "subtotal": "525.00",
+          "tax": "47.25",
+          "total": "572.25",
+          "currency": "USDC",
+          "pay_to": "55901418a06b2cb6836058ddaebe0038511375867a4020076778513dbd00aae6"
+        }
+      ]
+    }
+  },
+  {
+    "get_vendor": {
+      "id": "c9qq6l9lns204lpzrbltys6ha",
+      "legalName": "Sablefin Translation GmbH",
+      "contactEmail": "accounts@sablefin.ch",
+      "approved_payees": [
+        {
+          "account_id": "sablefin-translations.near",
+          "label": "Sablefin Translation GmbH"
+        }
+      ],
+      "pending_payees": [],
+      "approved_payees_source": "vault get_payees (on chain); pay only active approved payees"
+    },
+    "create_body": {
+      "legalName": "Sablefin Translation GmbH",
+      "contactEmail": "accounts@sablefin.ch",
+      "approvedPayees": [
+        {
+          "account": "sablefin-translations.near",
+          "rail": "Near"
+        }
+      ],
+      "sampleInvoices": [],
+      "styleSet": [
+        {
+          "number": "SF-2026-0351",
+          "issued": "2026-08-28",
+          "due": "2026-09-27",
+          "bill_to": "Larkspur Analytics Pte Ltd",
+          "project": "Onboarding guide localisation",
+          "lines": [
+            {
+              "description": "Translation EN to DE, onboarding guide, per word",
+              "qty": 4200,
+              "unit_price": "0.14"
+            },
+            {
+              "description": "Translation EN to JA, onboarding guide, per word",
+              "qty": 4200,
+              "unit_price": "0.16"
+            },
+            {
+              "description": "Terminology glossary setup",
+              "qty": 1,
+              "unit_price": "90.00"
+            }
+          ],
+          "subtotal": "1350.00",
+          "tax": "0.00",
+          "total": "1350.00",
+          "currency": "USDC",
+          "pay_to": "sablefin-translations.near",
+          "notes": "Export of services, no VAT charged."
+        }
+      ]
+    }
+  }
+]
