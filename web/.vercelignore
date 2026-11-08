@@ -1,0 +1,9 @@
+# The CLI does not skip .env files by default.
+.env
+.env.*
+node_modules
+.output
+.nitro
+.tanstack
+dist
+.vercel
