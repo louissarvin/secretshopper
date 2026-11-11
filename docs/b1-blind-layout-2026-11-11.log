@@ -1,0 +1,131 @@
+1/99 judged
+2/99 judged
+3/99 judged
+4/99 judged
+5/99 judged
+6/99 judged
+7/99 judged
+8/99 judged
+9/99 judged
+10/99 judged
+11/99 judged
+12/99 judged
+13/99 judged
+R1-08: judge call exceeded 300s; retrying once
+14/99 judged
+15/99 judged
+16/99 judged
+17/99 judged
+18/99 judged
+19/99 judged
+20/99 judged
+21/99 judged
+22/99 judged
+23/99 judged
+24/99 judged
+25/99 judged
+26/99 judged
+27/99 judged
+28/99 judged
+29/99 judged
+30/99 judged
+31/99 judged
+32/99 judged
+33/99 judged
+34/99 judged
+35/99 judged
+R2-08: judge call exceeded 300s; retrying once
+36/99 judged
+37/99 judged
+R2-11: judge call exceeded 300s; retrying once
+38/99 judged
+39/99 judged
+40/99 judged
+R2-15: judge call exceeded 300s; retrying once
+error: judge call exceeded 300s
+      at <anonymous> (/Users/macbookair/Documents/secretshopper/scripts/b1-blind.ts:36:82)
+
+Bun v1.4.4 (macOS arm64)
+resuming: 40 scores kept, 59 to judge
+41/99 judged
+42/99 judged
+43/99 judged
+44/99 judged
+45/99 judged
+46/99 judged
+47/99 judged
+48/99 judged
+49/99 judged
+50/99 judged
+51/99 judged
+52/99 judged
+53/99 judged
+54/99 judged
+55/99 judged
+56/99 judged
+57/99 judged
+58/99 judged
+59/99 judged
+60/99 judged
+61/99 judged
+62/99 judged
+63/99 judged
+64/99 judged
+65/99 judged
+R3-07: judge call exceeded 600s; attempt 2 of 3
+66/99 judged
+67/99 judged
+68/99 judged
+69/99 judged
+70/99 judged
+71/99 judged
+72/99 judged
+73/99 judged
+74/99 judged
+75/99 judged
+76/99 judged
+77/99 judged
+78/99 judged
+T-18: judge call exceeded 600s; attempt 2 of 3
+T-24: judge call exceeded 600s; attempt 2 of 3
+79/99 judged
+80/99 judged
+81/99 judged
+82/99 judged
+T-32: judge call exceeded 600s; attempt 2 of 3
+T-33: judge call exceeded 600s; attempt 2 of 3
+T-36: judge call exceeded 600s; attempt 2 of 3
+T-37: judge call exceeded 600s; attempt 2 of 3
+T-32: judge call exceeded 600s; attempt 3 of 3
+83/99 judged
+T-33: judge call exceeded 600s; attempt 3 of 3
+T-36: judge call exceeded 600s; attempt 3 of 3
+error: judge call exceeded 600s
+      at <anonymous> (/Users/macbookair/Documents/secretshopper/scripts/b1-blind.ts:41:82)
+
+Bun v1.4.4 (macOS arm64)
+resuming: 83 scores kept, 16 to judge
+84/99 judged
+85/99 judged
+86/99 judged
+87/99 judged
+88/99 judged
+89/99 judged
+90/99 judged
+91/99 judged
+92/99 judged
+T-39: judge call exceeded 600s; attempt 2 of 3
+T-41: judge call exceeded 600s; attempt 2 of 3
+93/99 judged
+94/99 judged
+95/99 judged
+T-39: judge call exceeded 600s; attempt 3 of 3
+T-41: judge call exceeded 600s; attempt 3 of 3
+T-48: judge call exceeded 600s; attempt 2 of 3
+96/99 judged
+97/99 judged
+T-50: judge call exceeded 600s; attempt 2 of 3
+98/99 judged
+T-50: judge call exceeded 600s; attempt 3 of 3
+99/99 judged
+{"n":99,"judge":"z-ai/glm-5.3-flash","accuracy":0.5858585858585859,"wilson95":[0.48739617763471826,0.6779065792263185],"auc":0.633265306122449,"pass":true,"receipts":"out/b1-receipts-layout.json","scores":"out/b1-receipts-layout.scores.json"}
