@@ -1,0 +1,17 @@
+network      testnet
+vault        shop3.ss-owner-e9c3db.testnet (classic, code hash 5pxQNdWnhTJiaTKs6HrVv4SadLi1tWuACeeYmyaxgHAs)
+owner        ss-owner-e9c3db.testnet (6.8025 NEAR)
+vendor       ss-vendor-e9c3db.testnet
+token        tusdc.ss-owner-e9c3db.testnet (tUSDC, 6 decimals)
+fund         4.5000 NEAR (minimum 4.2218 NEAR)
+rails        Near only (Intents disabled, no --intents)
+policy       cap 5000000 / 24 h, per payment 2000000, batch 3, float 0.5000 NEAR
+answer time  a lure counts as Ignored only if delivered at least 14400 s before its 43200 s expiry
+agent key    gas key, 4 nonce lanes, funded with 0.2500 NEAR per arming (gas never leaves the vault balance)
+tx           https://testnet.nearblocks.io/txns/BtG936cMZy26jhj2gCTQR1cCyPDUmo79PGDrPN7h1yzv
+tx           https://testnet.nearblocks.io/txns/EqBd9sJdhYxvDS88JevQH7YLhRA7pvAP1PMfduuvsE9S
+token reg    https://testnet.nearblocks.io/txns/BE5mdKFYjt4duiyCppS9sofvTRJ1Be2eJBusw6Z8U741
+
+verify       code hash 5pxQNdWnhTJiaTKs6HrVv4SadLi1tWuACeeYmyaxgHAs (own code), 0 access keys, 336743 B stored, version 2.3.0, mode Unarmed
+OK: vault matches the plan
+next: fund it with the token, add the tester FC key (commit_batch, reveal, release, prove_delivery) on the owner, owner propose_key, vendor accept_key
