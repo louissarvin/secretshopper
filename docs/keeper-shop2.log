@@ -1,0 +1,31 @@
+warning: /Users/macbookair/.near-credentials/testnet/ss-vendor-e9c3db.testnet.json is readable by other users; chmod 600 it
+{"time":"2026-11-01T09:58:03.399Z","component":"keeper","msg":"started","shop":"shop2.ss-owner-e9c3db.testnet","keeper":"ss-vendor-e9c3db.testnet","network":"testnet","interval_s":60,"once":false}
+{"time":"2026-11-01T09:58:04.945Z","component":"keeper","msg":"commit tx found","tx":"2Xu3LiTgX4tamKoYtFXvGr41aU7UE7brkzLE2p9q5Ym5","signer":"ss-owner-e9c3db.testnet","slots":3,"source":"FastNEAR tx API"}
+{"time":"2026-11-01T09:58:04.946Z","component":"keeper","msg":"scheduled","slotId":0,"expires_at":"2026-11-01T21:57:15.662Z","tlock_round":33588958,"round_published_at":"2026-11-01T21:57:18.000Z","reveal_after":"2026-11-01T21:57:18.000Z"}
+{"time":"2026-11-01T09:58:04.946Z","component":"keeper","msg":"scheduled","slotId":1,"expires_at":"2026-11-01T21:57:15.662Z","tlock_round":33588958,"round_published_at":"2026-11-01T21:57:18.000Z","reveal_after":"2026-11-01T21:57:18.000Z"}
+{"time":"2026-11-01T09:58:04.946Z","component":"keeper","msg":"scheduled","slotId":2,"expires_at":"2026-11-01T21:57:15.662Z","tlock_round":33588958,"round_published_at":"2026-11-01T21:57:18.000Z","reveal_after":"2026-11-01T21:57:18.000Z"}
+{"time":"2026-11-01T09:58:04.946Z","component":"keeper","msg":"pass done","revealed":0,"waiting":3,"sabotaged":0}
+{"time":"2026-11-01T10:58:23.961Z","component":"keeper","msg":"pass done","revealed":0,"waiting":3,"sabotaged":0}
+{"time":"2026-11-01T11:30:04.499Z","component":"keeper","msg":"pass failed","error":"ECONNRESET: The socket connection was closed unexpectedly. For more information, pass `verbose: true` in the second argument to fetch()"}
+{"time":"2026-11-01T12:00:04.312Z","component":"keeper","msg":"pass done","revealed":0,"waiting":3,"sabotaged":0}
+{"time":"2026-11-01T12:30:06.828Z","component":"keeper","msg":"pass failed","error":"ECONNRESET: The socket connection was closed unexpectedly. For more information, pass `verbose: true` in the second argument to fetch()"}
+{"time":"2026-11-01T13:14:02.275Z","component":"keeper","msg":"pass done","revealed":0,"waiting":3,"sabotaged":0}
+{"time":"2026-11-01T13:46:30.486Z","component":"keeper","msg":"pass failed","error":"ECONNRESET: The socket connection was closed unexpectedly. For more information, pass `verbose: true` in the second argument to fetch()"}
+{"time":"2026-11-01T14:30:17.720Z","component":"keeper","msg":"pass done","revealed":0,"waiting":3,"sabotaged":0}
+{"time":"2026-11-01T16:01:37.960Z","component":"keeper","msg":"pass failed","error":"ECONNRESET: The socket connection was closed unexpectedly. For more information, pass `verbose: true` in the second argument to fetch()"}
+{"time":"2026-11-01T18:19:10.104Z","component":"keeper","msg":"pass failed","error":"ECONNRESET: The socket connection was closed unexpectedly. For more information, pass `verbose: true` in the second argument to fetch()"}
+{"time":"2026-11-01T19:36:56.473Z","component":"keeper","msg":"pass done","revealed":0,"waiting":3,"sabotaged":0}
+{"time":"2026-11-01T20:40:06.877Z","component":"keeper","msg":"pass done","revealed":0,"waiting":3,"sabotaged":0}
+{"time":"2026-11-01T21:28:20.243Z","component":"keeper","msg":"pass failed","error":"ECONNRESET: The socket connection was closed unexpectedly. For more information, pass `verbose: true` in the second argument to fetch()"}
+{"time":"2026-11-02T00:47:11.968Z","component":"keeper","msg":"reveal rejected","slotId":0,"error":"ECONNRESET: The socket connection was closed unexpectedly. For more information, pass `verbose: true` in the second argument to fetch()"}
+{"time":"2026-11-02T01:40:39.989Z","component":"keeper","msg":"reveal rejected","slotId":1,"error":"ECONNRESET: The socket connection was closed unexpectedly. For more information, pass `verbose: true` in the second argument to fetch()"}
+{"time":"2026-11-02T02:35:40.114Z","component":"keeper","msg":"OWNER SABOTAGE: ciphertext does not open","slotId":2,"error":"ECONNRESET: The socket connection was closed unexpectedly. For more information, pass `verbose: true` in the second argument to fetch()"}
+{"time":"2026-11-02T02:35:40.116Z","component":"keeper","msg":"pass done","revealed":0,"waiting":2,"sabotaged":1}
+(eval):1: command not found: timeout
+{"time":"2026-11-02T15:55:48.230Z","component":"keeper","msg":"started","shop":"shop2.ss-owner-e9c3db.testnet","keeper":"ss-vendor-e9c3db.testnet","network":"testnet","interval_s":60,"once":true}
+{"time":"2026-11-02T15:55:50.331Z","component":"keeper","msg":"commit tx found","tx":"2Xu3LiTgX4tamKoYtFXvGr41aU7UE7brkzLE2p9q5Ym5","signer":"ss-owner-e9c3db.testnet","slots":3,"source":"FastNEAR tx API"}
+{"time":"2026-11-02T15:55:50.331Z","component":"keeper","msg":"scheduled","slotId":0,"expires_at":"2026-11-01T21:57:15.662Z","tlock_round":33588958,"round_published_at":"2026-11-01T21:57:18.000Z","reveal_after":"2026-11-01T21:57:18.000Z"}
+{"time":"2026-11-02T15:55:55.661Z","component":"keeper","msg":"revealed","slotId":0,"status":"Void","tx":"AbNJbxcsz8EB4aQDQZrExQeHgd8BtP7UvaWiH53ohGKe","by":"ss-vendor-e9c3db.testnet"}
+{"time":"2026-11-02T15:55:55.661Z","component":"keeper","msg":"scheduled","slotId":2,"expires_at":"2026-11-01T21:57:15.662Z","tlock_round":33588958,"round_published_at":"2026-11-01T21:57:18.000Z","reveal_after":"2026-11-01T21:57:18.000Z"}
+{"time":"2026-11-02T15:55:59.928Z","component":"keeper","msg":"revealed","slotId":2,"status":"Void","tx":"FdmwefHjDLH1E3b7fLnF2FYYT4PdbJa6nrJxa5bBBd7s","by":"ss-vendor-e9c3db.testnet"}
+{"time":"2026-11-02T15:55:59.928Z","component":"keeper","msg":"pass done","revealed":2,"waiting":0,"sabotaged":0}
