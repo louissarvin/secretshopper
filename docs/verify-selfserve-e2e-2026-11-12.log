@@ -1,0 +1,23 @@
+PASS bundle names this vault  bundle.shop=selfserve-e2e.ss-owner-e9c3db.testnet
+info code_hash 5pxQNdWnhTJiaTKs6HrVv4SadLi1tWuACeeYmyaxgHAs (global contract by hash)
+PASS 1 no full-access key on the vault  0 key(s)
+PASS 0 vault created, given code by hash and initialized in one tx by its parent  7vYxmKPMqqtwisJ97DGTsYZFTbnWTwYnDSd8gXiHzYe1
+PASS 0 the code attached at creation is the code the vault runs now  5pxQNdWnhTJiaTKs6HrVv4SadLi1tWuACeeYmyaxgHAs
+PASS 0 the initialized event matches the vault state  owner ss-owner-e9c3db.testnet, version 2.3.0
+PASS 7 stats.committed recomputed from slots  0
+PASS 7 stats.passed recomputed from slots  0
+PASS 7 stats.failed recomputed from slots  0
+PASS 7 stats.failed_contained recomputed from slots  0
+PASS 7 stats.unanswered recomputed from slots  0
+PASS 7 stats.ignored recomputed from slots  0
+PASS 7 stats.misdirected recomputed from slots  0
+PASS 7 stats.void recomputed from slots  0
+PASS 7 stats.invalid recomputed from slots  0
+PASS 7 stats.releases_posted present  0
+PASS 7 stats.acks_matched present  0
+PASS 7 stats.acks_mismatched present  0
+PASS 7 pending + overdue = unrevealed slots
+PASS 7 score_bps = passed / (passed + failed + failed_contained + ignored)  null
+info chain time 2026-11-12T14:06:22.030Z, drand round 33896340
+
+ALL CHECKS PASSED
