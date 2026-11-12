@@ -1,0 +1,260 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BUN_VERSION: 1.4.4
+  CARGO_NEAR_VERSION: 0.22.0
+  # sha256 of cargo-near-x86_64-unknown-linux-gnu.tar.gz from the cargo-near-v0.22.0 GitHub release
+  CARGO_NEAR_SHA256: 9429064e30a427e96523f539cb255f3688d2345e5000d7d4e4873a8247247d1a
+  CARGO_TERM_COLOR: always
+
+jobs:
+  contract:
+    name: contract (fmt, clippy, wasm, sandbox tests)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: contracts/shop
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # rustup reads rust-toolchain.toml: 1.97.1, rustfmt, clippy, wasm32-unknown-unknown
+      - name: Install pinned Rust toolchain
+        run: |
+          rustup toolchain install --no-self-update
+          rustup show active-toolchain
+          rustup target list --installed
+
+      - name: Cache cargo registry and build output
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          # target/ also holds the sandbox binary near-workspaces downloads into OUT_DIR
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            contracts/shop/target/
+            contracts/shop/tests/fixtures/ft/target/
+          key: cargo-${{ runner.os }}-${{ hashFiles('contracts/shop/rust-toolchain.toml', 'contracts/shop/Cargo.lock', 'contracts/shop/tests/fixtures/ft/Cargo.lock') }}
+          restore-keys: |
+            cargo-${{ runner.os }}-
+
+      - name: Install cargo-near (prebuilt release, checksum pinned)
+        run: |
+          url="https://github.com/near/cargo-near/releases/download/cargo-near-v${CARGO_NEAR_VERSION}/cargo-near-x86_64-unknown-linux-gnu.tar.gz"
+          curl --proto '=https' --tlsv1.2 -fsSL -o "$RUNNER_TEMP/cargo-near.tar.gz" "$url"
+          echo "${CARGO_NEAR_SHA256}  $RUNNER_TEMP/cargo-near.tar.gz" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/cargo-near.tar.gz" -C "$RUNNER_TEMP"
+          install -m 0755 "$RUNNER_TEMP/cargo-near-x86_64-unknown-linux-gnu/cargo-near" "$HOME/.cargo/bin/cargo-near"
+          cargo near --version
+
+      - name: rustfmt
+        run: cargo fmt --check
+
+      # Scoped to this step so the wasm builds and tests keep their own fingerprints
+      - name: clippy (deny warnings)
+        env:
+          RUSTFLAGS: -Dwarnings
+        run: cargo clippy --locked --all-targets
+
+      - name: Build vault wasm
+        run: cargo near build non-reproducible-wasm --locked
+
+      - name: Build tUSDC fixture wasm
+        working-directory: contracts/shop/tests/fixtures/ft
+        run: cargo near build non-reproducible-wasm --no-abi --locked
+
+      - name: Record wasm hashes
+        run: |
+          {
+            echo '### Contract wasm (non-reproducible CI build)'
+            echo '```'
+            sha256sum target/near/secret_shopper.wasm tests/fixtures/ft/target/near/fungible_token.wasm
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Uploaded before the tests so the demo job and debugging have the exact bytes tested
+      - name: Upload wasm artifacts
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: contract-wasm
+          path: |
+            contracts/shop/target/near/secret_shopper.wasm
+            contracts/shop/target/near/secret_shopper_abi.json
+            contracts/shop/tests/fixtures/ft/target/near/fungible_token.wasm
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Sandbox tests
+        run: cargo test --locked -- --test-threads=4 # sandbox tests are timing based; cap parallel nearcore nodes
+
+  backend:
+    name: backend (prisma, tsc, lint, bun test)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:15-alpine@sha256:54e0dd8e8cddcdbb9156c2486eed5a43eccb7214d7c6828097d41ce049fb3984
+        env:
+          # throwaway service container, reachable only from this job
+          POSTGRES_USER: ss_ci
+          POSTGRES_PASSWORD: ss_ci
+          POSTGRES_DB: secretshopper_ci
+        options: >-
+          --health-cmd "pg_isready -U ss_ci -d secretshopper_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+        ports:
+          - 5432:5432
+    env:
+      DATABASE_URL: postgresql://ss_ci:ss_ci@localhost:5432/secretshopper_ci?schema=public
+      TEST_DATABASE_URL: postgresql://ss_ci:ss_ci@localhost:5432/secretshopper_ci?schema=public
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Cache bun install cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-backend-${{ hashFiles('backend/bun.lockb') }}
+          restore-keys: |
+            bun-${{ runner.os }}-backend-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # Creates schemas public and tester on the CI database, then generates the client
+      - name: Prisma db push and generate
+        run: bun run db:push
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Test
+        run: bun test
+
+  agent:
+    name: agent (tsc, bun test)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: agent
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Cache bun install cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-agent-${{ hashFiles('agent/bun.lock') }}
+          restore-keys: |
+            bun-${{ runner.os }}-agent-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Test
+        run: bun test
+
+  demo:
+    name: demo (local sandbox, naive agent)
+    needs: contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Cache bun install cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-demo-${{ hashFiles('backend/bun.lockb', 'agent/bun.lock', 'scripts/bun.lock') }}
+          restore-keys: |
+            bun-${{ runner.os }}-demo-
+
+      - name: Install backend, agent and scripts dependencies
+        run: |
+          for pkg in backend agent scripts; do
+            (cd "$pkg" && bun install --frozen-lockfile)
+          done
+
+      - name: Download contract wasm
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: contract-wasm
+          path: contracts/shop
+
+      - name: Cache near-sandbox binary
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/near-sandbox
+          key: near-sandbox-${{ runner.os }}-${{ hashFiles('scripts/bun.lock') }}
+
+      # No NEARAI_API_KEY_AGENT: the demo runs the labelled naive agent; drand quicknet must be reachable
+      - name: bun run demo
+        env:
+          DIR_TO_DOWNLOAD_BINARY: ${{ runner.temp }}/near-sandbox
+        run: bun run demo
+
+      - name: Global contract vault (NEP-591 by hash)
+        working-directory: scripts
+        env:
+          DIR_TO_DOWNLOAD_BINARY: ${{ runner.temp }}/near-sandbox
+        run: bun global-vault.ts
+
+      - name: Typecheck scripts
+        working-directory: scripts
+        run: bun run typecheck
+
+      - name: Upload demo evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: demo-evidence
+          path: scripts/out/
+          if-no-files-found: ignore
+          retention-days: 7
