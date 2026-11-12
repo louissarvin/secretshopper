@@ -1,0 +1,100 @@
+name: Reproducible contract build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CARGO_NEAR_VERSION: 0.22.0
+  # sha256 of cargo-near-x86_64-unknown-linux-gnu.tar.gz from the cargo-near-v0.22.0 GitHub release
+  CARGO_NEAR_SHA256: 9429064e30a427e96523f539cb255f3688d2345e5000d7d4e4873a8247247d1a
+  CARGO_TERM_COLOR: always
+
+jobs:
+  reproducible-wasm:
+    name: cargo near build reproducible-wasm
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: contracts/shop
+    steps:
+      # Full history: cargo-near clones the committed HEAD into a temp dir and builds that, not the work tree
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      # Host cargo is only used for `cargo metadata`; the wasm is compiled inside the pinned image
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install --no-self-update
+
+      - name: Install cargo-near (prebuilt release, checksum pinned)
+        run: |
+          url="https://github.com/near/cargo-near/releases/download/cargo-near-v${CARGO_NEAR_VERSION}/cargo-near-x86_64-unknown-linux-gnu.tar.gz"
+          curl --proto '=https' --tlsv1.2 -fsSL -o "$RUNNER_TEMP/cargo-near.tar.gz" "$url"
+          echo "${CARGO_NEAR_SHA256}  $RUNNER_TEMP/cargo-near.tar.gz" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/cargo-near.tar.gz" -C "$RUNNER_TEMP"
+          install -m 0755 "$RUNNER_TEMP/cargo-near-x86_64-unknown-linux-gnu/cargo-near" "$HOME/.cargo/bin/cargo-near"
+          cargo near --version
+
+      # cargo-near refuses reproducible builds without an https `repository`; it becomes the NEP-330 source link
+      - name: Check NEP-330 repository field
+        env:
+          EXPECTED_REPO: ${{ github.server_url }}/${{ github.repository }}
+        run: |
+          repo=$(cargo metadata --locked --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "secret_shopper") | .repository // empty')
+          if [ -z "$repo" ]; then
+            echo "::error file=contracts/shop/Cargo.toml::Add repository = \"$EXPECTED_REPO\" under [package] and commit it"
+            exit 1
+          fi
+          if [ "${repo%/}" != "$EXPECTED_REPO" ] && [ "${repo%/}" != "$EXPECTED_REPO.git" ]; then
+            echo "::warning file=contracts/shop/Cargo.toml::repository is $repo, this run is $EXPECTED_REPO; verifiers will clone $repo"
+          fi
+
+      - name: Build in pinned image (Cargo.toml reproducible_build image_digest)
+        run: |
+          mkdir -p "$RUNNER_TEMP/repro"
+          cargo near build reproducible-wasm --out-dir "$RUNNER_TEMP/repro"
+
+      # NEAR reports code_hash as base58(sha256(wasm)); both forms are recorded for comparison with chain
+      - name: Hash wasm
+        working-directory: ${{ runner.temp }}/repro
+        run: |
+          sha256sum secret_shopper.wasm > secret_shopper.wasm.sha256
+          code_hash=$(python3 -c '
+          import hashlib, sys
+          a = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+          d = hashlib.sha256(open("secret_shopper.wasm", "rb").read()).digest()
+          n, s = int.from_bytes(d, "big"), ""
+          while n:
+              n, r = divmod(n, 58)
+              s = a[r] + s
+          print("1" * (len(d) - len(d.lstrip(b"\0"))) + s)
+          ')
+          echo "$code_hash  secret_shopper.wasm" > secret_shopper.wasm.code_hash
+          {
+            echo '### Reproducible vault wasm'
+            echo "commit: \`$GITHUB_SHA\`"
+            echo '```'
+            cat secret_shopper.wasm.sha256
+            echo "code_hash (base58): $code_hash"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload reproducible wasm
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: secret_shopper-reproducible-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/repro/secret_shopper.wasm
+            ${{ runner.temp }}/repro/secret_shopper.wasm.sha256
+            ${{ runner.temp }}/repro/secret_shopper.wasm.code_hash
+          if-no-files-found: error
+          retention-days: 90
