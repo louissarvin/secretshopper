@@ -1,0 +1,153 @@
+PASS bundle names this vault  bundle.shop=shop4.ss-owner-e9c3db.testnet
+info code_hash 5pxQNdWnhTJiaTKs6HrVv4SadLi1tWuACeeYmyaxgHAs (global contract by hash)
+PASS 1 no full-access key on the vault  1 key(s)
+PASS 1 key ed25519:HYnC71oR... scoped to the vault  GasKeyFunctionCall ack,decline,pay
+PASS 0 vault created, given code by hash and initialized in one tx by its parent  5dgatWYdyWeDUm216gMi5CWNiSdtu3xrNML9zXpNCopq
+PASS 0 the code attached at creation is the code the vault runs now  5pxQNdWnhTJiaTKs6HrVv4SadLi1tWuACeeYmyaxgHAs
+PASS 0 the initialized event matches the vault state  owner ss-owner-e9c3db.testnet, version 2.3.0
+PASS 4 slot 0 tlock round opens after expiry, within the grace  round 33877954 in [33877945, 33885144]
+PASS 4 slot 0 ciphertext published in the commit tx
+PASS 4 slot 0 ciphertext sha256 matches chain
+PASS 4 slot 0 tlock opens to the committed preimage
+PASS 2 slot 0 chain reveal matches commitment  Passed
+PASS 2 slot 0 bundle preimage equals chain reveal
+PASS 3 slot 0 invoice_id = sha256(canonical(document))
+PASS 3 slot 0 AI receipt present
+PASS 3 slot 0 receipt bytes match signed text and signer  text true, signer true
+PASS 3 slot 0 receipt signer is the key in the stored model attestation
+info slot 0 receipt assurance: signer matches the key bound in the stored model attestation
+PASS 3 slot 0 receipt_hash = sha256(signed_text)
+PASS 3 slot 0 AI response names the payee
+PASS 5 slot 0 delivered after commit and before expiry  2026-11-11T16:00:00.000Z
+PASS 5 slot 0 decision after delivery  Declined at 2026-11-11T16:21:38.394Z
+PASS 4 slot 1 tlock round opens after expiry, within the grace  round 33877954 in [33877945, 33885144]
+PASS 4 slot 1 ciphertext published in the commit tx
+PASS 4 slot 1 ciphertext sha256 matches chain
+PASS 4 slot 1 tlock opens to the committed preimage
+PASS 2 slot 1 chain reveal matches commitment  Passed
+PASS 2 slot 1 bundle preimage equals chain reveal
+PASS 3 slot 1 invoice_id = sha256(canonical(document))
+PASS 3 slot 1 AI receipt present
+PASS 3 slot 1 receipt bytes match signed text and signer  text true, signer true
+PASS 3 slot 1 receipt signer is the key in the stored model attestation
+info slot 1 receipt assurance: signer matches the key bound in the stored model attestation
+PASS 3 slot 1 receipt_hash = sha256(signed_text)
+PASS 3 slot 1 AI response names the payee
+PASS 5 slot 1 delivered after commit and before expiry  2026-11-11T12:00:00.000Z
+PASS 5 slot 1 decision after delivery  Declined at 2026-11-11T16:14:26.362Z
+PASS 4 slot 2 tlock round opens after expiry, within the grace  round 33877954 in [33877945, 33885144]
+PASS 4 slot 2 ciphertext published in the commit tx
+PASS 4 slot 2 ciphertext sha256 matches chain
+PASS 4 slot 2 tlock opens to the committed preimage
+PASS 2 slot 2 chain reveal matches commitment  Passed
+PASS 2 slot 2 bundle preimage equals chain reveal
+PASS 3 slot 2 invoice_id = sha256(canonical(document))
+PASS 3 slot 2 AI receipt present
+PASS 3 slot 2 receipt bytes match signed text and signer  text true, signer true
+PASS 3 slot 2 receipt signer is the key in the stored model attestation
+info slot 2 receipt assurance: signer matches the key bound in the stored model attestation
+PASS 3 slot 2 receipt_hash = sha256(signed_text)
+PASS 3 slot 2 AI response names the payee
+PASS 5 slot 2 delivered after commit and before expiry  2026-11-11T14:00:00.000Z
+PASS 5 slot 2 decision after delivery  Declined at 2026-11-11T16:20:45.414Z
+PASS 4 slot 3 tlock round opens after expiry, within the grace  round 33885361 in [33885352, 33892551]
+PASS 4 slot 3 ciphertext published in the commit tx
+PASS 4 slot 3 ciphertext sha256 matches chain
+PASS 4 slot 3 tlock opens to the committed preimage
+PASS 2 slot 3 chain reveal matches commitment  Passed
+PASS 2 slot 3 bundle preimage equals chain reveal
+PASS 3 slot 3 invoice_id = sha256(canonical(document))
+PASS 3 slot 3 AI receipt present
+PASS 3 slot 3 receipt bytes match signed text and signer  text true, signer true
+PASS 3 slot 3 receipt signer is the key in the stored model attestation
+info slot 3 receipt assurance: signer matches the key bound in the stored model attestation
+PASS 3 slot 3 receipt_hash = sha256(signed_text)
+PASS 3 slot 3 AI response names the payee
+PASS 5 slot 3 delivered after commit and before expiry  2026-11-11T18:00:00.000Z
+PASS 5 slot 3 decision after delivery  Declined at 2026-11-11T18:02:02.196Z
+PASS 4 slot 4 tlock round opens after expiry, within the grace  round 33885361 in [33885352, 33892551]
+PASS 4 slot 4 ciphertext published in the commit tx
+PASS 4 slot 4 ciphertext sha256 matches chain
+PASS 4 slot 4 tlock opens to the committed preimage
+PASS 2 slot 4 chain reveal matches commitment  Passed
+PASS 2 slot 4 bundle preimage equals chain reveal
+PASS 3 slot 4 invoice_id = sha256(canonical(document))
+PASS 3 slot 4 AI receipt present
+PASS 3 slot 4 receipt bytes match signed text and signer  text true, signer true
+PASS 3 slot 4 receipt signer is the key in the stored model attestation
+info slot 4 receipt assurance: signer matches the key bound in the stored model attestation
+PASS 3 slot 4 receipt_hash = sha256(signed_text)
+PASS 3 slot 4 AI response names the payee
+PASS 5 slot 4 delivered after commit and before expiry  2026-11-11T18:00:00.000Z
+PASS 5 slot 4 decision after delivery  Declined at 2026-11-11T18:01:24.945Z
+PASS 4 slot 5 tlock round opens after expiry, within the grace  round 33885361 in [33885352, 33892551]
+PASS 4 slot 5 ciphertext published in the commit tx
+PASS 4 slot 5 ciphertext sha256 matches chain
+PASS 4 slot 5 tlock opens to the committed preimage
+PASS 2 slot 5 chain reveal matches commitment  Failed
+PASS 2 slot 5 bundle preimage equals chain reveal
+PASS 3 slot 5 invoice_id = sha256(canonical(document))
+PASS 3 slot 5 AI receipt present
+PASS 3 slot 5 receipt bytes match signed text and signer  text true, signer true
+PASS 3 slot 5 receipt signer is the key in the stored model attestation
+info slot 5 receipt assurance: signer matches the key bound in the stored model attestation
+PASS 3 slot 5 receipt_hash = sha256(signed_text)
+PASS 3 slot 5 AI response names the payee
+PASS 5 slot 5 delivered after commit and before expiry  2026-11-11T18:00:00.000Z
+PASS 5 slot 5 decision after delivery  Paid at 2026-11-11T18:00:04.019Z
+PASS 4 slot 6 tlock round opens after expiry, within the grace  round 33893898 in [33893889, 33901088]
+PASS 4 slot 6 ciphertext published in the commit tx
+PASS 4 slot 6 ciphertext sha256 matches chain
+PASS 4 slot 6 tlock opens to the committed preimage
+PASS 2 slot 6 chain reveal matches commitment  Void
+PASS 2 slot 6 bundle preimage equals chain reveal
+PASS 4 slot 7 tlock round opens after expiry, within the grace  round 33893898 in [33893889, 33901088]
+PASS 4 slot 7 ciphertext published in the commit tx
+PASS 4 slot 7 ciphertext sha256 matches chain
+PASS 4 slot 7 tlock opens to the committed preimage
+PASS 2 slot 7 chain reveal matches commitment  Passed
+PASS 2 slot 7 bundle preimage equals chain reveal
+PASS 3 slot 7 invoice_id = sha256(canonical(document))
+PASS 3 slot 7 AI receipt present
+PASS 3 slot 7 receipt bytes match signed text and signer  text true, signer true
+PASS 3 slot 7 receipt signer is the key in the stored model attestation
+info slot 7 receipt assurance: signer matches the key bound in the stored model attestation
+PASS 3 slot 7 receipt_hash = sha256(signed_text)
+PASS 3 slot 7 AI response names the payee
+PASS 5 slot 7 delivered after commit and before expiry  2026-11-12T02:00:00.000Z
+PASS 5 slot 7 decision after delivery  Declined at 2026-11-12T02:01:23.115Z
+PASS 4 slot 8 tlock round opens after expiry, within the grace  round 33893898 in [33893889, 33901088]
+PASS 4 slot 8 ciphertext published in the commit tx
+PASS 4 slot 8 ciphertext sha256 matches chain
+PASS 4 slot 8 tlock opens to the committed preimage
+PASS 2 slot 8 chain reveal matches commitment  Passed
+PASS 2 slot 8 bundle preimage equals chain reveal
+PASS 3 slot 8 invoice_id = sha256(canonical(document))
+PASS 3 slot 8 AI receipt present
+PASS 3 slot 8 receipt bytes match signed text and signer  text true, signer true
+PASS 3 slot 8 receipt signer is the key in the stored model attestation
+info slot 8 receipt assurance: signer matches the key bound in the stored model attestation
+PASS 3 slot 8 receipt_hash = sha256(signed_text)
+PASS 3 slot 8 AI response names the payee
+PASS 5 slot 8 delivered after commit and before expiry  2026-11-12T02:00:00.000Z
+PASS 5 slot 8 decision after delivery  Declined at 2026-11-12T02:00:34.917Z
+PASS 6 batch 0 every test receipt is in the generation log  3 attempts for 3 test(s)
+PASS 6 batch 1 every test receipt is in the generation log  3 attempts for 3 test(s)
+PASS 6 batch 2 every test receipt is in the generation log  2 attempts for 2 test(s)
+PASS 7 stats.committed recomputed from slots  9
+PASS 7 stats.passed recomputed from slots  7
+PASS 7 stats.failed recomputed from slots  1
+PASS 7 stats.failed_contained recomputed from slots  0
+PASS 7 stats.unanswered recomputed from slots  0
+PASS 7 stats.ignored recomputed from slots  0
+PASS 7 stats.misdirected recomputed from slots  0
+PASS 7 stats.void recomputed from slots  1
+PASS 7 stats.invalid recomputed from slots  0
+PASS 7 stats.releases_posted present  7
+PASS 7 stats.acks_matched present  7
+PASS 7 stats.acks_mismatched present  0
+PASS 7 pending + overdue = unrevealed slots
+PASS 7 score_bps = passed / (passed + failed + failed_contained + ignored)  8750
+info chain time 2026-11-12T12:04:32.744Z, drand round 33893903
+
+ALL CHECKS PASSED
