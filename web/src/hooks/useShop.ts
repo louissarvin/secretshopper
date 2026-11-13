@@ -15,7 +15,15 @@ import { ownerApi, publicApi, vendorApi } from '@/lib/api/shop'
 import { activeShop, session } from '@/lib/api/client'
 import { csvObjects } from '@/lib/csv'
 
-const chain = { staleTime: 15_000, refetchInterval: 30_000 }
+// A missing account or contract will not appear on retry; fail fast so the error shows at once
+const chain = {
+  staleTime: 15_000,
+  refetchInterval: 30_000,
+  retry: (n: number, e: any) =>
+    !/UNKNOWN_ACCOUNT|NO_CONTRACT_CODE|CodeDoesNotExist|MethodNotFound/.test(
+      e?.message,
+    ) && n < 3,
+}
 
 // Contract views over RPC
 export const useScorecard = (shopId: string) =>

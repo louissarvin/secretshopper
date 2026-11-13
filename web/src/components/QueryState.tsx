@@ -22,6 +22,10 @@ export function ErrorState({ error, what, retry }: Props) {
       'The API has used its chain reads for this minute. Try again in a minute.'
   else if (e instanceof ApiError && e.status === 429)
     hint = 'Too many requests. Wait a minute and try again.'
+  else if (/UNKNOWN_ACCOUNT/.test(hint))
+    hint = `There is no such account on ${config.network}.`
+  else if (/NO_CONTRACT_CODE|CodeDoesNotExist|MethodNotFound/.test(hint))
+    hint = 'This account is not a Secret Shopper vault.'
   else if (/RPC/.test(hint))
     hint = `${hint} Check VITE_NEAR_RPC_URLS for ${config.network}.`
   return (
