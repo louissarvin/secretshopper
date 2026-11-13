@@ -6,14 +6,14 @@
  *   3. Reads GET /public/blocklist/:accountId.
  *   4. Runs the agent's real tool path (agent/src/tools.ts createRunTool, agent/src/preflight.ts) on a pay or propose
  *      to that payee, with live vault reads and the agent's blocklist lookup. Signing deps throw, so nothing is sent.
- * Writes the transcript to docs/blocklist-<vault>-<date>.log. Exits 0 only if the verdict is block with `blocklisted`.
+ * Writes the transcript to scripts/out/blocklist-<vault>-<date>.log. Exits 0 only if the verdict is block with `blocklisted`.
  *
  * Usage: bun --env-file=../agent/.env blocklist-demo.ts [payee] [evidenceTx]
  * Env: NEAR_NETWORK (testnet), API_URL (default http://localhost:3700). Optional INBOX_URL and INBOX_TOKEN (the agent's,
  *   from agent/.env) for the agent's own lookup; without them the public route stands in, and the log says so.
  * Owner key: ~/.near-credentials/<network>/<owner>.json (never argv).
  */
-import { writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { KeyPair } from 'near-api-js';
 import { NEAR, txUrl } from './lib/net.ts';
@@ -101,7 +101,8 @@ const o = res.output as { verdict?: string; reasons?: { code: string }[] };
 const blocked = o.verdict === 'block' && !!o.reasons?.some((r) => r.code === 'blocklisted') && signed.length === 0;
 out(`\n${blocked ? 'PASS' : 'FAIL'}: verdict ${o.verdict}, blocklisted ${!!o.reasons?.some((r) => r.code === 'blocklisted')}, transactions signed ${signed.length}`);
 
-const file = join(import.meta.dir, '..', 'docs', `blocklist-${shop.split('.')[0]}-${new Date().toISOString().slice(0, 10)}.log`);
+mkdirSync(join(import.meta.dir, 'out'), { recursive: true });
+const file = join(import.meta.dir, 'out', `blocklist-${shop.split('.')[0]}-${new Date().toISOString().slice(0, 10)}.log`);
 writeFileSync(file, lines.join('\n') + '\n');
 console.log(`log written to ${file}`);
 process.exit(blocked ? 0 : 1);

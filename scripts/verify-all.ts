@@ -1,7 +1,7 @@
 // One command for reviewers: `bun run verify` from the repo root. Runs every check that needs no secret
 // and prints a table plus a JSON report (scripts/out/verify-report.json). Exit 0 only if every step passed.
 // Flags: --skip-contract (no Rust toolchain), --skip-demo (no drand access), --record (also write the tracked
-// docs/verify-report.json, only when every step passed with none skipped; a plain run leaves the tree clean).
+// backend/data/verify-report.json, only when every step passed with none skipped; a plain run leaves the tree clean).
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { homedir } from 'node:os';
@@ -114,10 +114,10 @@ writeFileSync(join(import.meta.dir, 'out', 'verify-report.json'), JSON.stringify
 // --record keeps a complete green run as evidence; the API serves it to the web (GET /public/verify-report).
 if (args.has('--record')) {
   if (results.every((r) => r.status === 'pass')) {
-    writeFileSync(join(import.meta.dir, '..', 'docs', 'verify-report.json'), JSON.stringify(report, null, 2) + '\n');
-    console.log('\n--record: wrote docs/verify-report.json');
+    writeFileSync(join(import.meta.dir, '..', 'backend', 'data', 'verify-report.json'), JSON.stringify(report, null, 2) + '\n');
+    console.log('\n--record: wrote backend/data/verify-report.json');
   } else {
-    console.log('\n--record: docs/verify-report.json left unchanged; every step must pass with none skipped');
+    console.log('\n--record: backend/data/verify-report.json left unchanged; every step must pass with none skipped');
   }
 }
 console.log(failed.length === 0 ? `\nVERIFY PASS: ${results.filter((r) => r.status === 'pass').length} steps passed, ${results.filter((r) => r.status === 'skip').length} skipped.` : `\nVERIFY FAIL: ${failed.map((r) => r.step).join(', ')}`);

@@ -10,5 +10,5 @@
   "limitAuc": 0.65,
   "date": "2026-11-11",
   "pass": "yes, narrowly",
-  "note": "Latest B1 blind test run (scripts/b1-blind.ts): the last results row and the pass limits of the B1 write-up b1-blind-2026-11-10.md, copied as the API parsed them on 2026-11-13."
+  "note": "Latest B1 blind test run (scripts/b1-blind.ts), from the B1 blind test report, 2026-11-11 run."
 }

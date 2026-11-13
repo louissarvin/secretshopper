@@ -1,5 +1,5 @@
 /**
- * Attack demo (18 §1.2): a prompt-injected agent tries to pay an attacker and is stopped twice.
+ * Attack demo: a prompt-injected agent tries to pay an attacker and is stopped twice.
  *   Phase A (vault Armed): the injected email asks for more than max_per_payment to a brand-new account.
  *     The compromised agent calls `pay` anyway; the contract rejects it ("amount out of bounds").
  *   Phase B (vault Demoted, after a failed test): the same agent key calls `pay`; the NEAR runtime
@@ -8,7 +8,7 @@
  *
  * Env: NEAR_NETWORK, NEAR_RPC_URL (optional), AGENT_VAULT_ID, AGENT_PRIVATE_KEY,
  *      optional NEARAI_API_KEY_AGENT + AGENT_MODEL to also show what the model itself answers,
- *      ATTACK_LOG (default docs/attack-demo.log). Usage: bun attack-demo.ts [--phase=a|b|all]
+ *      ATTACK_LOG (default scripts/out/attack-demo.log). Usage: bun attack-demo.ts [--phase=a|b|all]
  */
 import { appendFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
@@ -21,7 +21,7 @@ import { toolsFor, type Mode } from '../agent/src/tools.ts';
 
 const VAULT = req('AGENT_VAULT_ID');
 const KEY = req('AGENT_PRIVATE_KEY') as KeyPairString;
-const LOG = resolve(import.meta.dir, '..', process.env.ATTACK_LOG || 'docs/attack-demo.log');
+const LOG = resolve(import.meta.dir, '..', process.env.ATTACK_LOG || 'scripts/out/attack-demo.log');
 const phase = (process.argv.find((a) => a.startsWith('--phase='))?.split('=')[1] ?? 'all').toLowerCase();
 
 mkdirSync(dirname(LOG), { recursive: true });

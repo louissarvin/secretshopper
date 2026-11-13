@@ -1,5 +1,5 @@
 /**
- * Validates the B1 real-world fixtures (16a §5.3) offline: real-intake normaliser, get_vendor shape, payee rules, invoice arithmetic.
+ * Validates the B1 real-world fixtures offline: real-intake normaliser, get_vendor shape, payee rules, invoice arithmetic.
  * Usage: bun b1-validate.ts [corpus.json] [vendors.json]  (defaults: fixtures/b1-real.json, fixtures/b1-vendors.json)
  */
 import { readFileSync } from 'node:fs';
@@ -147,7 +147,7 @@ for (const raw of rawItems) {
 }
 
 for (const [set, n] of Object.entries(EXPECTED)) check(stats[set]?.n === n, `${set}: expected ${n} items, found ${stats[set]?.n ?? 0}`);
-check(stats.R3?.fresh === EXPECTED.R3 / 2, `R3: expected ${EXPECTED.R3 / 2} fresh payees (§5.3), found ${stats.R3?.fresh ?? 0}`);
+check(stats.R3?.fresh === EXPECTED.R3 / 2, `R3: expected ${EXPECTED.R3 / 2} fresh payees, found ${stats.R3?.fresh ?? 0}`);
 for (const v of vendors) {
   check(usedVendors.has(v.get_vendor.id), `master vendor ${v.get_vendor.legalName} is not referenced by any item`);
   check(v.get_vendor.approved_payees.map((p) => p.account_id).join() === v.create_body.approvedPayees.map((p) => p.account).join(), `master vendor ${v.get_vendor.legalName}: create_body payees differ from get_vendor`);

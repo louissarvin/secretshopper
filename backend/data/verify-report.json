@@ -1,5 +1,5 @@
 {
-  "ranAt": "2026-11-12T17:17:05.956Z",
+  "ranAt": "2026-11-12T20:28:20.940Z",
   "platform": "darwin arm64",
   "bun": "1.4.4",
   "passed": true,
@@ -7,19 +7,19 @@
     {
       "step": "contract wasm build (equals shop4 code hash)",
       "status": "pass",
-      "seconds": 4.9,
+      "seconds": 4.4,
       "summary": "SHA-256 checksum bs58: 5pxQNdWnhTJiaTKs6HrVv4SadLi1tWuACeeYmyaxgHAs"
     },
     {
       "step": "contract ft fixture build",
       "status": "pass",
-      "seconds": 1.2,
+      "seconds": 0.7,
       "summary": "built"
     },
     {
       "step": "contract tests (unit, audit, costs, sandbox)",
       "status": "pass",
-      "seconds": 318.3,
+      "seconds": 400.1,
       "summary": "test result: ok. 18 passed; 0 failed; test result: ok. 4 passed; 0 failed; test result: ok. 1 passed; 0 failed; test result: ok. 35 passed; 0 failed; test result: ok. 0 passed; 0 failed"
     },
     {
@@ -31,50 +31,50 @@
     {
       "step": "backend tests",
       "status": "pass",
-      "seconds": 15.5,
-      "summary": "277 pass; 27 skip; 0 fail"
+      "seconds": 17.4,
+      "summary": "334 pass; 49 skip; 0 fail"
     },
     {
       "step": "backend typecheck",
       "status": "pass",
-      "seconds": 4.4,
+      "seconds": 4.3,
       "summary": "clean"
     },
     {
       "step": "backend lint",
       "status": "pass",
-      "seconds": 1.5,
+      "seconds": 1.8,
       "summary": "clean"
     },
     {
       "step": "agent tests",
       "status": "pass",
-      "seconds": 1.3,
-      "summary": "108 pass; 0 fail"
+      "seconds": 1.4,
+      "summary": "109 pass; 0 fail"
     },
     {
       "step": "agent typecheck",
       "status": "pass",
-      "seconds": 2.8,
+      "seconds": 2.5,
       "summary": "clean"
     },
     {
       "step": "scripts typecheck",
       "status": "pass",
-      "seconds": 3.2,
+      "seconds": 4.8,
       "summary": "clean"
     },
     {
       "step": "end-to-end demo (local sandbox)",
       "status": "pass",
-      "seconds": 75.9,
-      "summary": "PASS: all 33 checks held in 74.9s."
+      "seconds": 78.5,
+      "summary": "PASS: all 33 checks held in 77.5s."
     },
     {
       "step": "bring-your-own-agent over MCP (local sandbox)",
       "status": "pass",
-      "seconds": 21.2,
-      "summary": "PASS: all 46 checks held in 20.3s."
+      "seconds": 21,
+      "summary": "PASS: all 46 checks held in 20.0s."
     }
   ]
 }

@@ -1,5 +1,5 @@
 /**
- * Writes docs/evidence/<shop>.json from the API so verifiers do not depend on our server staying up.
+ * Writes scripts/evidence/<shop>.json from the API so verifiers do not depend on our server staying up.
  * Usage: bun evidence-export.ts <shop> [api base url, default http://localhost:3700]
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -17,7 +17,7 @@ if (!res.ok || !body.success) {
   console.error(`export failed: ${res.status} ${body.error?.message ?? ''}`);
   process.exit(1);
 }
-const dir = join(import.meta.dir, '..', 'docs', 'evidence');
+const dir = join(import.meta.dir, 'evidence');
 mkdirSync(dir, { recursive: true });
 const text = JSON.stringify(body.data, null, 2) + '\n';
 const file = join(dir, `${shop}.json`);

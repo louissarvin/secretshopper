@@ -5,11 +5,11 @@
  * Inference: usage of each published NEAR AI receipt in the evidence bundle, priced from GET /v1/model/list.
  * Prints markdown. NEAR is not converted to USD unless --near-usd is given; nothing fetches a NEAR price.
  *
- * Flags: --evidence <file> (default ../docs/evidence/<vault>.json), --near-usd <n>, --out <file>.
+ * Flags: --evidence <file> (default evidence/<vault>.json), --near-usd <n>, --out <file>.
  * Env (optional): NEAR_NETWORK (testnet), NEAR_TX_API_URL, NEAR_ARCHIVAL_RPC_URL, NEARAI_BASE_URL.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
 import { parseArgs } from 'node:util';
 
 const { values, positionals } = parseArgs({
@@ -24,7 +24,7 @@ const TX_API = process.env.NEAR_TX_API_URL || (NETWORK === 'mainnet' ? 'https://
 const RPC = process.env.NEAR_ARCHIVAL_RPC_URL || (NETWORK === 'mainnet' ? 'https://archival-rpc.mainnet.fastnear.com' : 'https://archival-rpc.testnet.fastnear.com');
 const NEARAI = (process.env.NEARAI_BASE_URL || 'https://cloud-api.near.ai/v1').replace(/\/+$/, '');
 const EXPLORER = NETWORK === 'mainnet' ? 'https://nearblocks.io' : 'https://testnet.nearblocks.io';
-const EVIDENCE = values.evidence ?? join(import.meta.dir, '..', 'docs', 'evidence', `${VAULT}.json`);
+const EVIDENCE = values.evidence ?? join(import.meta.dir, 'evidence', `${VAULT}.json`);
 const NEAR_USD = values['near-usd'] === undefined ? null : Number(values['near-usd']);
 if (NEAR_USD !== null && !(NEAR_USD > 0)) throw new Error('--near-usd must be a positive number');
 
@@ -295,7 +295,7 @@ const main = async () => {
   p();
   p('### Lure generation (NEAR AI)');
   p();
-  p(`Usage from the \`usage\` field of each published receipt in \`${EVIDENCE.replace(/^.*\/docs\//, 'docs/')}\`; prices from \`GET ${NEARAI}/model/list\` (${models.length ? 'nano-USD per token at scale 9' : 'unavailable this run'}). Cached prompt tokens at the cache-read price.`);
+  p(`Usage from the \`usage\` field of each published receipt in \`${relative(join(import.meta.dir, '..'), EVIDENCE)}\`; prices from \`GET ${NEARAI}/model/list\` (${models.length ? 'nano-USD per token at scale 9' : 'unavailable this run'}). Cached prompt tokens at the cache-read price.`);
   p();
   row(['Slot', 'Model', 'Prompt', 'Cached', 'Completion', 'Of which reasoning', 'USD']);
   row(['-:', ':-', '-:', '-:', '-:', '-:', '-:']);
