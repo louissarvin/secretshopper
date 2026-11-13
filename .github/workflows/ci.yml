@@ -246,6 +246,13 @@ jobs:
           DIR_TO_DOWNLOAD_BINARY: ${{ runner.temp }}/near-sandbox
         run: bun global-vault.ts
 
+      # scripts import backend modules that need the generated client; generate needs no live database
+      - name: Generate Prisma client
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql://build:build@localhost:5432/build
+        run: bun run db:generate
+
       - name: Typecheck scripts
         working-directory: scripts
         run: bun run typecheck
