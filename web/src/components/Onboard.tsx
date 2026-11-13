@@ -42,8 +42,13 @@ export default function Onboard({ vaultId }: { vaultId: string }) {
   const [amount, setAmount] = useState('')
   const [err, setErr] = useState<string | null>(null)
 
+  // The owner may connect the wallet after this panel appears, so keep checking (a local call, no network)
   useEffect(() => {
-    connectedAccount().then((a) => setMe(a?.accountId ?? null))
+    const check = () =>
+      connectedAccount().then((a) => setMe(a?.accountId ?? null))
+    void check()
+    const id = setInterval(check, 3000)
+    return () => clearInterval(id)
   }, [])
 
   if (!s) return null

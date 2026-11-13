@@ -12,7 +12,7 @@ import type {
 } from '@/lib/near/types'
 import { view, viewAccessKeys } from '@/lib/near/rpc'
 import { ownerApi, publicApi, vendorApi } from '@/lib/api/shop'
-import { session } from '@/lib/api/client'
+import { activeShop, session } from '@/lib/api/client'
 import { csvObjects } from '@/lib/csv'
 
 const chain = { staleTime: 15_000, refetchInterval: 30_000 }
@@ -126,6 +126,9 @@ export const useReleases = (shopId: string, since?: string) =>
     queryFn: () => publicApi.releases(shopId, since),
   })
 
+// Each vault's owner and vendor data is cached under its own key (X-Shop), so one vault's figures never show under another
+const shopKey = () => activeShop.value || 'default'
+
 // Owner API, only with a session
 // 401, 403 and 404 will not change on retry; fail fast so the right state shows at once
 const noAuthRetry = (n: number, e: any) =>
@@ -137,13 +140,13 @@ const owner = () => ({
 })
 export const useCompany = () =>
   useQuery({
-    queryKey: ['owner', 'company'],
+    queryKey: ['owner', 'company', shopKey()],
     queryFn: ownerApi.company,
     ...owner(),
   })
 export const useInvoices = () =>
   useInfiniteQuery({
-    queryKey: ['owner', 'invoices'],
+    queryKey: ['owner', 'invoices', shopKey()],
     queryFn: ({ pageParam }) => ownerApi.invoices(pageParam),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (last) => last.nextCursor ?? undefined,
@@ -151,25 +154,25 @@ export const useInvoices = () =>
   })
 export const useOwnerTests = () =>
   useQuery({
-    queryKey: ['owner', 'tests'],
+    queryKey: ['owner', 'tests', shopKey()],
     queryFn: () => ownerApi.tests(),
     ...owner(),
   })
 export const useProposals = (status?: 'Pending' | 'Approved' | 'Rejected') =>
   useQuery({
-    queryKey: ['owner', 'proposals', status],
+    queryKey: ['owner', 'proposals', status, shopKey()],
     queryFn: () => ownerApi.proposals(status),
     ...owner(),
   })
 export const useVendors = () =>
   useQuery({
-    queryKey: ['owner', 'vendors'],
+    queryKey: ['owner', 'vendors', shopKey()],
     queryFn: ownerApi.vendors,
     ...owner(),
   })
 export const useAlerts = () =>
   useInfiniteQuery({
-    queryKey: ['owner', 'alerts'],
+    queryKey: ['owner', 'alerts', shopKey()],
     queryFn: ({ pageParam }) => ownerApi.alerts(pageParam),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (last) => last.nextBefore ?? undefined,
@@ -185,7 +188,7 @@ const vendor = () => ({
 })
 export const useVendorMe = () =>
   useQuery({
-    queryKey: ['vendor', 'me'],
+    queryKey: ['vendor', 'me', shopKey()],
     queryFn: vendorApi.me,
     refetchInterval: 30_000,
     ...vendor(),
@@ -198,7 +201,7 @@ export const useVendorVaults = () =>
   })
 export const useVendorHistory = (enabled: boolean) =>
   useInfiniteQuery({
-    queryKey: ['vendor', 'history'],
+    queryKey: ['vendor', 'history', shopKey()],
     queryFn: ({ pageParam }) => vendorApi.history(pageParam),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (last) => last.nextBefore ?? undefined,
