@@ -4,7 +4,8 @@ import type { FastifyInstance } from 'fastify';
 
 // Real DB (a disposable test schema). Creates its own rows under a unique shop id and removes only those.
 const DB = process.env.TEST_DATABASE_URL;
-const TOKEN = randomBytes(24).toString('hex');
+// A per-company token: the env token hash is read once per process, so another test file may have fixed it first
+const TOKEN = `ssi_${randomBytes(32).toString('base64url')}`;
 const SHOP = `ss-test-${randomBytes(4).toString('hex')}.testnet`;
 
 describe.skipIf(!DB)('GET /inbox/next', () => {
@@ -25,7 +26,14 @@ describe.skipIf(!DB)('GET /inbox/next', () => {
     prisma = (await import('../src/lib/prisma.ts')).prismaQuery;
     app = await (await import('../src/app.ts')).buildApp();
     const company = await prisma.company.create({
-      data: { ownerUserId: 'test-owner', name: 'Inbox Test Co', shopContractId: SHOP, vendorAccountId: 'vendor.testnet', deployBlock: 1n },
+      data: {
+        ownerUserId: 'test-owner',
+        name: 'Inbox Test Co',
+        shopContractId: SHOP,
+        vendorAccountId: 'vendor.testnet',
+        deployBlock: 1n,
+        inboxTokenHash: createHash('sha256').update(TOKEN).digest('hex'),
+      },
     });
     companyId = company.id;
     const past = new Date(Date.now() - 60_000);
