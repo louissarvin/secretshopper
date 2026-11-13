@@ -36,7 +36,7 @@ export const buildApp = async (opts: { onRoute?: (route: RouteOptions) => void }
   await app.register(FastifyRateLimit, { global: true, max: 120, timeWindow: '1 minute' });
   await app.register(FastifyCors, {
     origin: CORS_ORIGINS,
-    methods: ['GET', 'POST', 'PUT'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Shop'], // X-Shop selects the vault on owner and vendor routes
   });
 

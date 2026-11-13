@@ -26,6 +26,7 @@ describe('readOnlyAllows', () => {
     for (const [m, r] of [
       ['POST', '/auth/nonce'],
       ['POST', '/company/'],
+      ['PATCH', '/company/'],
       ['GET', '/company/me'],
       ['PUT', '/vendors/:id'],
       ['POST', '/invoices/'],
@@ -97,6 +98,7 @@ describe('buildApp with HOSTED_READONLY=1', () => {
       ['POST', '/auth/nonce'],
       ['POST', '/auth/verify'],
       ['POST', '/company'],
+      ['PATCH', '/company'],
       ['GET', '/company/me'],
       ['GET', '/company/alerts'],
       ['GET', '/vendors'],
