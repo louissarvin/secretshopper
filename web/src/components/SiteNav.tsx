@@ -3,21 +3,17 @@ import { useEffect, useRef, useState } from 'react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { config } from '@/config'
 
+// A file, not inline paths: the traced mark is 31 KB and stays out of the JS bundle
 export function Mark() {
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
-      <rect
-        x="1"
-        y="1"
-        width="18"
-        height="18"
-        rx="4"
-        fill="none"
-        stroke="#EBEAE6"
-        strokeWidth="1.8"
-      />
-      <rect x="4.5" y="8.2" width="11" height="3.6" fill="#3A4CFF" />
-    </svg>
+    <img
+      className="mark-img"
+      src="/logo.svg"
+      width="34"
+      height="34"
+      alt=""
+      decoding="async"
+    />
   )
 }
 
