@@ -2,6 +2,7 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import DecryptedText from '@/components/elements/DecryptedText'
 import { EmptyState, ErrorState, Skel } from '@/components/QueryState'
+import TesterLine from '@/components/TesterLine'
 import { useOwnerTests } from '@/hooks/useShop'
 import { useNow } from '@/hooks/useMotion'
 import { ago, clock, short } from '@/utils/near'
@@ -64,6 +65,7 @@ function Tests() {
           <span>Tests</span>
         </span>
       </h1>
+      <TesterLine vault={vault} />
       <div className="toolbar">
         <span className="label">
           Sealed until their timelock opens{' '}

@@ -13,7 +13,7 @@ import { config } from '@/config'
 import { short, yoctoToNear } from '@/utils/near'
 
 // Plain words for the API's tester states and refusals (GET /public/tester in backend/API.md)
-const STATE_TEXT: Record<string, string> = {
+export const STATE_TEXT: Record<string, string> = {
   provisioning:
     'The tester is preparing this vault’s key. It takes up to a minute.',
   key_missing: 'Add the tester key below.',
