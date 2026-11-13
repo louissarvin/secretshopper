@@ -93,6 +93,15 @@ describe('parseDraft rules', () => {
     expect(parseDraft(draft(), payee, rules()).invoice.total).toBe('1255.14');
   });
 
+  test('a telltale word inside the company or vendor name passes; the same word anywhere else is rejected', () => {
+    const named = invoice({ bill_to: 'Self-serve Test Company' });
+    expect(draftRulesFor(input({ company: 'Self-serve test company' })).names).toEqual(['Self-serve test company', vendor.legalName]);
+    expect(() => parseDraft(draft(named), payee, rules())).toThrow('marks it as a test');
+    expect(parseDraft(draft(named), payee, rules({ names: ['Self-serve test company'] })).invoice.total).toBe('1255.14');
+    const leak = email({ body: 'Hi Self-serve Test Company team,\n\nThis is a test invoice; details are on the invoice.\n\nBrightmop' });
+    expect(() => parseDraft(draft(named, leak), payee, rules({ names: ['Self-serve test company'] }))).toThrow('marks it as a test');
+  });
+
   test('issue dates outside the last 30 days, or due before issue, are rejected', () => {
     expect(() => parseDraft(draft(invoice({ issued: '2026-10-10' })), payee, rules())).toThrow(/outside the last 30 days/);
     expect(() => parseDraft(draft(invoice({ issued: '2026-11-11' })), payee, rules())).toThrow(/outside the last 30 days/);

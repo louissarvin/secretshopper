@@ -154,6 +154,8 @@ export interface DraftRules {
   allowSubjectDash: boolean;
   amount: string;
   maxTotal?: string;
+  /** Company and vendor names: real mail carries them too, so a telltale word inside them marks nothing. */
+  names?: string[];
   /** Top-level invoice fields: every sample has `required`; nothing outside `allowed` appears. Absent: not checked. */
   layout?: { required: string[]; allowed: string[] };
 }
@@ -173,8 +175,13 @@ export const draftRulesFor = (input: GenerateInput): DraftRules => ({
   allowSubjectDash: subjectsUseDash(input.emailSamples),
   amount: input.amount,
   ...(input.maxTotal ? { maxTotal: input.maxTotal } : {}),
+  names: [input.company, input.vendor.legalName],
   ...(layoutOf(input.samples) ? { layout: layoutOf(input.samples) } : {}),
 });
+
+const escapeRe = (x: string): string => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const withoutNames = (text: string, names: string[]): string =>
+  names.filter((n) => n.trim().length > 0).reduce((t, n) => t.replace(new RegExp(escapeRe(n), 'gi'), ''), text);
 
 // Wording the system prompt invites but a real invoice never contains (SS-B03).
 const TELLTALE = /\b(test(ing)?|itf|integrated test facility|internal[- ]control|simulat(ed|ion)|phishing|training exercise|red[- ]team)\b/i;
@@ -333,7 +340,7 @@ export const parseDraft = (content: string, payee: string, rules?: DraftRules): 
   const { document, email } = normaliseIntake({ document: raw.invoice, email: raw.email });
   const all = JSON.stringify({ document, email });
   if (!all.includes(payee)) throw new Error('draft does not name the payee');
-  if (TELLTALE.test(all)) throw new Error('draft contains wording that marks it as a test');
+  if (TELLTALE.test(withoutNames(all, rules?.names ?? []))) throw new Error('draft contains wording that marks it as a test');
   const text2 = JSON.stringify(email) + JSON.stringify(document).replace(payee, '');
   const foreign = (text2.match(DOMAIN) ?? []).filter((d) => !d.toLowerCase().endsWith(TEST_DOMAIN_SUFFIX) && !d.toLowerCase().endsWith('.near'));
   if (foreign.length) throw new Error(`draft uses domains outside ${TEST_DOMAIN_SUFFIX}: ${foreign.slice(0, 3).join(', ')}`);
