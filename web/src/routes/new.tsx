@@ -55,6 +55,11 @@ const failureOf = (outcome: any): string | null => {
     : null
 }
 
+// Rounded up, so typing the shown minimum always passes
+const STEP = 10n ** 20n
+const minNear = (y: string) =>
+  yoctoToNear(String(((BigInt(y) + STEP - 1n) / STEP) * STEP), 4)
+
 // Notes use `code` spans; render them without trusting any markup.
 const withCode = (n: string) =>
   n.split('`').map((part, i) => (i % 2 ? <code key={i}>{part}</code> : part))
@@ -92,7 +97,7 @@ function Template() {
         <dt>token</dt>
         <dd>{config.defaultTokenId}</dd>
         <dt>min funding</dt>
-        <dd>{yoctoToNear(d.minFundingYocto, 2)} NEAR</dd>
+        <dd>{minNear(d.minFundingYocto)} NEAR</dd>
         {Object.entries(d.defaultPolicy).map(([k, v]) => (
           <div key={k} style={{ display: 'contents' }}>
             <dt>{k.replace(/_/g, ' ')}</dt>
@@ -347,7 +352,7 @@ function Create({
       v.tokenId = 'Enter a token contract account.'
     const fund = parseUnits(f.fund, 24)
     if (!fund || BigInt(fund) < BigInt(t.data.minFundingYocto))
-      v.fund = `At least ${yoctoToNear(t.data.minFundingYocto, 2)} NEAR.`
+      v.fund = `At least ${minNear(t.data.minFundingYocto)} NEAR.`
     // Caps go to the contract in the token's base units, from its own decimals
     const dec = token.data?.decimals
     const cap = (k: 'dailyCap' | 'perPayment') => {
