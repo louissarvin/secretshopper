@@ -220,19 +220,18 @@ bun run typecheck
 bun run lint
 ```
 
-`bun test` on 2026-11-12 (macOS arm64, Bun 1.4.4), same result with an empty environment:
+`bun test` on 2026-11-13 (macOS arm64, Bun 1.4.4), same result with an empty environment:
 
 ```
- 181 pass
- 17 skip
+ 347 pass
+ 49 skip
  0 fail
- 20677 expect() calls
-Ran 198 tests across 21 files. [13.12s]
+Ran 396 tests across 41 files.
 ```
 
 `typecheck` (`tsc --noEmit`) and `lint` (`eslint . --ext .ts`) print nothing after the command line.
 
-The 17 skips are gated on purpose. The route tests for inbox, releases and company need `TEST_DATABASE_URL`; the live drand and live 1Click tests need `NETWORK_TESTS=1`:
+The 49 skips are gated on purpose. The route and scenario tests on a real database (inbox, releases, company, vendor console, alert health, blocklist, throughput, tester vaults, multi-vault) need `TEST_DATABASE_URL`; the live drand and live 1Click tests need `NETWORK_TESTS=1`:
 
 ```bash
 NETWORK_TESTS=1 bun test test/tlock.test.ts

@@ -18,7 +18,7 @@ Secret Shopper mixes committed fake fraud invoices into the inbox of an AI payme
 ![Bun](https://img.shields.io/badge/Backend-Bun_·_Fastify_5_·_Prisma_7-F9F1E1?logo=bun&logoColor=black)
 ![TanStack Start](https://img.shields.io/badge/Frontend-TanStack_Start-FF4154)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
-![Tests](https://img.shields.io/badge/Tests-58_contract_·_294_backend_·_108_agent_·_79_e2e_checks-2ea44f)
+![Tests](https://img.shields.io/badge/Tests-58_contract_·_378_backend_·_109_agent_·_79_e2e_checks-2ea44f)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 **[Live testnet run](#the-full-lifecycle-step-by-step-with-a-real-example)** · **[Check it yourself](#try-it-in-two-minutes)** · **[Deployed contracts](#live-deployment)** · **[What is real](#what-is-real-vs-simulated)** · **[Claims](#claims-and-how-to-check-them)** · **[For AI reviewers](AGENTS.md)**
@@ -261,8 +261,8 @@ Each folder has its own README for judges and AI reviewers.
 | Path | What |
 |:-|:-|
 | [`contracts/shop`](contracts/shop/README.md) | The vault contract 2.3.0: keys, limits, payments, commit, release, ack, reveal, demotion, views. 18 unit, 35 sandbox, 4 audit regression and 1 cost test |
-| [`backend`](backend/README.md) | Fastify API ([route reference](backend/API.md)), indexer, self-serve vault planner, vendor console, alerts, plus the separate tester process that writes, seals, releases and reveals lures. 294 tests with every gate open. `backend/data/` holds the committed model runs, B1 summary and verify report |
-| [`agent`](agent/README.md) | The AP agent under test: inbox client, verified NEAR AI tool loop, payment preflight, release acks, and the bring-your-own-agent MCP server. No database access. 108 tests |
+| [`backend`](backend/README.md) | Fastify API ([route reference](backend/API.md)), indexer, self-serve vault planner, vendor console, alerts, plus the separate tester process that writes, seals, releases and reveals lures. 378 tests with every gate open. `backend/data/` holds the committed model runs, B1 summary and verify report |
+| [`agent`](agent/README.md) | The AP agent under test: inbox client, verified NEAR AI tool loop, payment preflight, release acks, and the bring-your-own-agent MCP server. No database access. 109 tests |
 | [`scripts`](scripts/README.md) | `bun run demo`, `verify-all`, `verify-evidence`, `create-vault`, attack demo, keeper, pass-rate and B1 measurements; `scripts/evidence/` holds the published evidence bundles |
 | [`web`](web/README.md) | Public scorecard and test pages, owner dashboard, inbox, vendors, approvals |
 | [`AGENTS.md`](AGENTS.md) | Commands, expected output and invariants for AI reviewers |
@@ -279,7 +279,7 @@ Prerequisites: Rust via rustup (`contracts/shop/rust-toolchain.toml` pins 1.97.1
 bun run setup && bun run verify
 ```
 
-See, after about 13 minutes on a clean clone (786 s measured on 2026-11-12): `VERIFY PASS: 12 steps passed, 0 skipped.` It builds the contract, runs the Rust, backend and agent tests, clippy, every typecheck and lint, and the demo, and writes `scripts/out/verify-report.json`. `--skip-contract` and `--skip-demo` exist for machines without Rust or drand.
+See, after about 13 to 20 minutes on a clean clone (786 s on 2026-11-12; 1,215 s on a fresh clone from GitHub on 2026-11-13): `VERIFY PASS: 12 steps passed, 0 skipped.` It builds the contract, runs the Rust, backend and agent tests, clippy, every typecheck and lint, and the demo, and writes `scripts/out/verify-report.json`. `--skip-contract` and `--skip-demo` exist for machines without Rust or drand.
 
 **2. The end-to-end demo on a local sandbox:**
 
@@ -432,7 +432,7 @@ The backend is a convenience, not a trust root. The score, the keys and the mone
 
 ## Claims and how to check them
 
-Contract tests run with `cd contracts/shop && cargo test <name> -- --test-threads=4` after building both wasm files ([Run locally](#run-locally)); backend and agent tests with `bun test <file>` in their folder. `bun run verify` runs every check that needs no secret. Last full run 2026-11-12: 58 contract tests, backend 294 pass with every gate open, agent 108 pass, demo 33 checks, MCP end to end 46 checks.
+Contract tests run with `cd contracts/shop && cargo test <name> -- --test-threads=4` after building both wasm files ([Run locally](#run-locally)); backend and agent tests with `bun test <file>` in their folder. `bun run verify` runs every check that needs no secret. Last full run 2026-11-13: 58 contract tests, backend 378 pass with every gate open, agent 109 pass, demo 33 checks, MCP end to end 46 checks.
 
 | # | Claim | Check | Result or on-chain evidence |
 |:-:|:-|:-|:-|

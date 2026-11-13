@@ -2,7 +2,7 @@
 
 Instructions for AI reviewers and coding agents working in this repository. What the product is and why: [README.md](README.md). Every claim mapped to a test and on-chain evidence: [README.md, Claims](README.md#claims-and-how-to-check-them).
 
-All commands below were last run on 2026-11-12 (macOS arm64, Rust 1.97.1, cargo-near 0.22.0, Bun 1.4.4) and the expected output is copied from those runs; `bun run verify` takes about 13 minutes on a clean clone.
+All commands below were last run on 2026-11-12 and 2026-11-13 (macOS arm64, Rust 1.97.1, cargo-near 0.22.0, Bun 1.4.4) and the expected output is copied from those runs; `bun run verify` takes about 13 to 20 minutes on a clean clone (1,215 s on a fresh GitHub clone on 2026-11-13, most of it the contract sandbox tests).
 
 ## Rules for coding agents
 
@@ -31,7 +31,7 @@ All commands below were last run on 2026-11-12 (macOS arm64, Rust 1.97.1, cargo-
 ### One command
 
 ```bash
-bun run setup && bun run verify   # about 6 minutes; flags: --skip-contract, --skip-demo
+bun run setup && bun run verify   # about 13 to 20 minutes; flags: --skip-contract, --skip-demo
 ```
 
 It runs every check below that needs no secret, prints a table and writes `scripts/out/verify-report.json`. It exits 0 only if every step passed. Expected last line: `VERIFY PASS: 12 steps passed, 0 skipped.` (2026-11-12, recorded with `bun run verify --record` in [backend/data/verify-report.json](backend/data/verify-report.json) and served at `GET /public/verify-report`; a plain run writes only `scripts/out/verify-report.json`, so it leaves the tree clean; the 12th step is the bring-your-own-agent MCP run, `scripts/mcp-e2e.ts`). The JSON report holds each step's status, time and summary line, so an automated reviewer can read the result without parsing the log.
@@ -86,37 +86,33 @@ bun run lint
 Expected `bun test` tail:
 
 ```
- 277 pass
- 27 skip
+ 347 pass
+ 49 skip
  0 fail
-Ran 304 tests across 28 files.
+Ran 396 tests across 41 files.
 ```
 
-The 27 skips are gated on purpose:
+The 49 skips (31 tests and the hooks of their gated suites) are gated on purpose:
 
 | Skipped | Needs |
 |:-|:-|
-| 3 inbox route tests and their 2 hooks | `TEST_DATABASE_URL` (a Postgres URL) |
-| 2 releases route tests and their 2 hooks | `TEST_DATABASE_URL` |
-| 3 company route tests and their 2 hooks | `TEST_DATABASE_URL` |
-| 5 vendor console and alert feed tests and their 2 hooks | `TEST_DATABASE_URL` |
-| 1 blocklist scenario test and its 2 hooks | `TEST_DATABASE_URL` |
-| 2 live drand tests (refuses a far round, opens a near one) | `NETWORK_TESTS=1`: `NETWORK_TESTS=1 bun test test/tlock.test.ts` (8 pass) |
+| Route and scenario tests on a real database: `inbox.route`, `releases.route`, `company.route`, `vendor.console`, `alerts.health`, `blocklist`, `throughput.reputation`, `tester.vaults`, `multivault.route` (28 tests) | `TEST_DATABASE_URL` (a throwaway Postgres URL) |
+| 2 live drand tests (refuses a far round, opens a near one) | `NETWORK_TESTS=1`: `NETWORK_TESTS=1 bun test test/tlock.test.ts` |
 | 1 live 1Click dry quote | `NETWORK_TESTS=1`: `NETWORK_TESTS=1 bun test test/intents.quote.test.ts` |
 
-With both gates open nothing is skipped. Run on 2026-11-12 against a throwaway local Postgres 15 (schema created with `bun run db:push` on an empty database, never on a real one):
+With both gates open nothing is skipped. Run on 2026-11-13 against a throwaway local Postgres (schema created with `bun run db:push` on an empty database, never on a real one); the test preload refuses the development database:
 
 ```bash
 TEST_DATABASE_URL='postgresql://user@127.0.0.1:5432/scratch?schema=public' NETWORK_TESTS=1 bun test
 ```
 
 ```
- 294 pass
+ 378 pass
  0 fail
-Ran 294 tests across 28 files.
+Ran 378 tests across 41 files.
 ```
 
-Three runs in a row on 2026-11-11 gave 190 pass, 0 fail (294 on 2026-11-12 after the receipt view, vendor console, alert, self-serve vault, model-runs, schedule, blocklist and hosted read-only tests and the NF audit fixes). The total is 294, not 304, because the 8 skipped hooks are no longer counted as tests. drand answered in 1.5 to 7 s that day, so the live drand test checks the early refusal on a round days away instead of racing a near one.
+Three full runs in a row on 2026-11-13 passed with 0 fail. The gated total is lower than the ungated one because skipped hooks are no longer counted once they run. drand answered in 1.5 to 7 s on 2026-11-12, so the live drand test checks the early refusal on a round days away instead of racing a near one. CI runs the database tests on every push (`.github/workflows/ci.yml`, Postgres 15 service).
 
 ### Agent: `agent/`
 
@@ -129,9 +125,9 @@ bun run typecheck
 Expected `bun test` tail:
 
 ```
- 108 pass
+ 109 pass
  0 fail
-Ran 108 tests across 12 files.
+Ran 109 tests across 12 files.
 ```
 
 ### Scripts and the end-to-end demo

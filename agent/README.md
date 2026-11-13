@@ -226,10 +226,10 @@ bun --env-file=.env mcp.ts         # MCP server instead, see "Bring your own age
 `bun test` and `typecheck` need no secret and no network. Tail of `bun test` on 2026-11-12:
 
 ```
- 108 pass
+ 109 pass
  0 fail
  474 expect() calls
-Ran 108 tests across 12 files. [1326.00ms]
+Ran 109 tests across 12 files. [1467.00ms]
 ```
 
 Running the agent needs an armed key on the vault: the owner calls `propose_key` and the vendor `accept_key`. Copy `.env.example` to `.env`; `src/config.ts` is authoritative and stops the process at start on a missing or out-of-range value.
