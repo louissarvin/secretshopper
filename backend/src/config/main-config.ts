@@ -116,7 +116,7 @@ export const ALERT_TIMEOUT_MS: number = boundedInt('ALERT_TIMEOUT_MS', 5000, 500
 // Health checks (reveal_overdue, tester_stalled, gas_key_overfunded) run with or without webhooks: four RPC reads per run.
 export const ALERT_HEALTH_SECONDS: number = boundedInt('ALERT_HEALTH_SECONDS', 60, 15, 3600);
 
-// Multi-vault (v2/37). TESTER_MAX_VAULTS, TESTER_MAX_BATCH_SIZE and TESTER_MIN_ALLOWANCE_YOCTO must equal the tester's.
+// Multi-vault (backend/README.md, Multiple vaults). TESTER_MAX_VAULTS, TESTER_MAX_BATCH_SIZE and TESTER_MIN_ALLOWANCE_YOCTO must equal the tester's.
 const boundedYocto = (name: string, fallback: bigint, min: bigint, max: bigint): bigint => {
   const raw = process.env[name];
   if (!raw) return fallback;
@@ -131,6 +131,14 @@ export const TESTER_ALLOWANCE_YOCTO: bigint = boundedYocto('TESTER_ALLOWANCE_YOC
 export const TESTER_MIN_ALLOWANCE_YOCTO: bigint = boundedYocto('TESTER_MIN_ALLOWANCE_YOCTO', YOCTO / 10n, 1n, 100n * YOCTO);
 export const INDEXER_VAULTS_PER_TICK: number = boundedInt('INDEXER_VAULTS_PER_TICK', 4, 0, 100);
 export const INDEXER_SPANS_PER_TICK_OTHER: number = boundedInt('INDEXER_SPANS_PER_TICK_OTHER', 2, 1, 10);
+// Background chain work (indexer, health checks) waits for these budgets, so request-path reads keep headroom
+// on the shared providers (2026-11-13 rate-limit incident). Visits to other vaults happen every Nth indexer tick.
+export const INDEXER_OTHER_EVERY_TICKS: number = boundedInt('INDEXER_OTHER_EVERY_TICKS', 4, 1, 360);
+export const BACKGROUND_RPC_PER_MINUTE: number = boundedInt('BACKGROUND_RPC_PER_MINUTE', 30, 1, 6000);
+export const BACKGROUND_TXAPI_PER_MINUTE: number = boundedInt('BACKGROUND_TXAPI_PER_MINUTE', 30, 1, 6000);
+export const BACKGROUND_CONCURRENCY: number = boundedInt('BACKGROUND_CONCURRENCY', 1, 1, 16);
+// health checks for non-default vaults without testing run every Nth health run (default every 10 min)
+export const ALERT_HEALTH_OTHER_EVERY_RUNS: number = boundedInt('ALERT_HEALTH_OTHER_EVERY_RUNS', 10, 1, 1000);
 // Agents count blocklist entries only from their own vault and these (ADR-6)
 export const BLOCKLIST_TRUSTED_VAULTS: string[] = (process.env.BLOCKLIST_TRUSTED_VAULTS ?? SHOP_CONTRACT_ID)
   .split(',')

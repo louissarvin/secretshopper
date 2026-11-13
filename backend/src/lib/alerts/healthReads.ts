@@ -1,5 +1,5 @@
 import { prismaQuery } from '../prisma.ts';
-import { chainNowMs, rpc } from '../near/client.ts';
+import { chainNowMs, failoverRpc } from '../near/client.ts';
 import { getPolicy, getScorecard, getStatus, nsToDate } from '../near/shop.ts';
 import { releaseAtNs } from '../releases.ts';
 import { createLogger, errFields } from '../../utils/logger.ts';
@@ -40,8 +40,9 @@ const releaseCheck = async (shop: string, tickMinutes: number, nowMs: number) =>
   return releaseStalled({ tickMs: tick.deliverAt.getTime(), posted: !!posted, nowMs, tickMinutes });
 };
 
+// the failover list (NEAR_RPC_URLS): a missing account is not an expected answer here
 const gasKeyBalances = async (shop: string): Promise<bigint[]> => {
-  const { keys } = await rpc.viewAccessKeyList({ accountId: shop, finalityQuery: { finality: 'final' } });
+  const { keys } = await failoverRpc.viewAccessKeyList({ accountId: shop, finalityQuery: { finality: 'final' } });
   return keys.flatMap((k) => {
     const g = (k.access_key.permission as { GasKeyFunctionCall?: { balance?: unknown } }).GasKeyFunctionCall;
     return g && typeof g.balance === 'string' && /^\d{1,40}$/.test(g.balance) ? [BigInt(g.balance)] : [];
@@ -50,14 +51,20 @@ const gasKeyBalances = async (shop: string): Promise<bigint[]> => {
 
 /**
  * Current reading of each health condition for `shop`; undefined where a read failed. `testerEnabled: false` reads
- * tester_stalled as clear: a self-serve vault that never enabled testing has no tester to stall (v2/37 section 7).
+ * tester_stalled as clear: a self-serve vault that never enabled testing has no tester to stall.
  */
-export const readHealth = async (shop: string, tickMinutes: number, o: { testerEnabled?: boolean } = {}): Promise<Partial<Record<HealthKind, bigint>>> => {
+export const readHealth = async (
+  shop: string,
+  tickMinutes: number,
+  o: { testerEnabled?: boolean; chainNowMs?: number; run?: <T>(f: () => Promise<T>) => Promise<T> } = {}
+): Promise<Partial<Record<HealthKind, bigint>>> => {
+  // the worker passes its background budget (`run`) and one chain time per run for every vault
+  const run = o.run ?? (<T,>(f: () => Promise<T>) => f());
   const [scorecard, status, policy, chainNow] = await Promise.all([
-    tryRead('scorecard', () => getScorecard(shop)),
-    tryRead('status', () => getStatus(shop)),
-    tryRead('policy', () => getPolicy(shop)),
-    tryRead('chain time', () => chainNowMs()),
+    tryRead('scorecard', () => run(() => getScorecard(shop))),
+    tryRead('status', () => run(() => getStatus(shop))),
+    tryRead('policy', () => run(() => getPolicy(shop))),
+    o.chainNowMs !== undefined ? o.chainNowMs : tryRead('chain time', () => run(() => chainNowMs())),
   ]);
   const out: Partial<Record<HealthKind, bigint>> = {};
   if (scorecard) out.reveal_overdue = BigInt(scorecard.overdue_unrevealed);
@@ -85,7 +92,7 @@ export const readHealth = async (shop: string, tickMinutes: number, o: { testerE
   if (policy) {
     if (!policy.key_nonces) out.gas_key_overfunded = 0n;
     else {
-      const balances = await tryRead('access keys', () => gasKeyBalances(shop));
+      const balances = await tryRead('access keys', () => run(() => gasKeyBalances(shop)));
       if (balances) out.gas_key_overfunded = overfundedMicroNear(balances, BigInt(policy.key_allowance));
     }
   }

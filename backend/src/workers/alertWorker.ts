@@ -6,8 +6,11 @@ import { createEventRunner, createHealthRunner } from '../lib/alerts/runner.ts';
 import { eventStore, healthStore } from '../lib/alerts/stores.ts';
 import { readHealth } from '../lib/alerts/healthReads.ts';
 import { registry } from '../lib/registry.ts';
+import { backgroundRpc } from '../lib/near/background.ts';
+import { chainNowMs } from '../lib/near/client.ts';
 import { mapLimit } from '../utils/concurrency.ts';
 import {
+  ALERT_HEALTH_OTHER_EVERY_RUNS,
   ALERT_HEALTH_SECONDS,
   ALERT_POLL_SECONDS,
   ALERT_TIMEOUT_MS,
@@ -33,7 +36,7 @@ const send = async (alert: Alert): Promise<void> => {
 };
 
 const ctx = { vault: SHOP_CONTRACT_ID, network: NEAR.network };
-const HEALTH_CONCURRENCY = 2;
+const HEALTH_CONCURRENCY = 1; // reads already wait on the background budget; one vault at a time keeps bursts small
 
 /** Runs `f` every `seconds`, skipping a run while the previous one is still going. */
 const every = (name: string, seconds: number, f: () => Promise<unknown>): (() => void) => {
@@ -81,14 +84,25 @@ export const startAlertWorker = (): { stop: () => void } => {
     }
     return r;
   };
+  let healthRun = 0;
   stops.push(
     every('health', ALERT_HEALTH_SECONDS, async () => {
+      healthRun++;
       const listed = await registry.list();
-      const vaults = listed.some((v) => v.isDefault) ? listed : [{ shop: SHOP_CONTRACT_ID, isDefault: true, testerEnabled: false }, ...listed];
+      const all = listed.some((v) => v.isDefault) ? listed : [{ shop: SHOP_CONTRACT_ID, isDefault: true, testerEnabled: false }, ...listed];
+      // the default vault and tested vaults every run; the rest every ALERT_HEALTH_OTHER_EVERY_RUNS runs
+      const vaults = all.filter((v) => v.isDefault || v.testerEnabled || healthRun % ALERT_HEALTH_OTHER_EVERY_RUNS === 1 || ALERT_HEALTH_OTHER_EVERY_RUNS === 1);
+      let now: number | undefined;
+      try {
+        now = await backgroundRpc.run(() => chainNowMs());
+      } catch (error) {
+        log.warn('chain time unreadable; each vault reads its own', errFields(error));
+      }
       await mapLimit(vaults, HEALTH_CONCURRENCY, async (v) => {
         try {
           // the default vault is tested from env whatever its row says
-          const fired = await runnerFor(v.shop).apply(await readHealth(v.shop, RELEASE_TICK_MINUTES, v.isDefault ? {} : { testerEnabled: v.testerEnabled }));
+          const opts = { chainNowMs: now, run: backgroundRpc.run };
+          const fired = await runnerFor(v.shop).apply(await readHealth(v.shop, RELEASE_TICK_MINUTES, v.isDefault ? opts : { ...opts, testerEnabled: v.testerEnabled }));
           if (fired.length) log.warn('health alert', { shop: v.shop, kinds: fired });
         } catch (error) {
           log.error('health run failed', { shop: v.shop, ...errFields(error) });

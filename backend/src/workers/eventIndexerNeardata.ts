@@ -71,7 +71,7 @@ const indexBlocks = async (): Promise<void> => {
 };
 
 export const startEventIndexerNeardata = (): cron.ScheduledTask => {
-  // default vault only: a multi-vault block scan needs a shared cursor and a contract filter (v2/37 section 5)
+  // default vault only: a multi-vault block scan needs a shared cursor and a contract filter
   log.warn('neardata fallback indexes the default vault only; other registered vaults are not indexed in this mode', { shop: SHOP_CONTRACT_ID });
   log.info('scheduled', { interval: INDEXER_INTERVAL, source: 'neardata', contract: SHOP_CONTRACT_ID });
   const task = cron.schedule(INDEXER_INTERVAL, indexBlocks);

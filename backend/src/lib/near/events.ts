@@ -1,5 +1,6 @@
 import { NEAR, fastnearHeaders } from './client.ts';
 import { createLogger } from '../../utils/logger.ts';
+import { RateLimitedError, retryAfterMs } from './rateLimit.ts';
 
 const log = createLogger('near-events');
 
@@ -53,15 +54,20 @@ const postTxApi = async <T>(path: string, body: unknown, attempts = 4): Promise<
       signal: AbortSignal.timeout(20_000),
     });
     if (res.ok) return (await res.json()) as T;
-    if (!RETRYABLE.has(res.status) || i + 1 >= attempts) throw new Error(`FastNEAR tx API ${path} failed: ${res.status}`);
-    // honour Retry-After (seconds) when sent, else exponential backoff from 1 s
-    const after = Number(res.headers.get('retry-after'));
-    await Bun.sleep(Number.isFinite(after) && after > 0 ? Math.min(after, 30) * 1000 : 1000 * 2 ** i);
+    const after = retryAfterMs(res.headers.get('retry-after'));
+    if (!RETRYABLE.has(res.status) || i + 1 >= attempts) {
+      // a 429 carries Retry-After to the caller, so a background job can back off for at least that long
+      if (res.status === 429) throw new RateLimitedError(`FastNEAR tx API ${path} failed: 429`, after);
+      throw new Error(`FastNEAR tx API ${path} failed: ${res.status}`);
+    }
+    // honour Retry-After when sent (at most 30 s here), else exponential backoff from 1 s
+    await Bun.sleep(after !== null ? Math.min(after, 30_000) : 1000 * 2 ** i);
   }
 };
 
 // Tx hashes where the contract received a receipt, in [from, to) by tx block height.
-export const listContractTxHashes = async (contractId: string, from: number, to: number): Promise<string[]> => {
+// `attempts: 1` (background indexer): a 429 is thrown at once with its Retry-After instead of sleeping in the tick.
+export const listContractTxHashes = async (contractId: string, from: number, to: number, attempts = 4): Promise<string[]> => {
   const hashes = new Set<string>();
   let resumeToken: string | undefined;
   do {
@@ -73,19 +79,17 @@ export const listContractTxHashes = async (contractId: string, from: number, to:
       desc: false,
       limit: 200,
       ...(resumeToken ? { resume_token: resumeToken } : {}),
-    });
+    }, attempts);
     page.account_txs.forEach((row) => hashes.add(row.transaction_hash));
     resumeToken = page.account_txs.length === 200 ? page.resume_token : undefined;
   } while (resumeToken);
   return [...hashes];
 };
 
-export const fetchTransactions = async (hashes: string[]): Promise<TxApiTransaction[]> => {
+export const fetchTransactions = async (hashes: string[], attempts = 4): Promise<TxApiTransaction[]> => {
   const out: TxApiTransaction[] = [];
   for (let i = 0; i < hashes.length; i += 20) {
-    const { transactions } = await postTxApi<{ transactions: TxApiTransaction[] }>('/v0/transactions', {
-      tx_hashes: hashes.slice(i, i + 20),
-    });
+    const { transactions } = await postTxApi<{ transactions: TxApiTransaction[] }>('/v0/transactions', { tx_hashes: hashes.slice(i, i + 20) }, attempts);
     out.push(...transactions);
   }
   return out;

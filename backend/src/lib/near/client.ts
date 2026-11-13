@@ -12,7 +12,7 @@ export const fastnearHeaders = (url: string): Record<string, string> | undefined
 const makeRpc = (url: string): JsonRpcProvider =>
   new JsonRpcProvider({ url, headers: fastnearHeaders(url) }, { retries: 3, backoff: 2, wait: 500 });
 
-// Single provider: "key/account not found" must surface as an error, not trigger failover (14 §10.2).
+// Single provider: "key/account not found" must surface as an error, not trigger failover.
 export const rpc: JsonRpcProvider = makeRpc(NEAR.rpcUrl);
 export const failoverRpc: FailoverRpcProvider = new FailoverRpcProvider(NEAR.rpcUrls.map(makeRpc));
 
