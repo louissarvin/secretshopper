@@ -13,6 +13,7 @@ import {
 } from '@/hooks/useActiveVault'
 import { ErrorState, Skel } from '@/components/QueryState'
 import { useFeedback } from '@/components/Feedback'
+import { useVaultFunds } from '@/components/VaultNear'
 import { SourcesToggle } from '@/components/SiteNav'
 import { useNow } from '@/hooks/useMotion'
 import { useSession } from '@/hooks/useSession'
@@ -36,6 +37,7 @@ import {
   utcStamp,
 } from '@/utils/near'
 import { ONE_YOCTO } from '@/lib/near/wallet'
+import { topUpNear } from '@/lib/vaultFunds'
 import { config } from '@/config'
 
 export const Route = createFileRoute('/vendor')({
@@ -142,6 +144,9 @@ function ArmPanel({ me }: { me: VendorMe }) {
       ? { publicKey: chainKey }
       : null
   const proposedAt = toMs(me.pendingKeyProposedAt)
+  const funds = useVaultFunds(vault)
+  // accept_key would fail on chain: the gas key needs free NEAR the owner has not added yet
+  const unfunded = !!funds && funds.armShortfall > 0n
   return (
     <div className="panel" style={{ display: 'grid', gap: 18 }}>
       <div className="ptop">
@@ -213,6 +218,13 @@ function ArmPanel({ me }: { me: VendorMe }) {
           ) : (
             <Skel h={80} />
           )}
+          {unfunded && (
+            <p className="sheet-err" role="alert">
+              The vault cannot fund this gas key yet: it needs{' '}
+              {topUpNear(funds.armShortfall)} NEAR more. Ask {me.ownerId} to top
+              it up in the owner app, then accept.
+            </p>
+          )}
           <label className="check">
             <input
               type="checkbox"
@@ -228,7 +240,7 @@ function ArmPanel({ me }: { me: VendorMe }) {
             <button
               className="btn solid magnet"
               type="button"
-              disabled={!mine}
+              disabled={!mine || unfunded}
               onClick={() =>
                 confirmCall({
                   title: 'Accept agent key',

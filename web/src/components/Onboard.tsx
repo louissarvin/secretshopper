@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import CopyCmd from '@/components/CopyCmd'
 import TesterSetup from '@/components/TesterSetup'
+import VaultNear from '@/components/VaultNear'
 import { useFeedback } from '@/components/Feedback'
 import { usePayees, useStatus, useToken } from '@/hooks/useShop'
 import { view } from '@/lib/near/rpc'
@@ -241,6 +242,12 @@ export default function Onboard({ vaultId }: { vaultId: string }) {
           )}
         </>
       )}
+      {!armed && (
+        <div style={{ display: 'grid', gap: 8 }}>
+          <span className="label">Vault NEAR</span>
+          <VaultNear vault={vaultId} />
+        </div>
+      )}
       {pending &&
         !armed &&
         isAccountId(s.vendor_id) &&
@@ -259,8 +266,7 @@ export default function Onboard({ vaultId }: { vaultId: string }) {
               ].join('\n')}
             />
             <small className="dimt">
-              The vendor checks the key is its agent's before accepting. A
-              gas-key vault needs free NEAR for the key's allowance.
+              The vendor checks the key is its agent's before accepting.
             </small>
           </div>
         )}
