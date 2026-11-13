@@ -3,6 +3,7 @@ import './dotenv.ts';
 import type cron from 'node-cron';
 import { APP_PORT, APP_HOST, INDEXER_SOURCE, NEAR, SHOP_CONTRACT_ID } from './src/config/main-config.ts';
 import { buildApp } from './src/app.ts';
+import { hostedReadOnly } from './src/config/hosted.ts';
 import { prismaQuery } from './src/lib/prisma.ts';
 import { createLogger, errFields } from './src/utils/logger.ts';
 import { startErrorLogCleanupWorker } from './src/workers/errorLogCleanup.ts';
@@ -18,13 +19,17 @@ const start = async (): Promise<void> => {
   const tasks: cron.ScheduledTask[] = [];
   let alerts: ReturnType<typeof startAlertWorker> | null = null;
   try {
-    tasks.push(startErrorLogCleanupWorker());
-    tasks.push(INDEXER_SOURCE === 'neardata' ? startEventIndexerNeardata() : startNearEventIndexer());
-    tasks.push(startShopProjectorWorker());
-    alerts = startAlertWorker();
+    const readOnly = hostedReadOnly();
+    // The hosted snapshot's database role can only SELECT, so the writing workers stay off there.
+    if (!readOnly) {
+      tasks.push(startErrorLogCleanupWorker());
+      tasks.push(INDEXER_SOURCE === 'neardata' ? startEventIndexerNeardata() : startNearEventIndexer());
+      tasks.push(startShopProjectorWorker());
+      alerts = startAlertWorker();
+    }
 
     await app.listen({ port: APP_PORT, host: APP_HOST });
-    log.info('started', { port: APP_PORT, network: NEAR.network, shop: SHOP_CONTRACT_ID, indexer: INDEXER_SOURCE });
+    log.info('started', { port: APP_PORT, network: NEAR.network, shop: SHOP_CONTRACT_ID, indexer: readOnly ? null : INDEXER_SOURCE, readOnly });
   } catch (error) {
     log.error('failed to start', errFields(error));
     process.exit(1);
