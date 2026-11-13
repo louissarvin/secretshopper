@@ -15,9 +15,9 @@ const config = defineConfig(({ command }) => ({
       routeRules: {
         '/**': {
           headers: {
-            'Content-Security-Policy':
-              "frame-ancestors 'none'; object-src 'none'; base-uri 'none'",
-            'X-Frame-Options': 'DENY',
+            // The dev server allows same-origin frames for /devices; builds deny every frame
+            'Content-Security-Policy': `frame-ancestors ${command === 'serve' ? "'self'" : "'none'"}; object-src 'none'; base-uri 'none'`,
+            'X-Frame-Options': command === 'serve' ? 'SAMEORIGIN' : 'DENY',
             'X-Content-Type-Options': 'nosniff',
             'Referrer-Policy': 'no-referrer',
             'Strict-Transport-Security': 'max-age=63072000; includeSubDomains',
