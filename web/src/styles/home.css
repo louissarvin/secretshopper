@@ -1619,41 +1619,83 @@
 .home .start {
   position: relative;
   z-index: 1;
-  padding-block: clamp(90px, 11vw, 150px);
-  overflow: clip;
+  padding-block: 0 clamp(90px, 11vw, 150px);
 }
-.home .st-grid {
+.home .st-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
   align-items: center;
-  row-gap: 48px;
+  gap: 40px clamp(24px, 4vw, 64px);
+  padding: clamp(32px, 5vw, 72px);
+  border-radius: clamp(24px, 3vw, 36px);
+  background: var(--cobalt);
+  color: var(--paper);
+  overflow: clip;
+  isolation: isolate;
+}
+/* a faint grid behind the card, like the vault's ledger paper */
+.home .st-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(
+      color-mix(in srgb, var(--paper) 7%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--paper) 7%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse at 75% 40%, #000 0%, transparent 70%);
+}
+.home .st-card .label {
+  color: var(--paper);
+  opacity: 0.85;
 }
 .home .st-l {
-  grid-column: 1 / span 7;
   display: grid;
-  gap: 24px;
+  gap: 22px;
   justify-items: start;
   min-width: 0;
 }
+.home .st-l {
+  container-type: inline-size;
+}
 .home .st-l h2 {
-  font-size: clamp(44px, 7vw, 108px);
+  /* four set lines; "fraudster" is about 7.9em wide, so 12.4cqi keeps it inside the column */
+  font-size: clamp(30px, 12.4cqi, 92px);
+  line-height: 0.86;
+}
+.home .st-h .mline > span {
+  white-space: nowrap;
+}
+.home .st-l h2 .dimc {
+  opacity: 0.7;
 }
 .home .st-lead {
-  font-size: clamp(17px, 1.4vw, 20px);
+  font-size: clamp(16px, 1.3vw, 19px);
   line-height: 1.5;
-  color: var(--dim-ink);
+  text-wrap: pretty;
+  opacity: 0.9;
   max-width: 46ch;
 }
 .home .st-acts {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 14px 24px;
+  gap: 12px 24px;
   margin-top: 4px;
 }
 .home .st-link {
   font-size: 15px;
-  color: var(--ink);
+  color: var(--paper);
   text-decoration: underline;
-  text-decoration-color: var(--line-ink);
+  text-decoration-color: color-mix(in srgb, var(--paper) 45%, transparent);
   text-underline-offset: 4px;
   min-height: 44px;
   display: inline-flex;
@@ -1661,23 +1703,57 @@
   transition: text-decoration-color 0.2s;
 }
 .home .st-link:hover {
-  text-decoration-color: var(--cobalt);
+  text-decoration-color: var(--paper);
 }
-.home .st-r {
-  grid-column: 9 / span 4;
-  justify-self: end;
+.home .st-mark {
+  justify-self: center;
+  width: min(380px, 100%);
+  aspect-ratio: 1;
+  perspective: 900px;
 }
-.home .st-r img {
+.home .st-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+.home .st-stage i {
+  position: absolute;
+  inset: 0;
   display: block;
-  width: min(360px, 100%);
-  height: auto;
+}
+.home .st-stage .ring {
+  inset: 6%;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--paper) 35%, transparent);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--paper) 10%, transparent),
+    transparent 65%
+  );
+  transform: translateZ(-90px);
+}
+.home .st-stage .shade,
+.home .st-stage .logo {
+  -webkit-mask: url('/logo.svg') center / contain no-repeat;
+  mask: url('/logo.svg') center / contain no-repeat;
+}
+.home .st-stage .shade {
+  background: var(--ink);
+  opacity: 0.35;
+  transform: translate3d(14px, 18px, -30px);
+  filter: blur(6px);
+}
+.home .st-stage .logo {
+  background: var(--paper);
+  transform: translateZ(50px);
 }
 .home .st-facts {
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 0;
-  border-top: 1px solid var(--line-ink);
+  border-top: 1px solid color-mix(in srgb, var(--paper) 25%, transparent);
 }
 .home .st-facts div {
   display: grid;
@@ -1687,10 +1763,10 @@
 }
 .home .st-facts div + div {
   padding-left: 24px;
-  border-left: 1px solid var(--line-ink);
+  border-left: 1px solid color-mix(in srgb, var(--paper) 25%, transparent);
 }
 .home .st-facts dt {
-  font-size: clamp(28px, 2.6vw, 38px);
+  font-size: clamp(26px, 2.4vw, 36px);
   font-weight: 800;
   font-variation-settings: 'wdth' 115;
   font-variant-numeric: tabular-nums;
@@ -1699,15 +1775,16 @@
 .home .st-facts dd {
   margin: 0;
   font-size: 14.5px;
-  color: var(--dim-ink);
+  opacity: 0.85;
   max-width: 30ch;
 }
 @media (max-width: 900px) {
-  .home .st-l {
-    grid-column: 1 / -1;
+  .home .st-card {
+    grid-template-columns: minmax(0, 1fr);
   }
-  .home .st-r {
-    display: none;
+  .home .st-mark {
+    width: min(240px, 70%);
+    order: -1;
   }
 }
 @media (max-width: 640px) {
@@ -1716,8 +1793,8 @@
   }
   .home .st-facts div,
   .home .st-facts div + div {
-    padding: 18px 0;
+    padding: 16px 0;
     border-left: 0;
-    border-bottom: 1px solid var(--line-ink);
+    border-bottom: 1px solid color-mix(in srgb, var(--paper) 25%, transparent);
   }
 }
