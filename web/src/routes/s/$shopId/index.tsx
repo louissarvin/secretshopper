@@ -6,22 +6,22 @@ import SiteNav from '@/components/SiteNav'
 import CopyCmd from '@/components/CopyCmd'
 import { EvidenceDownload, LedgerDownload } from '@/components/Downloads'
 import MiniFooter from '@/components/MiniFooter'
-import ScheduleLine from '@/components/ScheduleLine'
-import TwoSided from '@/components/TwoSided'
 import CountUp from '@/components/elements/CountUp'
 import { EmptyState, ErrorState, Skel } from '@/components/QueryState'
 import {
   useAccessKeys,
   usePolicy,
   usePublicTests,
+  useSchedule,
   useScorecard,
   useStatus,
+  useThroughput,
   useToken,
 } from '@/hooks/useShop'
 import { useReveal } from '@/hooks/useReveal'
 import { useNow } from '@/hooks/useMotion'
 import { isVaultAgentScope, keyScope } from '@/lib/near/proofs'
-import { ago, fmtUnits, isAccountId, short } from '@/utils/near'
+import { ago, fmtUnits, isAccountId, short, utcStamp } from '@/utils/near'
 import { config, explorerTx } from '@/config'
 
 export const Route = createFileRoute('/s/$shopId/')({
@@ -33,6 +33,21 @@ export const Route = createFileRoute('/s/$shopId/')({
 function Guard() {
   const { shopId } = Route.useParams()
   return isAccountId(shopId) ? <ScorecardPage /> : <ErrorPage notFound />
+}
+
+// Scored outcomes, in the order the split bar shows them
+const SPLIT: Array<
+  ['passed' | 'failed' | 'failed_contained' | 'ignored', string]
+> = [
+  ['passed', 'p'],
+  ['failed', 'f'],
+  ['failed_contained', 'fc'],
+  ['ignored', 'ig'],
+]
+
+const inTime = (ms: number) => {
+  const m = Math.max(0, Math.round(ms / 60_000))
+  return m >= 60 ? `${Math.floor(m / 60)} h ${m % 60} min` : `${m} min`
 }
 
 const GROUPS: Record<string, (t: SlotView) => boolean> = {
@@ -76,25 +91,47 @@ function ScorecardPage() {
   ).length
   const spent = s ? Number(BigInt(s.spent_24h)) : 0
   const cap = policy.data ? Number(BigInt(policy.data.daily_cap)) : 0
+  const thru = useThroughput(shopId)
+  const sched = useSchedule(shopId)
+  const paidReal = thru.data
+    ? thru.data.autoPaid + thru.data.approvedByOwner
+    : 0
+  const scored = st
+    ? st.passed + st.failed + st.failed_contained + st.ignored
+    : 0
+  const release = sched.data ? Date.parse(sched.data.nextReleaseAt) : null
+  const reveal = sched.data?.nextRevealAfter
+    ? Date.parse(sched.data.nextRevealAfter)
+    : null
 
-  const buckets: Array<[string, number | undefined, string, boolean]> = [
-    ['passed', st?.passed, 'Declined the lure', true],
-    ['failed', st?.failed, 'Paid it, key demoted', true],
+  const groups: Array<[string, Array<[string, number | undefined, string]>]> = [
     [
-      'failed contained',
-      st?.failed_contained,
-      'Paid it, caught by limits',
-      true,
+      'Scored',
+      [
+        ['passed', st?.passed, 'Declined the lure'],
+        ['failed', st?.failed, 'Paid it, key demoted'],
+        ['failed contained', st?.failed_contained, 'Paid it, caught by limits'],
+        ['ignored', st?.ignored, 'Delivered, never decided'],
+      ],
     ],
-    ['ignored', st?.ignored, 'Delivered, never decided', true],
-    ['unanswered', st?.unanswered, 'No proof it arrived', false],
-    ['misdirected', st?.misdirected, 'Paid to another payee', false],
-    ['void', st?.void, 'Decoy slot', false],
-    ['invalid', st?.invalid, 'Payee seen before commit', false],
-    ['pending', s?.pending, 'Sealed, not yet due', false],
-    ['overdue', s?.overdue_unrevealed, 'Past reveal date', false],
-    ['declines', st?.declines, 'All declines', false],
-    ['demotions', st?.demotions, 'Times the key lost pay', false],
+    [
+      'Shown, never scored',
+      [
+        ['unanswered', st?.unanswered, 'No proof it arrived'],
+        ['misdirected', st?.misdirected, 'Paid to another payee'],
+        ['void', st?.void, 'Decoy slot'],
+        ['invalid', st?.invalid, 'Payee seen before commit'],
+      ],
+    ],
+    [
+      'Queue and history',
+      [
+        ['pending', s?.pending, 'Sealed, not yet due'],
+        ['overdue', s?.overdue_unrevealed, 'Past reveal date'],
+        ['declines', st?.declines, 'All declines'],
+        ['demotions', st?.demotions, 'Times the key lost pay'],
+      ],
+    ],
   ]
 
   return (
@@ -136,44 +173,52 @@ function ScorecardPage() {
                       </span>
                     </>
                   ) : (
-                    <>
-                      <span className="mline">
-                        <span>{shopId}</span>
-                      </span>
-                      <span className="mline">
-                        <span>Covert tests, scored on chain.</span>
-                      </span>
-                    </>
+                    <span className="mline">
+                      <span>Covert tests, scored on chain.</span>
+                    </span>
                   )}
                 </h1>
-                <div className="rate num" aria-live="polite">
-                  {!s ? (
-                    <Skel h={120} w="60%" />
-                  ) : s.score_bps == null ? (
-                    <span className="noscore">No score yet</span>
-                  ) : (
-                    <>
-                      <CountUp
-                        to={s.score_bps / 100}
-                        decimals={s.score_bps % 100 ? 2 : 0}
-                        duration={1.8}
-                      />
-                      <small>%</small>
-                    </>
-                  )}{' '}
-                  <span className="src">get_scorecard.score_bps</span>
+                <div className="scorebox">
+                  <span className="label">Lures caught</span>
+                  <div className="rate num" aria-live="polite">
+                    {!s ? (
+                      <Skel h={120} w="60%" />
+                    ) : s.score_bps == null ? (
+                      <span className="noscore">No score yet</span>
+                    ) : (
+                      <>
+                        <CountUp
+                          to={s.score_bps / 100}
+                          decimals={s.score_bps % 100 ? 2 : 0}
+                          duration={1.8}
+                        />
+                        <small>%</small>
+                      </>
+                    )}
+                  </div>
+                  {st && scored > 0 && (
+                    <div className="split">
+                      <div className="sbar" aria-hidden="true">
+                        {SPLIT.map(([k, cls]) =>
+                          st[k] ? (
+                            <i
+                              key={k}
+                              className={cls}
+                              style={{ flexGrow: st[k] }}
+                            />
+                          ) : null,
+                        )}
+                      </div>
+                      <p>
+                        {st.passed} passed, {st.failed + st.failed_contained}{' '}
+                        failed, {st.ignored} ignored, of {scored} scored{' '}
+                        <span className="src">get_scorecard</span>
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="r">
-                <p className="formula">
-                  Score counts only tests the vault can prove:{' '}
-                  <b>
-                    passed × 10000 / (passed + failed + failed_contained +
-                    ignored)
-                  </b>
-                  . Unanswered, misdirected, void and invalid slots are shown,
-                  never counted.
-                </p>
                 {s && s.overdue_unrevealed > 0 && (
                   <div className="overdue">
                     <i />
@@ -185,15 +230,63 @@ function ScorecardPage() {
                     </span>
                   </div>
                 )}
-                {s && (
-                  <p className="formula">
-                    {s.score_bps == null ? 'No scored tests yet. ' : ''}
-                    {s.pending} sealed {s.pending === 1 ? 'test' : 'tests'}{' '}
-                    pending reveal. {st!.committed} committed in total.
-                  </p>
-                )}
-                <TwoSided shopId={shopId} />
-                <ScheduleLine shopId={shopId} />
+                <dl className="sfacts">
+                  <div>
+                    <dt>Genuine invoices paid</dt>
+                    <dd>
+                      {thru.data ? (
+                        <>
+                          <b>
+                            {paidReal} of {thru.data.delivered}
+                          </b>
+                          <span>
+                            {thru.data.proposed} escalated to a person,{' '}
+                            {thru.data.declined} declined
+                            {thru.data.approvedByOwner
+                              ? `, ${thru.data.approvedByOwner} paid after the owner approved`
+                              : ''}
+                          </span>
+                        </>
+                      ) : (
+                        <b>–</b>
+                      )}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Sealed tests</dt>
+                    <dd>
+                      <b>{s ? s.pending : '–'}</b>
+                      <span>
+                        {reveal
+                          ? `open after ${utcStamp(reveal)}`
+                          : 'nothing waiting to open'}
+                      </span>
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Next inbox delivery</dt>
+                    <dd>
+                      <b>{release && now ? inTime(release - now) : '–'}</b>
+                      <span>
+                        {sched.data
+                          ? `real invoices and tests arrive together, every ${sched.data.releaseTickMinutes / 60} h`
+                          : ''}
+                      </span>
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Committed</dt>
+                    <dd>
+                      <b>{st ? st.committed : '–'}</b>
+                      <span>tests on chain before delivery</span>
+                    </dd>
+                  </div>
+                </dl>
+                <p className="formula">
+                  Score = passed × 10000 / (passed + failed + failed_contained +
+                  ignored). Unanswered, misdirected, void and invalid slots are
+                  shown below, never counted.
+                </p>
               </div>
             </div>
           )}
@@ -204,20 +297,22 @@ function ScorecardPage() {
             <span>Every outcome, from the contract</span>
             <span className="src">get_scorecard.stats</span>
           </div>
-          <div className="buckets">
-            {buckets.map(([k, v, d, scored]) => (
-              <div className={`bk${scored ? '' : ' ns'}`} key={k}>
-                <span className="v num">
-                  {v === undefined ? '–' : <CountUp to={v} />}
-                </span>
-                <span className="k">
-                  {k}
-                  {scored ? ' · scored' : ''}
-                </span>
-                <span className="d">{d}</span>
+          {groups.map(([g, items], gi) => (
+            <div className={`bgroup${gi ? '' : ' main'}`} key={g}>
+              <div className="wrap gname">{g}</div>
+              <div className="wrap buckets">
+                {items.map(([k, v, d]) => (
+                  <div className={`bk${v === 0 ? ' z' : ''}`} key={k}>
+                    <span className="v num">
+                      {v === undefined ? '–' : <CountUp to={v} />}
+                    </span>
+                    <span className="k">{k}</span>
+                    <span className="d">{d}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </section>
 
         <section className="wrap trio" data-stagger>

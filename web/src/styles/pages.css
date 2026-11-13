@@ -2,19 +2,18 @@
 .pg-score {
   .sc-hero {
     align-items: end;
-    row-gap: 28px;
+    row-gap: 40px;
   }
   .sc-hero .l {
     grid-column: 1 / span 7;
     display: grid;
-    gap: 22px;
+    gap: 28px;
     min-width: 0;
   }
   .sc-hero .r {
     grid-column: 8 / span 5;
     display: grid;
-    gap: 14px;
-    justify-items: start;
+    gap: 18px;
     min-width: 0;
   }
   @media (max-width: 900px) {
@@ -24,15 +23,20 @@
     }
   }
   .sc-hero h1 {
-    font-size: clamp(34px, 4.6vw, 66px);
+    font-size: clamp(26px, 2.8vw, 40px);
     font-weight: 700;
     font-variation-settings: 'wdth' 104;
-    line-height: 1.02;
-    letter-spacing: -0.025em;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
     text-transform: none;
+    max-width: 22ch;
   }
   .sc-hero h1 .mline + .mline {
     color: var(--dim);
+  }
+  .scorebox {
+    display: grid;
+    gap: 14px;
   }
   .rate {
     font-variation-settings: 'wdth' 125;
@@ -45,6 +49,73 @@
   .rate small {
     font-size: 0.3em;
     letter-spacing: 0;
+  }
+  .split {
+    display: grid;
+    gap: 10px;
+    max-width: 560px;
+    margin-top: 10px;
+  }
+  .sbar {
+    display: flex;
+    gap: 3px;
+    height: 10px;
+  }
+  .sbar i {
+    display: block;
+    flex-basis: 0;
+    min-width: 6px;
+    border-radius: 3px;
+  }
+  .sbar .p {
+    background: var(--paper);
+  }
+  .sbar .f {
+    background: var(--cobalt);
+  }
+  .sbar .fc {
+    background: color-mix(in srgb, var(--cobalt) 55%, var(--ink));
+  }
+  .sbar .ig {
+    background: var(--ink-3);
+    outline: 1px solid var(--line);
+  }
+  .split p {
+    font: 13px var(--mono);
+    color: var(--dim);
+  }
+  .sfacts {
+    display: grid;
+    margin: 0;
+    border-top: 1px solid var(--line);
+  }
+  .sfacts > div {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 16px;
+    padding-block: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .sfacts dt {
+    font: 12px var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dim);
+    padding-top: 4px;
+  }
+  .sfacts dd {
+    margin: 0;
+    display: grid;
+    gap: 3px;
+  }
+  .sfacts dd b {
+    font-size: 20px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .sfacts dd span {
+    font-size: 13.5px;
+    color: var(--dim);
   }
   .formula {
     font: 12.5px/1.6 var(--mono);
@@ -77,26 +148,47 @@
     background: var(--cobalt);
     color: var(--paper);
   }
+  .bgroup + .bgroup {
+    margin-top: 6px;
+  }
+  .gname {
+    padding-block: 18px 10px;
+    font: 12px var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.85;
+  }
   .buckets {
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 1px;
-    background: color-mix(in srgb, var(--paper) 25%, transparent);
-    border-block: 1px solid color-mix(in srgb, var(--paper) 25%, transparent);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .bk + .bk {
+    border-left: 1px solid color-mix(in srgb, var(--paper) 30%, transparent);
+  }
+  .bgroup:last-child .buckets {
+    padding-bottom: 28px;
   }
   .bk {
-    background: var(--cobalt);
-    padding: 22px 18px 20px;
+    border-top: 1px solid color-mix(in srgb, var(--paper) 30%, transparent);
+    padding: 18px 18px 16px;
     display: grid;
     gap: 6px;
-    grid-column: span 2;
     min-width: 0;
   }
   .bk .v {
     font-variation-settings: 'wdth' 125;
     font-weight: 900;
-    font-size: clamp(40px, 4.4vw, 64px);
+    font-size: clamp(32px, 3.2vw, 46px);
     line-height: 0.9;
+  }
+  .main .bk {
+    padding: 26px 18px 22px;
+  }
+  .bk:first-child {
+    padding-left: 0;
+  }
+  .main .bk .v {
+    font-size: clamp(48px, 5.6vw, 84px);
   }
   .bk .k {
     font: 12px var(--mono);
@@ -108,17 +200,17 @@
     font-size: 13px;
     opacity: 0.75;
   }
-  .bk.ns .v {
-    opacity: 0.55;
+  /* zeros stay visible but step back, so real counts lead */
+  .bk.z .v {
+    opacity: 0.4;
   }
-  @media (max-width: 1000px) {
-    .bk {
-      grid-column: span 4;
+  @media (max-width: 760px) {
+    .buckets {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-  }
-  @media (max-width: 560px) {
-    .bk {
-      grid-column: span 6;
+    .bk:nth-child(3) {
+      border-left: 0;
+      padding-left: 0;
     }
   }
   .bandhead {
