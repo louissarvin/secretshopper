@@ -6,6 +6,7 @@ import Drill from '@/components/home/Drill'
 import SpotTheFake from '@/components/home/SpotTheFake'
 import LiveScore from '@/components/home/LiveScore'
 import ProofBento from '@/components/home/ProofBento'
+import StartCta from '@/components/home/StartCta'
 import HomeFooter from '@/components/home/HomeFooter'
 import { useReveal } from '@/hooks/useReveal'
 import { scrollToTarget } from '@/lib/lenis'
@@ -47,6 +48,7 @@ function HomePage() {
         <SpotTheFake />
         <LiveScore />
         <ProofBento />
+        <StartCta />
       </main>
       <HomeFooter />
     </div>

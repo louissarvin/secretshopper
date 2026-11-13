@@ -39,21 +39,14 @@ export default function HomeFooter() {
       <div className="wrap">
         <div className="grid12 f-top">
           <div className="f-cta">
-            <p className="label">Ready when your agent is</p>
+            <p className="label">Verify it yourself</p>
             <h2>
-              Run a drill <span>on the agent that pays.</span>
+              Every claim, <span>one command.</span>
             </h2>
-            <div className="acts">
-              <Link className="btn solid magnet" to="/app">
-                Open the owner app <span className="arr">→</span>
-              </Link>
-              <Link className="btn ghost magnet" to="/new">
-                Create your vault
-              </Link>
-              <Link className="btn ghost magnet" to="/agents">
-                Bring your own agent
-              </Link>
-            </div>
+            <p className="f-sub">
+              It builds the contract, runs every test and the end-to-end demo,
+              and checks the build against the deployed code.
+            </p>
             <div className="cmd">
               <code>
                 <i>$</i> {VERIFY_CMD}

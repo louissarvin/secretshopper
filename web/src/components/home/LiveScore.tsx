@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import type { ModelRun } from '@/lib/api/shop'
@@ -9,28 +9,24 @@ import { config } from '@/config'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const runLabel = (r: ModelRun) => {
-  const declined = r.models.reduce((n, m) => n + m.declined, 0)
-  const trials = r.models.reduce((n, m) => n + m.trials, 0)
-  const paid = r.models.reduce((n, m) => n + m.paid, 0)
-  const kind =
-    r.lureKind === 'generated'
-      ? `Tester's generated lures${r.categories.length ? ` · ${r.categories.length} pretexts` : ''}`
-      : 'Scripted bank-change lure'
-  const policy = [
-    r.policy && `${r.policy} policy`,
-    r.preflightMode && `${r.preflightMode} preflight`,
-  ]
-    .filter(Boolean)
-    .join(', ')
+type Row = ModelRun['models'][number]
+
+const tabLabel = (r: ModelRun) =>
+  `${r.lureKind === 'generated' ? 'Generated lures' : 'Bank-change lure'} · ${new Date(`${r.date}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })}`
+
+const runFacts = (r: ModelRun) => {
+  const sum = (k: 'declined' | 'trials' | 'paid') =>
+    r.models.reduce((n, m) => n + m[k], 0)
+  const paid = sum('paid')
   return [
-    kind,
-    policy,
-    `${declined} of ${trials} declined${paid ? `, ${paid} paid` : ''}`,
-    r.date,
-  ]
-    .filter(Boolean)
-    .join(' · ')
+    `${sum('declined')} of ${sum('trials')} lures declined${paid ? `, ${paid} paid` : ''}`,
+    `${r.models.length} models, ${r.trialsPerModel} trials each`,
+    r.lureKind === 'generated' && r.categories.length
+      ? `${r.categories.length} pretexts`
+      : null,
+    r.policy &&
+      `${r.policy} policy${r.preflightMode ? `, ${r.preflightMode} preflight` : ''}`,
+  ].filter(Boolean) as Array<string>
 }
 
 const rate = (n: number, of: number) => n / Math.max(1, of)
@@ -44,27 +40,111 @@ const ranked = (r: ModelRun) =>
       rate(y.genuinePaid, y.genuineTotal) - rate(x.genuinePaid, x.genuineTotal),
   )
 
+function Meter({ n, of, paid = 0 }: { n: number; of: number; paid?: number }) {
+  return (
+    <span className="meter2" aria-hidden="true">
+      <i style={{ width: `${100 * rate(n, of)}%` }} />
+      {paid > 0 && (
+        <i className="paid" style={{ width: `${100 * rate(paid, of)}%` }} />
+      )}
+    </span>
+  )
+}
+
+function ModelRow({ m }: { m: Row }) {
+  const slash = m.model.indexOf('/')
+  return (
+    <div className="mrow" role="row">
+      <span className="nm" role="cell">
+        {slash > 0 && (
+          <span className="org">{m.model.slice(0, slash + 1)}</span>
+        )}
+        <span>{m.model.slice(slash + 1)}</span>
+        {m.paid > 0 && (
+          <span className="flag">
+            paid {m.paid} lure{m.paid === 1 ? '' : 's'}
+          </span>
+        )}
+      </span>
+      <span
+        className="met"
+        role="cell"
+        aria-label={`${m.declined} of ${m.trials} lures declined${m.paid ? `, ${m.paid} paid` : ''}`}
+      >
+        <b>
+          {m.declined}/{m.trials}
+        </b>
+        <Meter n={m.declined} of={m.trials} paid={m.paid} />
+      </span>
+      <span
+        className="met"
+        role="cell"
+        aria-label={
+          m.genuineTotal
+            ? `${m.genuinePaid} of ${m.genuineTotal} genuine invoices paid`
+            : 'no genuine invoices in this run'
+        }
+      >
+        {m.genuineTotal > 0 ? (
+          <>
+            <b>
+              {m.genuinePaid}/{m.genuineTotal}
+            </b>
+            <Meter n={m.genuinePaid} of={m.genuineTotal} />
+          </>
+        ) : (
+          <b className="na">n/a</b>
+        )}
+      </span>
+      <span className="tp" role="cell">
+        <span className={m.receiptKind === 'TEE' ? 'tee' : ''}>
+          {m.receiptKind === 'TEE' ? 'TEE' : 'gateway'}
+        </span>
+      </span>
+    </div>
+  )
+}
+
 export default function LiveScore() {
   const { data: sc, isError } = useScorecard(config.shopId)
   const runs = useModelRuns()
-  const bars = useRef<HTMLDivElement>(null)
-  // The rows arrive with the query, so animate once they exist
+  const [pick, setPick] = useState(0)
+  const table = useRef<HTMLDivElement>(null)
+  const run = runs.data?.runs[pick] ?? runs.data?.runs[0]
+
+  // Bars grow when the table first scrolls in, and again on every run switch
+  const seen = useRef(false)
   useEffect(() => {
-    if (!runs.data) return
+    const el = table.current
+    if (!el || !run) return
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const tw = gsap.fromTo(
-      bars.current!.querySelectorAll('.bar i'),
-      { scaleX: 0 },
-      {
-        scaleX: 1,
-        duration: 1.2,
-        ease: 'expo.out',
-        stagger: 0.08,
-        scrollTrigger: { trigger: bars.current, start: 'top 85%', once: true },
+    const bars = el.querySelectorAll('.meter2 i')
+    const grow = () =>
+      gsap.fromTo(
+        bars,
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.9, ease: 'expo.out', stagger: 0.03 },
+      )
+    if (seen.current) {
+      const tw = grow()
+      return () => void tw.kill()
+    }
+    gsap.set(bars, { scaleX: 0 })
+    const st = ScrollTrigger.create({
+      trigger: el,
+      start: 'top 85%',
+      once: true,
+      onEnter: () => {
+        seen.current = true
+        grow()
       },
-    )
-    return () => void tw.scrollTrigger?.kill()
-  }, [runs.data])
+    })
+    return () => {
+      st.kill()
+      gsap.set(bars, { scaleX: 1 })
+    }
+  }, [run])
+
   const st = sc?.stats
   const scored = st
     ? st.passed + st.failed + st.failed_contained + st.ignored
@@ -82,6 +162,7 @@ export default function LiveScore() {
         </h2>
         <div className="grid12 sgrid">
           <div className="rbox">
+            <span className="label">Lures caught on the live vault</span>
             <div className="rate num" aria-live="polite">
               {sc?.score_bps != null ? (
                 <>
@@ -98,14 +179,34 @@ export default function LiveScore() {
                 </span>
               )}
             </div>
+            {sc && st && sc.score_bps != null && (
+              <dl className="rfacts">
+                <div>
+                  <dt>passed</dt>
+                  <dd>{st.passed}</dd>
+                </div>
+                <div>
+                  <dt>failed</dt>
+                  <dd>{st.failed + st.failed_contained}</dd>
+                </div>
+                <div>
+                  <dt>ignored</dt>
+                  <dd>{st.ignored}</dd>
+                </div>
+                <div>
+                  <dt>sealed</dt>
+                  <dd>{sc.pending}</dd>
+                </div>
+              </dl>
+            )}
             <p className="rnote">
               {isError
-                ? 'The vault could not be read right now. The figures below come from the model run.'
+                ? 'The vault could not be read right now. The model results come from committed runs.'
                 : !sc
                   ? 'Reading the vault…'
                   : sc.score_bps == null
                     ? `No scored tests yet. ${sc.pending} sealed, ${st!.committed} committed so far.`
-                    : `${st!.passed} passed of ${scored} scored on the live vault. ${sc.pending} sealed tests still pending. Score = passed × 10000 / (passed + failed + failed_contained + ignored).`}{' '}
+                    : `${scored} scored tests. Score = passed × 10000 / (passed + failed + failed_contained + ignored).`}{' '}
               <span className="src">get_scorecard · RPC</span>
             </p>
             <Link
@@ -117,65 +218,53 @@ export default function LiveScore() {
               Open the full scorecard <span className="arr">→</span>
             </Link>
           </div>
-          <div className="mrows" ref={bars}>
+          <div className="mrows">
+            <div className="mhead">
+              <span className="label">Model runs on the same lures</span>
+              {runs.data && runs.data.runs.length > 1 && (
+                <div className="rtabs" role="group" aria-label="Model runs">
+                  {runs.data.runs.map((r, i) => (
+                    <button
+                      key={r.id}
+                      type="button"
+                      aria-pressed={r.id === run?.id}
+                      onClick={() => setPick(i)}
+                    >
+                      {tabLabel(r)}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             {runs.isError ? (
               <p className="rnote">
                 The model results could not be loaded right now.
               </p>
-            ) : !runs.data ? (
+            ) : !run ? (
               <p className="rnote">Reading the model results…</p>
             ) : (
-              runs.data.runs.map((run, i) => (
-                <div key={run.id}>
-                  <p
-                    className="label"
-                    style={{ marginBottom: 10, marginTop: i ? 22 : 0 }}
-                  >
-                    {runLabel(run)}
-                  </p>
+              <>
+                <p className="rmeta">{runFacts(run).join(' · ')}</p>
+                <div
+                  className="mtable"
+                  role="table"
+                  aria-label={tabLabel(run)}
+                  ref={table}
+                >
+                  <div className="mrow mth" role="row">
+                    <span role="columnheader">Model</span>
+                    <span role="columnheader">Lures declined</span>
+                    <span role="columnheader">Genuine paid</span>
+                    <span role="columnheader">Receipt</span>
+                  </div>
                   {ranked(run).map((m) => (
-                    <div className="mrow" key={m.model}>
-                      <span className="nm">
-                        <span>
-                          {m.model}
-                          {m.paid
-                            ? ` · paid ${m.paid} lure${m.paid === 1 ? '' : 's'}`
-                            : ''}
-                          {m.genuineTotal > 0 &&
-                            ` · genuine paid ${m.genuinePaid}/${m.genuineTotal}`}
-                        </span>
-                        <span
-                          className="bar"
-                          aria-label={`${m.declined} of ${m.trials} lures declined, ${m.paid} paid`}
-                        >
-                          <i
-                            style={{
-                              width: `${(100 * m.declined) / Math.max(1, m.trials)}%`,
-                            }}
-                          />
-                          {m.paid > 0 && (
-                            <i
-                              className="paid"
-                              style={{
-                                width: `${(100 * m.paid) / Math.max(1, m.trials)}%`,
-                              }}
-                            />
-                          )}
-                        </span>
-                      </span>
-                      <span className="tp">
-                        {m.receiptKind === 'TEE' ? 'TEE' : 'gateway'}
-                      </span>
-                      <span className="r">
-                        {m.declined}/{m.trials}
-                      </span>
-                    </div>
+                    <ModelRow key={m.model} m={m} />
                   ))}
                 </div>
-              ))
+              </>
             )}
             {runs.data?.b1 && (
-              <p className="rnote" style={{ marginTop: 22 }}>
+              <p className="rnote">
                 Blind test: a model judge ({runs.data.b1.judge}) told lures from
                 real invoices at {runs.data.b1.accuracy.toFixed(3)} accuracy
                 (95% {runs.data.b1.wilsonLow.toFixed(3)} to{' '}

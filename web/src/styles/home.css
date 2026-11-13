@@ -924,10 +924,11 @@
     background: var(--cobalt);
     color: var(--paper);
     padding-block: clamp(90px, 11vw, 150px);
-    overflow: hidden;
+    /* clip, not hidden: hidden makes a scroll container and breaks the sticky score */
+    overflow: clip;
   }
   .score .label {
-    opacity: 0.75;
+    opacity: 0.85;
   }
   .score h2 {
     font-size: clamp(30px, 4vw, 58px);
@@ -943,21 +944,32 @@
   }
   .sgrid {
     margin-top: clamp(40px, 5vw, 64px);
-    align-items: end;
-    row-gap: 36px;
+    align-items: start;
+    row-gap: 40px;
   }
+  /* the live score stays in view beside the model table */
   .rbox {
     grid-column: 1 / span 5;
     min-width: 0;
+    position: sticky;
+    top: 110px;
+    display: grid;
+    gap: 14px;
+    justify-items: start;
   }
   .mrows {
-    grid-column: 7 / span 6;
+    grid-column: 6 / span 7;
     min-width: 0;
+    display: grid;
+    gap: 16px;
   }
   @media (max-width: 900px) {
     .rbox,
     .mrows {
       grid-column: 1 / -1;
+    }
+    .rbox {
+      position: static;
     }
   }
   .rate {
@@ -981,63 +993,164 @@
       font-size: min(22vw, 186px);
     }
   }
+  .rfacts {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    gap: 4px 28px;
+    margin: 6px 0 0;
+  }
+  .rfacts div {
+    display: grid;
+    gap: 2px;
+  }
+  .rfacts dt {
+    font: 11.5px var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+  .rfacts dd {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    font-variation-settings: 'wdth' 115;
+    font-variant-numeric: tabular-nums;
+  }
   .rnote {
     font: 13px/1.6 var(--mono);
-    opacity: 0.78;
-    margin-top: 20px;
-    max-width: 46ch;
+    opacity: 0.85;
+    max-width: 52ch;
+  }
+  .mhead {
+    display: grid;
+    gap: 12px;
+  }
+  .rtabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .rtabs button {
+    font: 500 13.5px var(--font);
+    color: var(--paper);
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--paper) 40%, transparent);
+    border-radius: 999px;
+    padding: 8px 14px;
+    min-height: 38px;
+    cursor: pointer;
+    transition:
+      background 0.2s,
+      color 0.2s;
+  }
+  .rtabs button:hover {
+    background: color-mix(in srgb, var(--paper) 14%, transparent);
+  }
+  .rtabs button[aria-pressed='true'] {
+    background: var(--paper);
+    color: var(--cobalt);
+    border-color: var(--paper);
+  }
+  .rmeta {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .mtable {
+    display: grid;
+    border-top: 1px solid color-mix(in srgb, var(--paper) 30%, transparent);
   }
   .mrow {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 70px 40px;
-    gap: 14px;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) 76px;
+    gap: 18px;
     align-items: center;
-    padding-block: 12px;
+    padding-block: 13px;
     border-bottom: 1px solid color-mix(in srgb, var(--paper) 22%, transparent);
-    font: 13px var(--mono);
   }
-  .mrow:first-child {
-    border-top: 1px solid color-mix(in srgb, var(--paper) 22%, transparent);
+  .mrow.mth {
+    padding-block: 10px;
+    font: 11.5px var(--mono);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.8;
   }
   .mrow .nm {
+    font-size: 15px;
+    font-weight: 600;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .mrow .nm .org {
+    font-weight: 400;
+    opacity: 0.7;
+  }
+  .mrow .nm .flag {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--paper);
+    font: 11.5px var(--mono);
+    vertical-align: 2px;
+  }
+  .mrow .met {
     display: grid;
     gap: 7px;
     min-width: 0;
   }
-  .mrow .nm span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  .mrow .met b {
+    font: 600 14px var(--mono);
+    font-variant-numeric: tabular-nums;
   }
-  /* the model line carries paid lures and genuine invoices: wrap, never cut */
-  .mrow .nm > span:first-child {
-    white-space: normal;
-    overflow-wrap: anywhere;
+  .mrow .met b.na {
+    opacity: 0.6;
+    font-weight: 400;
   }
-  .mrow .bar {
-    height: 4px;
-    background: color-mix(in srgb, var(--paper) 22%, transparent);
-    overflow: hidden;
-  }
-  .mrow .bar {
+  .meter2 {
     display: flex;
+    height: 6px;
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--ink) 30%, transparent);
+    overflow: hidden;
   }
-  .mrow .bar i {
+  .meter2 i {
     display: block;
     height: 100%;
     background: var(--paper);
     transform-origin: left;
   }
   /* lures the model paid: shown, never hidden */
-  .mrow .bar i.paid {
+  .meter2 i.paid {
     background: var(--ink);
   }
-  .mrow .tp {
-    opacity: 0.75;
+  .mrow .tp span {
+    display: inline-block;
+    font: 11.5px var(--mono);
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--paper) 45%, transparent);
   }
-  .mrow .r {
-    text-align: right;
-    font-weight: 600;
+  .mrow .tp span.tee {
+    background: var(--paper);
+    color: var(--cobalt);
+    border-color: var(--paper);
+  }
+  @media (max-width: 640px) {
+    .mrow {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      row-gap: 10px;
+    }
+    .mrow .nm {
+      grid-column: 1 / -1;
+    }
+    .mrow .tp {
+      display: none;
+    }
+    .mrow.mth span:first-child,
+    .mrow.mth span:last-child {
+      display: none;
+    }
   }
   .oc {
     display: grid;
@@ -1294,6 +1407,10 @@
   .f-cta h2 span {
     color: var(--dim);
   }
+  .f-sub {
+    color: var(--dim);
+    max-width: 44ch;
+  }
   .cmd {
     justify-self: start;
     display: inline-flex;
@@ -1496,4 +1613,111 @@
 }
 .home .drill-tx a:hover {
   color: var(--paper);
+}
+
+/* The one call to action, after the proof */
+.home .start {
+  position: relative;
+  z-index: 1;
+  padding-block: clamp(90px, 11vw, 150px);
+  overflow: clip;
+}
+.home .st-grid {
+  align-items: center;
+  row-gap: 48px;
+}
+.home .st-l {
+  grid-column: 1 / span 7;
+  display: grid;
+  gap: 24px;
+  justify-items: start;
+  min-width: 0;
+}
+.home .st-l h2 {
+  font-size: clamp(44px, 7vw, 108px);
+}
+.home .st-lead {
+  font-size: clamp(17px, 1.4vw, 20px);
+  line-height: 1.5;
+  color: var(--dim-ink);
+  max-width: 46ch;
+}
+.home .st-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 24px;
+  margin-top: 4px;
+}
+.home .st-link {
+  font-size: 15px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--line-ink);
+  text-underline-offset: 4px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  transition: text-decoration-color 0.2s;
+}
+.home .st-link:hover {
+  text-decoration-color: var(--cobalt);
+}
+.home .st-r {
+  grid-column: 9 / span 4;
+  justify-self: end;
+}
+.home .st-r img {
+  display: block;
+  width: min(360px, 100%);
+  height: auto;
+}
+.home .st-facts {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid var(--line-ink);
+}
+.home .st-facts div {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  padding: 22px 24px 0 0;
+}
+.home .st-facts div + div {
+  padding-left: 24px;
+  border-left: 1px solid var(--line-ink);
+}
+.home .st-facts dt {
+  font-size: clamp(28px, 2.6vw, 38px);
+  font-weight: 800;
+  font-variation-settings: 'wdth' 115;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.home .st-facts dd {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--dim-ink);
+  max-width: 30ch;
+}
+@media (max-width: 900px) {
+  .home .st-l {
+    grid-column: 1 / -1;
+  }
+  .home .st-r {
+    display: none;
+  }
+}
+@media (max-width: 640px) {
+  .home .st-facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .home .st-facts div,
+  .home .st-facts div + div {
+    padding: 18px 0;
+    border-left: 0;
+    border-bottom: 1px solid var(--line-ink);
+  }
 }
