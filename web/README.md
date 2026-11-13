@@ -1,3 +1,5 @@
+<img src="public/logo.svg" width="72" height="72" alt="Secret Shopper logo: a figure carrying a parcel">
+
 # Secret Shopper web app
 
 The public scorecard and the owner app for a Secret Shopper vault. Anyone can check a vault's test results against the chain in their browser; the owner signs in with a NEAR wallet to watch the inbox, approve proposed payments, re-arm the agent and change limits. What the product is: [../README.md](../README.md). How to build and test the whole repo: [../AGENTS.md](../AGENTS.md).
@@ -149,3 +151,7 @@ src/
   lib/invoice.ts   builds an invoice in a vendor's own layout
   config.ts        network, RPC, explorer, gas
 ```
+
+## Logo
+
+`public/logo.svg` is a vector trace of `brand/logo-source.svg` (the original 887 KB export with embedded PNGs) in cobalt `#3A4CFF`; `public/favicon.svg`, `favicon.ico` and `apple-touch-icon.png` put it on ink. To retrace: render the source large with `rsvg-convert`, threshold its alpha and run `potrace -s --turdsize 20`.

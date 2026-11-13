@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="web/public/logo.svg" width="120" height="120" alt="Secret Shopper logo: a figure carrying a parcel">
+
 # Secret Shopper
 
 ### Covert tests for the AI agent that pays your invoices, scored by the vault that holds the money.
