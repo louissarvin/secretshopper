@@ -592,6 +592,14 @@ export const ownerApi = {
       auth: true,
       body: { name, shopId },
     }),
+  /** Renames the company of the vault in X-Shop */
+  rename: (name: string, shop: string) =>
+    api<CompanyView>('/company', {
+      method: 'PATCH',
+      auth: true,
+      body: { name },
+      shop,
+    }),
   /** Tester settings for the vault in X-Shop */
   tester: (shop?: string) =>
     api<

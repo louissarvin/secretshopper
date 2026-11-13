@@ -10,6 +10,84 @@ import { config } from '@/config'
 
 export const Route = createFileRoute('/app/agent')({ component: Agent })
 
+// The name lures bill to, as real invoices do; the tester reads it on its next pass
+function CompanyName({ vault, name }: { vault: string; name: string }) {
+  const qc = useQueryClient()
+  const [draft, setDraft] = useState(name)
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
+  const next = draft.trim()
+
+  const save = async () => {
+    setBusy(true)
+    setMsg(null)
+    try {
+      const r = await ownerApi.rename(next, vault)
+      if (r.shopContractId !== vault)
+        throw new Error('The API renamed another vault.')
+      setDraft(r.name)
+      setMsg({ ok: true, text: 'Saved.' })
+      await qc.invalidateQueries({ queryKey: ['owner', 'mine'] })
+    } catch (e) {
+      setMsg({
+        ok: false,
+        text:
+          e instanceof ApiError
+            ? `${e.message} (${e.code})`
+            : e instanceof Error
+              ? e.message
+              : 'The API did not save the name.',
+      })
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="panel" style={{ display: 'grid', gap: 12, marginTop: 12 }}>
+      <div className="ptop">
+        <h3>Company name</h3>
+        <span className="src">PATCH /company</span>
+      </div>
+      <p className="dimt" style={{ fontSize: 14 }}>
+        Covert tests bill this name, exactly as your real vendors do.
+      </p>
+      <div className="formgrid">
+        <div className="field">
+          <label htmlFor="co-name">Name</label>
+          <input
+            id="co-name"
+            value={draft}
+            maxLength={120}
+            onChange={(e) => {
+              setDraft(e.target.value)
+              setMsg(null)
+            }}
+          />
+        </div>
+        <div className="full">
+          <button
+            className="btn ghost sm"
+            type="button"
+            onClick={save}
+            disabled={busy || !next || next === name}
+          >
+            {busy ? 'Saving…' : 'Save'}
+          </button>
+        </div>
+      </div>
+      {msg && (
+        <small
+          className={msg.ok ? 'dimt' : 'sheet-err'}
+          role={msg.ok ? 'status' : 'alert'}
+        >
+          {msg.text}
+        </small>
+      )}
+    </div>
+  )
+}
+
 function Agent() {
   const vault = useActiveVault()
   const qc = useQueryClient()
@@ -116,6 +194,7 @@ function Agent() {
           </small>
         )}
       </div>
+      {company && <CompanyName vault={vault} name={company.name} />}
       <div
         className="panel"
         style={{ display: 'grid', gap: 12, marginTop: 12 }}

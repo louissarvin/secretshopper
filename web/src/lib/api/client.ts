@@ -54,7 +54,7 @@ type Query = Record<string, string | number | undefined | null>
 export async function api<T>(
   path: string,
   opts: {
-    method?: 'GET' | 'POST' | 'PUT'
+    method?: 'GET' | 'POST' | 'PUT' | 'PATCH'
     query?: Query
     body?: unknown
     auth?: boolean
