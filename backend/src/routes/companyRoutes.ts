@@ -27,6 +27,8 @@ const createSchema = z
   })
   .strict();
 
+const renameSchema = z.object({ name: z.string().trim().min(1).max(120) }).strict();
+
 const alertsQuery = z.object({ limit: limitSchema, before: cuidSchema.optional() }).strict();
 // test_revealed is alert-worthy only when Failed; the other alert events always are
 const alertWhere = (shop: string) => ({
@@ -163,6 +165,17 @@ export const companyRoutes: FastifyPluginCallback = (app: FastifyInstance, _opts
     }
     request.log.info({ shop: request.company!.shopContractId }, 'inbox token issued');
     return reply.code(201).send({ success: true, error: null, data: { token, shopContractId: request.company!.shopContractId, createdAt: createdAt.toISOString() } });
+  });
+
+  app.patch('/', { preHandler: [authMiddleware, requireCompanyOwner], config: tokenLimit }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const parsed = await parseOr400(renameSchema, request.body, reply);
+    if (!parsed.ok) return;
+    try {
+      const company = await prismaQuery.company.update({ where: { id: request.company!.id }, data: { name: parsed.data.name }, select: companySelect });
+      return reply.send({ success: true, error: null, data: companyView(company) });
+    } catch (error) {
+      return handleServerError(reply, error as Error);
+    }
   });
 
   // Activity feed with the same texts the webhook sends, so the dashboard works without a webhook.

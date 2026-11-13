@@ -68,6 +68,7 @@ try {
   const ownerRoutes: [string, string, unknown?][] = [
     ['GET', '/company/alerts'],
     ['POST', '/company/inbox-token'],
+    ['PATCH', '/company/', { name: 'Taken Over Ltd' }],
     ['GET', '/company/tester'],
     ['PUT', '/company/tester', { enabled: false }],
     ['GET', '/vendors'],
@@ -88,6 +89,10 @@ try {
     ];
   }
   out.matrix = matrix;
+  out.renameA2 = await call('PATCH', '/company/', { token: A, shop: A2, body: { name: '  Larkspur Analytics  ' } });
+  out.renameEmpty = await call('PATCH', '/company/', { token: A, shop: A2, body: { name: ' ' } });
+  out.renameExtra = await call('PATCH', '/company/', { token: A, shop: A2, body: { name: 'X', shopContractId: B1 } });
+  out.b1AfterRename = await call('GET', '/company/me', { token: B, shop: B1 });
   out.vendorsDefault = await call('GET', '/vendors', { token: A });
   out.vendorsA2 = await call('GET', '/vendors', { token: A, shop: A2 });
 

@@ -113,9 +113,13 @@ describe.skipIf(!DB)('multi-vault routes with Postgres', () => {
     expect(r.meBad.status).toBe(400);
   });
 
-  test('cross tenant: on every owner route another owner\'s vault is 403, unknown 404, malformed 400, and B has no default vault', () => {
+  test('cross tenant: on every owner route another owner\'s vault is 403, unknown 404, malformed 400, and B has no default vault; the owner renames its own vault', () => {
     for (const [route, codes] of Object.entries(r.matrix as Record<string, number[]>)) expect([route, ...codes]).toEqual([route, 403, 404, 400, 403]);
-    expect(Object.keys(r.matrix)).toHaveLength(11);
+    expect(Object.keys(r.matrix)).toHaveLength(12);
+    expect(r.renameA2.status).toBe(200);
+    expect(r.renameA2.body.data).toMatchObject({ shopContractId: A2, name: 'Larkspur Analytics' });
+    expect([r.renameEmpty.status, r.renameExtra.status]).toEqual([400, 400]);
+    expect(r.b1AfterRename.body.data.name).not.toBe('Taken Over Ltd');
     expect(r.vendorsDefault.status).toBe(200);
     expect(r.vendorsA2.status).toBe(200);
   });

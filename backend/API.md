@@ -18,7 +18,7 @@ One API process serves one vault: `SHOP_CONTRACT_ID` in `backend/.env`. `GET /pu
 | Error | `{ "success": false, "error": { "code": "...", "message": "..." }, "data": null, "timestamp": "..." }` |
 | Codes | 400 `VALIDATION_ERROR` (also for unknown query parameters: every schema is strict), 401, 403, 404 `NOT_FOUND`, 409, 422 (self-serve vault routes only), 429 `RATE_LIMITED`, 502 upstream (NEAR RPC, 1Click), 500 `INTERNAL_ERROR` without a stack trace |
 | Paging | `limit` 1 to 100, default 20. The response gives the next cursor (`nextBefore`, `nextCursor`, `nextSince`, `next_from_slot`), `null` on the last page |
-| Rate limits | 120 requests a minute per IP overall; `/auth/*` 10, `/public/ledger` 10, `/public/quote` 10, `/public/releases` 30, `/public/evidence` 20, `/vendor/*` 30, `/public/vault-plan` 10, `/public/vault` 30, `/public/model-runs` 30, `/public/schedule` 30, `/public/verify-report` 30, `/public/throughput` 30, `/public/agent` 30, `/public/blocklist` 60, `POST /blocklist` and `POST /inbox/blocklist` 10, `POST /company` 10, `POST /company/inbox-token` 5, `PUT /company/tester` 10, `/public/tester` 30 |
+| Rate limits | 120 requests a minute per IP overall; `/auth/*` 10, `/public/ledger` 10, `/public/quote` 10, `/public/releases` 30, `/public/evidence` 20, `/vendor/*` 30, `/public/vault-plan` 10, `/public/vault` 30, `/public/model-runs` 30, `/public/schedule` 30, `/public/verify-report` 30, `/public/throughput` 30, `/public/agent` 30, `/public/blocklist` 60, `POST /blocklist` and `POST /inbox/blocklist` 10, `POST /company` 10, `POST /company/inbox-token` and `PATCH /company` 5 each, `PUT /company/tester` 10, `/public/tester` 30 |
 | Headers | `Cache-Control: no-store`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer` |
 | Numbers | Token amounts are strings in base units (tUSDC has 6 decimals: `"1440000"` is 1.44). NEAR timestamps from the chain are nanosecond strings; database times are ISO 8601 |
 
@@ -117,6 +117,7 @@ One API serves every registered vault. `X-Shop: <vault account id>` selects the 
 | `GET /company/me` | `X-Shop` optional | The caller's `CompanyView` for the selected vault, or `null`. 400 on a malformed `X-Shop` |
 | `GET /company/mine` | | `{ items: CompanyView[] }`: every company the caller owns, oldest first (at most 100) |
 | `POST /company` | Default vault: `{ name, deployBlock }`. Any other vault: `{ name, shopId }` | 201 `CompanyView`. 10 a minute. See Registration below |
+| `PATCH /company` | `{ name }` (1 to 120 characters, trimmed; nothing else); `X-Shop` | 200 the company view with the new name. Owner of that vault only. 5 a minute |
 | `POST /company/inbox-token` | no body; `X-Shop` | 201 `{ token, shopContractId, createdAt }`, once: the token is `ssi_` plus 43 base64url characters and is stored only as its sha256. Calling again rotates it; the old token stops at once. 5 a minute |
 | `GET /company/tester` | `X-Shop` | The `GET /public/tester/:shopId` object plus `testPercent`, `commitCron`, `testerCheckedAt` |
 | `PUT /company/tester` | `{ enabled: boolean, testPercent?: 0..100, commitCron?: "M H * * *" \| null }` (strict); `X-Shop` | 200 with the same object. See Tester onboarding below. 10 a minute |
