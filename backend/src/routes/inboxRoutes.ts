@@ -17,7 +17,7 @@ export const inboxRoutes: FastifyPluginCallback = (app: FastifyInstance, _opts, 
     const q = await parseOr400(nextSchema, request.query, reply);
     if (!q.ok) return;
     try {
-      const cid = await inboxCompanyId(request); // the token's own company only (v2/37 section 4)
+      const cid = await inboxCompanyId(request); // the token's own company only
       if (!cid) return reply.code(200).send({ success: true, error: null, data: null });
       const afterAt = q.data.afterAt ? new Date(q.data.afterAt) : null;
       const row = await prismaQuery.invoice.findFirst({
@@ -52,7 +52,7 @@ export const inboxRoutes: FastifyPluginCallback = (app: FastifyInstance, _opts, 
     const params = await parseOr400(vendorParams, request.params, reply);
     if (!params.ok) return;
     try {
-      const cid = await inboxCompanyId(request); // the token's own company only (v2/37 section 4)
+      const cid = await inboxCompanyId(request); // the token's own company only
       const v = cid
         ? await prismaQuery.vendor.findFirst({ where: { id: params.data.id, companyId: cid }, select: { id: true, legalName: true, contactEmail: true } })
         : null;

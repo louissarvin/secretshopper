@@ -11,6 +11,6 @@ export const TESTER_SCHEDULES = {
   release: '*/30 * * * * *', // RELEASE_SETTLE_MS after a tick, then within 30 s
   recover: '*/10 * * * *',
   sweep: '*/10 * * * *',
-  keys: '* * * * *', // v2/37: write each company's tester public key
-  vaults: '*/5 * * * *', // v2/37: reload vaults, preflight, reconcile commit crons
+  keys: '* * * * *', // multi-vault: write each company's tester public key
+  vaults: '*/5 * * * *', // multi-vault: reload vaults, preflight, reconcile commit crons
 } as const;

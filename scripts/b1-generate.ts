@@ -1,5 +1,5 @@
 /**
- * B1 test set (16a §5.3): generates the "test" half of the blind corpus through the real tester generator,
+ * B1 test set: generates the "test" half of the blind corpus through the real tester generator,
  * the same way the commit worker does (vendor style set, sampled amount, fresh payee, real-intake normaliser).
  * Every NEAR AI call, kept or discarded, is saved with its receipt and attestation. Needs Bun >= 1.4.4.
  * Usage: bun --env-file=../backend/.env.tester b1-generate.ts

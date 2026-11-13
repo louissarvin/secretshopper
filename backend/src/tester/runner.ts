@@ -1,6 +1,6 @@
 import { errFields, type Logger } from '../utils/logger.ts';
 
-// ADR-4 (v2/37): one tester process for every vault. Config-free so the isolation test needs no env.
+// Multi-vault: one tester process for every vault. Config-free so the isolation test needs no env.
 
 export interface ShopScoped {
   shop: string;

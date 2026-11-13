@@ -52,7 +52,7 @@ const vault = createVault({
   listedOnly: AGENT_LISTED_ONLY,
 });
 
-// A per-vault inbox token serves one vault (v2/37 section 4): refuse to run against another vault's inbox.
+// A per-vault inbox token serves one vault: refuse to run against another vault's inbox.
 // an unreachable API is not a mismatch: the loop retries it anyway
 const inboxShop = await whoami().catch((e: unknown) => {
   log.warn('inbox whoami failed; vault match not checked', { error: e instanceof Error ? e.message : String(e) });
@@ -121,7 +121,7 @@ const ackDeps: AckDeps = {
 while (!stopping) {
   try {
     meter.maybeLogStatus();
-    await syncAcks(state.acks, ackDeps); // v2/32: one signed root per release tick
+    await syncAcks(state.acks, ackDeps); // delivery proof: one signed root per release tick
     const item = await nextInvoice(state.cursor);
     if (closeTicks(state.acks, item?.receivedAt ?? null, Date.now())) await saveState(state);
     if (!item) {

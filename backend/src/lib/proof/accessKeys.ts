@@ -27,7 +27,7 @@ export const keyScope = (permission: unknown): KeyScope => {
   return { kind: 'unknown', variant: keys[0].slice(0, 40) };
 };
 
-// Sorted method sets of an agent key: 2.3.0+ adds ack (v2/32); 2.0 to 2.2 vaults such as shop2 hold the older pair.
+// Sorted method sets of an agent key: 2.3.0+ adds ack (delivery proof); 2.0 to 2.2 vaults such as shop2 hold the older pair.
 const AGENT_METHOD_SETS = new Set(['ack,decline,pay', 'ack,decline,propose', 'decline,pay', 'decline,propose']);
 
 /** The agent key on a vault: a function-call key to the vault itself with exactly pay,decline(,ack) or propose,decline(,ack). */

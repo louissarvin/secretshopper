@@ -27,7 +27,7 @@ export interface PolicyView {
   key_nonces?: number; // 0 classic FC key, 1 to 64 gas key lanes (2.3.0)
 }
 
-/** Release tick on the vault (contract 2.3.0+, v2/32): the tester's root and, once signed, the agent's ack. */
+/** Release tick on the vault (contract 2.3.0+): the tester's root and, once signed, the agent's ack. */
 export interface Release {
   root: string;
   count: number;
@@ -42,7 +42,7 @@ export interface VaultOptions {
   txApiUrl?: string; // FastNEAR Transactions API for account age; omitted on a local sandbox
   fastnearApiKey?: string;
   payTgas: number;
-  payIntentsTgas?: number; // Intents pays carry a 100 Tgas ft_transfer_call to the verifier (v2/31)
+  payIntentsTgas?: number; // Intents pays carry a 100 Tgas ft_transfer_call to the verifier
   callTgas: number;
   listedOnly: boolean; // pay(.., listed_only): the contract refuses payees not approved on the vault
 }
@@ -195,7 +195,7 @@ export const createVault = (o: VaultOptions) => {
     propose: (invoiceId: string, payee: string, amount: string, rail: Rail) => call('propose', { invoice_id: invoiceId, payee, amount, rail }, o.callTgas),
     decline: (invoiceId: string, reason: string) => call('decline', { invoice_id: invoiceId, reason }, o.callTgas),
 
-    // Harness work, not a model tool: signs the root of a tick the inbox delivered (v2/32).
+    // Harness work, not a model tool: signs the root of a tick the inbox delivered.
     getRelease: (releaseAtNs: string) => viewVault<Release | null>('get_release', { release_at: releaseAtNs }),
     ack: (releaseAtNs: string, root: string) => call('ack', { release_at: releaseAtNs, root }, o.callTgas),
   };

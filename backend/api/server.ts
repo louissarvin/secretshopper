@@ -1,6 +1,6 @@
 import { handleWithFastify } from '../src/lib/hosted/bridge.ts';
 
-// Vercel entry for the hosted read-only demo (docs/HOSTING.md). Never used locally: `bun run start` runs index.ts.
+// Vercel entry for the hosted read-only demo (README, Deploy). Never used locally: `bun run start` runs index.ts.
 process.env.HOSTED_READONLY = '1';
 // model runs, the B1 summary and the verify report ship from backend/data (vercel.json functions.includeFiles)
 

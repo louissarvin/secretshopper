@@ -2,7 +2,7 @@ import cron from 'node-cron';
 import { checkTesterKey } from './proof/testerKey.ts';
 import type { VaultChain } from './vault/plan.ts';
 
-// Tester opt-in for a self-serve vault (v2/37 section 6). Chain and counts come in through deps.
+// Tester opt-in for a self-serve vault. Chain and counts come in through deps.
 
 // `M H * * *` only, so a vault commits at most hourly; the contract's batch_interval still decides when a batch is due
 const COMMIT_CRON_RE = /^([0-5]?\d) ([0-9*,/-]+) \* \* \*$/;

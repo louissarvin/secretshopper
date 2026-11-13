@@ -80,7 +80,7 @@ try {
     const ak = await provider.viewAccessKey({ accountId: st.owner_id, publicKey: testerPk ?? '' });
     const fc = (ak.permission as { FunctionCall?: { receiver_id: string; method_names: string[]; allowance: string | null } }).FunctionCall;
     const methods = fc ? [...fc.method_names].sort().join(',') : 'FullAccess';
-    // 2.3.0 adds release and prove_delivery (v2/32, V23-02); older vaults have no such methods
+    // 2.3.0 adds release and prove_delivery (V23-02); older vaults have no such methods
     const [major, minor] = st.version.split('.').map(Number);
     const want = major > 2 || (major === 2 && minor >= 3) ? 'commit_batch,prove_delivery,release,reveal' : 'commit_batch,reveal';
     check(

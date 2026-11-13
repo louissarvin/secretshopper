@@ -1,5 +1,5 @@
 /**
- * `bun multi-vault-e2e.ts`: v2/37 on a local sandbox. One owner holds two vaults (v1 the default, v2 self-serve),
+ * `bun multi-vault-e2e.ts`: multi-vault on a local sandbox. One owner holds two vaults (v1 the default, v2 self-serve),
  * registers both through the API, adds both tester keys on the same account (one per vault, ADR-2), enables testing
  * on v2, runs one tester cycle through the real per-vault jobs, then removes v2's key and checks only v2 stops.
  *

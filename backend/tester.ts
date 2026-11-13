@@ -51,10 +51,10 @@ const main = async (): Promise<void> => {
 
   const def = (await contexts(true)).find((c) => c.isDefault)!;
   await recoverPrepared(def); // SS-B07: recover a crashed commit before anything else
-  await postReleases(def); // v2/32: post roots for ticks released while the tester was down
+  await postReleases(def); // delivery proof: post roots for ticks released while the tester was down
   await revealWatcher(def); // catch up on reveals (ours or a keeper's) missed while the tester was down
   await proveDeliveries(def); // V23-02: upgrade any Unanswered slot whose tick the agent acked
-  await recoverOtherVaults(); // v2/37: same catch-up for every other vault, never fatal
+  await recoverOtherVaults(); // multi-vault: same catch-up for every other vault, never fatal
 
   if (GENERATION_BLOCKER) log.warn('test generation disabled', { blocker: GENERATION_BLOCKER });
   if (!TESTER_KEY_SEED) log.info('TESTER_KEY_SEED not set: serving the default vault only');

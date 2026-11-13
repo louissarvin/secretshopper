@@ -1,4 +1,4 @@
-// Hosted read-only demo (docs/HOSTING.md). Kept apart from main-config so the error handler can read it without
+// Hosted read-only demo (README, Deploy). Kept apart from main-config so the error handler can read it without
 // pulling in the API's required env checks; read per call so one test process can build both kinds of app.
 export const hostedReadOnly = (): boolean => process.env.HOSTED_READONLY === '1';
 

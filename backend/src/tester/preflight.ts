@@ -1,7 +1,7 @@
 import type { Mode } from '../lib/near/shop.ts';
 import type { TesterKeyCheck, TesterState } from '../lib/proof/testerKey.ts';
 
-// Pure: the tester's per-vault preflight (v2/37 section 6), cheapest checks first. Config-free so tests need no env.
+// Pure: the tester's per-vault preflight, cheapest checks first. Config-free so tests need no env.
 
 export const LOW_FLOAT_YOCTO = 10n ** 23n; // 0.1 NEAR: below this a commit fails on chain (V2-09) and burns allowance
 

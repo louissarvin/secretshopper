@@ -4,7 +4,7 @@ import { join, resolve } from 'node:path';
 import { candidateTicks, nextRealDelivery, TICK_LEAD_MS, testDeliveryTimes } from '../src/utils/delivery.ts';
 import { buildEvidence, EVIDENCE_PAGE, pageOfSlots } from '../src/lib/evidence.ts';
 
-// Regression tests for v2/34_backend_audit_230.md. Each inverts the audit's PoC: the attack must now fail.
+// Regression tests for the 2.3.0 backend audit (B23-01 to B23-11). Each inverts the audit's PoC: the attack must now fail.
 const ROOT = join(import.meta.dir, '..');
 const src = (p: string) => readFileSync(join(ROOT, p), 'utf8');
 const MIN = 60_000;

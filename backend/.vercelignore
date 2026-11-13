@@ -1,4 +1,4 @@
-# Upload list for `vercel deploy` from backend/ (docs/HOSTING.md). The CLI does not skip .env files by default.
+# Upload list for `vercel deploy` from backend/ (README, Deploy). The CLI does not skip .env files by default.
 .env
 .env.*
 node_modules

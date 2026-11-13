@@ -46,7 +46,7 @@ describe('inbox blocklist lookup', () => {
   });
 });
 
-describe('inbox whoami (v2/37)', () => {
+describe('inbox whoami (multi-vault)', () => {
   test('returns the vault the token serves; an API without the route is null', async () => {
     const { inbox, seen } = inboxWith(() => ok({ shop: 'selfserve-e2e.ss-owner-e9c3db.testnet' }));
     expect(await inbox.whoami()).toEqual({ shop: 'selfserve-e2e.ss-owner-e9c3db.testnet' });

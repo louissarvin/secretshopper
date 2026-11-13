@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import { fromHex32, merkleProofHex, merkleRootHex, verifyMerkle } from '../src/merkle.ts';
 
-// Same fixed vectors as backend/test/merkle.test.ts and the contract (v2/32), from an independent Python hashlib
+// Same fixed vectors as backend/test/merkle.test.ts and the contract, from an independent Python hashlib
 // computation. Both copies of the tree must hold them, so the agent's acks match the tester's roots.
 const fill = (b: number) => Buffer.alloc(32, b).toString('hex');
 const VECTORS = [

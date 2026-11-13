@@ -16,7 +16,7 @@ const commit: NonNullable<PreflightFacts['commit']> = {
   luresLeftToday: 5,
 };
 
-describe('tester preflight (v2/37 section 6)', () => {
+describe('tester preflight (multi-vault)', () => {
   test('signing checks: owner first, then the key', () => {
     expect(decidePreflight(base)).toBe('ok');
     expect(decidePreflight({ ...base, ownerId: 'new-owner.testnet' })).toBe('owner_changed');

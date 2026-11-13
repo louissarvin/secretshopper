@@ -212,7 +212,7 @@ describe('POST /public/vault-plan builder', () => {
 
 });
 
-// v2/36 NF-02 and the NF-06 plan floor: caps follow the token, payee_delay cannot be set to frame the agent.
+// Audit findings NF-02 and NF-06 (plan floor): caps follow the token, payee_delay cannot be set to frame the agent.
 describe('NF-02 default caps follow the token decimals', () => {
   const withDecimals = (decimals: number) => {
     const chain = world();

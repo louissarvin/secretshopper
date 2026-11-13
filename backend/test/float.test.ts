@@ -5,7 +5,7 @@ const NEAR = 10n ** 24n;
 
 describe('reveal float headroom (V2-09)', () => {
   test('matches the contract reserve: storage at 1e19 yocto per byte plus the float', () => {
-    // 3 NEAR balance, 287,179 B of code and state (v2/26), 0.5 NEAR float
+    // 3 NEAR balance, 287,179 B of code and state (contracts/shop/tests/costs.rs), 0.5 NEAR float
     expect(floatHeadroom(3n * NEAR, 287_179, NEAR / 2n)).toBe(3n * NEAR - 287_179n * 10n ** 19n - NEAR / 2n);
   });
 

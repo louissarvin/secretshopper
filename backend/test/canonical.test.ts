@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import { canonicalJson, invoiceIdOf } from '../src/utils/canonical.ts';
 
-// Same algorithm as the browser version (16b §7.2, web/src/lib/near/commitment.ts), via WebCrypto.
+// Same algorithm as the browser version (web/src/lib/near/commitment.ts), via WebCrypto.
 const browserInvoiceIdOf = async (doc: unknown): Promise<string> => {
   const sortKeys = (v: unknown): unknown =>
     Array.isArray(v)

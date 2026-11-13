@@ -16,7 +16,7 @@ pub const PAY_METHODS: &str = "pay,decline,ack";
 pub const PROPOSE_METHODS: &str = "propose,decline,ack";
 const MAX_REASON: usize = 140;
 const MAX_LABEL: usize = 64;
-const REVEAL_BYTES: u128 = 600; // a scored reveal with demotion stores 549 B (v2/26)
+const REVEAL_BYTES: u128 = 600; // a scored reveal with demotion stores 549 B (measured cost profile)
 const FLUSH_MARGIN_BYTES: u128 = 2_000; // collections flush after the float check runs (V21-02)
                                         // drand quicknet (https://api.drand.sh/52db9ba70e0cc0f6eaf7803dd07447a1f5477735fd3f661792ba94600c84e971/info)
 pub const DRAND_GENESIS_S: u64 = 1_692_803_367;

@@ -52,7 +52,7 @@ export const createTesterChain = (o: { tester: Account; shopId: string; commitTg
     });
     return { txHash: outcome.transaction.hash, status: String(getTransactionLastResult(outcome)), outcome };
   },
-  /** Posts the Merkle root over every invoice id released at `releaseAtNs` (once per tick, v2/32). */
+  /** Posts the Merkle root over every invoice id released at `releaseAtNs` (once per tick). */
   releaseTx: async (releaseAtNs: string, root: string, count: number): Promise<{ txHash: string; outcome: Outcome }> => {
     const outcome = await o.tester.callFunctionRaw({
       contractId: o.shopId,

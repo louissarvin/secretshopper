@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 
-// Copy of backend/src/lib/proof/merkle.ts (the agent may not import backend/). Release-tick tree (v2/32); the fixed vectors
+// Copy of backend/src/lib/proof/merkle.ts (the agent may not import backend/). Release-tick tree; the fixed vectors
 // in both test suites keep them equal. Domain bytes 0x00 (leaf) and 0x01 (node) stop a leaf passing as a node.
 
 const ZERO = new Uint8Array(32);

@@ -1,4 +1,4 @@
-// Sandbox suite: every README claim and every audit fix (v2/21) maps to one test here.
+// Sandbox suite: every README claim and every audit fix maps to one test here.
 // Build first: `cargo near build non-reproducible-wasm` here and in tests/fixtures/ft.
 mod common;
 use common::*;
@@ -784,7 +784,7 @@ async fn batch_rules_enforced() -> anyhow::Result<()> {
     Ok(())
 }
 
-// ---------- re-audit (v2/25) regressions ----------
+// ---------- re-audit (V2-xx) regressions ----------
 
 #[tokio::test]
 async fn tlock_round_must_open_after_expiry() -> anyhow::Result<()> {
@@ -1536,9 +1536,9 @@ async fn delivery_needs_a_timely_matching_ack() -> anyhow::Result<()> {
     Ok(())
 }
 
-// ---------- 2.3.0 audit (v2/33): owner cannot frame Ignored ----------
+// ---------- 2.3.0 audit (V23-xx): owner cannot frame Ignored ----------
 
-// V23-04, V23-06, V23-11 (inverted proofs of concept from v2/33).
+// V23-04, V23-06, V23-11 (inverted proofs of concept from the 2.3.0 audit).
 #[tokio::test]
 async fn v23_owner_cannot_frame_ignored() -> anyhow::Result<()> {
     let e = setup(Opts {

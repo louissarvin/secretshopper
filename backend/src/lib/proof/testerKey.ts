@@ -1,6 +1,6 @@
 import { keyScope } from './accessKeys.ts';
 
-// Tester key scope check (v2/37 section 6), shared by the API's enable route and the tester's preflight.
+// Tester key scope check, shared by the API's enable route and the tester's preflight.
 // Pure: `keys` is view_access_key_list of the vault owner, as the RPC returns it.
 
 export const TESTER_METHODS = ['commit_batch', 'prove_delivery', 'release', 'reveal'] as const; // sorted

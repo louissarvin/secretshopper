@@ -1,6 +1,6 @@
 import { prismaQuery } from './prisma.ts';
 
-// Release ticks (v2/32) are recomputed from Invoice.deliverAt: every invoice, real or test, with one deliverAt is
+// Release ticks are recomputed from Invoice.deliverAt: every invoice, real or test, with one deliverAt is
 // one tick. Shared by the tester (release, delivery proofs) and the public read route; reads the public schema only.
 
 export interface ReleaseTick {

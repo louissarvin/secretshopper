@@ -8,6 +8,6 @@ export const HEX32_RE = /^[0-9a-f]{64}$/;
 export const CUID_RE = /^[a-z0-9]{20,32}$/;
 export const ED25519_PK_RE = /^ed25519:[1-9A-HJ-NP-Za-km-z]{43,44}$/;
 
-/** X-Shop header (v2/37 ADR-1): absent is `fallback`; anything but one valid account id is null. No case folding. */
+/** X-Shop header: absent is `fallback`; anything but one valid account id is null. No case folding. */
 export const parseShopHeader = (raw: unknown, fallback: string): string | null =>
   raw === undefined ? fallback : typeof raw === 'string' && isValidAccountId(raw) ? raw : null;

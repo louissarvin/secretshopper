@@ -1,4 +1,4 @@
-// Copies what the hosted read-only API serves from the local database to the hosted one (docs/HOSTING.md).
+// Copies what the hosted read-only API serves from the local database to the hosted one (README, Deploy).
 //
 //   SNAPSHOT_SOURCE_DATABASE_URL=...  SNAPSHOT_TARGET_DATABASE_URL=...  bun hosting-snapshot.ts --shop <vault> [--replace] [--dry-run]
 //

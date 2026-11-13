@@ -1,5 +1,5 @@
 /**
- * Creates a Secret Shopper vault in one step, replacing the manual near-cli sequence (v2/19).
+ * Creates a Secret Shopper vault in one step, replacing the manual near-cli sequence.
  *   Global (preferred): --code-hash <bs58 of a NEP-591 global contract published by hash>. One tx from the owner
  *     creates the vault, funds it, attaches the code and calls `new`; the vault never holds a key.
  *   Classic: --wasm <path>. A one-time key deploys, inits and deletes itself in one tx.

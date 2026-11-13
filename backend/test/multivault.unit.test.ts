@@ -8,7 +8,7 @@ import { createRegistry, pickRoundRobin } from '../src/lib/vaults.ts';
 import type { AccountState, VaultChain } from '../src/lib/vault/plan.ts';
 import { TESTER_METHODS } from '../src/lib/proof/testerKey.ts';
 
-// v2/37 package A, no database and no network.
+// Multi-vault (backend/README.md, Multiple vaults), no database and no network.
 const HASH = '5pxQNdWnhTJiaTKs6HrVv4SadLi1tWuACeeYmyaxgHAs';
 const DEFAULT = 'shop4.ss-owner-e9c3db.testnet';
 const VAULT = 'acme.alice.testnet';

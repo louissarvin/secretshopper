@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { buildGeneratorInput, buildMessages, checkDraft, createGenerator, draftRulesFor, layoutOf, parseDraft, payeeOf, PAYEE_IN_BODY_RATE, type DraftRules } from '../src/tester/generator.ts';
 import { emailSchema } from '../src/utils/intake.ts';
 
-// B1 blind test 2026-11-10: each tell found in docs/b1-blind-2026-11-10.md has a deterministic guard here.
+// B1 blind test 2026-11-10: each tell the B1 blind test report found has a deterministic guard here.
 
 const payee = 'a'.repeat(64);
 const vendor = { legalName: 'Brightmop Commercial Cleaning Pte Ltd', contactEmail: 'office@brightmop.sg.example', styleSet: [{ number: 'BM-1012', total: '1239.00', pay_to: 'brightmop.near' }] };

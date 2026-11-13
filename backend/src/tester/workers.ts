@@ -271,7 +271,7 @@ const atLeast = (version: string, min: [number, number]): boolean => {
   return a !== min[0] ? a > min[0] : b >= min[1];
 };
 
-// v2/32: one release(root) per tick once its items are visible to the agent, real and test alike.
+// Delivery proof: one release(root) per tick once its items are visible to the agent, real and test alike.
 export const postReleases = guard(releaseLog, async (ctx: VaultCtx) => {
   if (!signable(ctx)) return releaseLog.debug('tester key not usable; skipping', { shop: ctx.shop, state: ctx.state });
   const SHOP = ctx.shop;
@@ -313,7 +313,7 @@ export const postReleases = guard(releaseLog, async (ctx: VaultCtx) => {
 
 /**
  * Delivery proof for an undecided lure, only when every check the contract makes holds (an invalid proof
- * panics the reveal). Null means reveal without it: the slot is then Unanswered, as before v2/32.
+ * panics the reveal). Null means reveal without it: the slot is then Unanswered, as before contract 2.3.0.
  */
 const deliveryFor = async (ctx: VaultCtx, invoiceId: string, slot: ChainTestSlot, minAnswerNs: bigint): Promise<DeliveryArg | null> => {
   const cid = ctx.companyId;
@@ -578,7 +578,7 @@ const each = (job: (ctx: VaultCtx) => Promise<void>) => forEachVault(contexts, j
 const commitQueue = createQueue(commitLog);
 const commitTasks = new Map<string, { cron: string; task: StoppableTask }>();
 
-// v2/37: a commit task per vault on its own cron, all through one queue (generation shares one NEAR AI key).
+// Multi-vault: a commit task per vault on its own cron, all through one queue (generation shares one NEAR AI key).
 const reconcileCommitTasks = async (): Promise<void> => {
   const list = await contexts();
   // without generation a scheduled default batch would be all voids: commit nothing rather than a hollow scorecard

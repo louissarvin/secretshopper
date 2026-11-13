@@ -2,7 +2,7 @@ import { createHmac, createPrivateKey, createPublicKey } from 'node:crypto';
 import { KeyPair, type KeyPairString } from 'near-api-js';
 import { base58 } from '@scure/base';
 
-// ADR-2 (v2/37): one tester key per vault, derived from TESTER_KEY_SEED. NEAR keeps one access key per public key per
+// Multi-vault: one tester key per vault, derived from TESTER_KEY_SEED. NEAR keeps one access key per public key per
 // account and an FC key has one receiver, so one owner with two vaults needs two keys. Nothing is stored.
 
 export const KEY_LABEL = 'secret-shopper/tester-key/v1';

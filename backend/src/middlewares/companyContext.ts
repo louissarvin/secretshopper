@@ -10,7 +10,7 @@ declare module 'fastify' {
   }
 }
 
-/** The vault an owner or vendor request is about: `X-Shop`, or SHOP_CONTRACT_ID when absent (v2/37 ADR-1). */
+/** The vault an owner or vendor request is about: `X-Shop`, or SHOP_CONTRACT_ID when absent. */
 export const shopFromRequest = (request: FastifyRequest): { ok: true; shop: string } | { ok: false } => {
   // account ids are lowercase already: no normalization, so an uppercase id is refused rather than guessed
   const shop = parseShopHeader(request.headers['x-shop'], SHOP_CONTRACT_ID);

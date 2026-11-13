@@ -30,7 +30,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA tester TO ss_tester
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO ss_api, ss_tester;
 ALTER DEFAULT PRIVILEGES IN SCHEMA tester GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO ss_tester;
 
--- Multi-vault (v2/37): the API may not rewrite tester-written columns on companies.
+-- Multi-vault: the API may not rewrite tester-written columns on companies.
 REVOKE UPDATE ON public.companies FROM ss_api;
 GRANT UPDATE ("name", "inboxTokenHash", "inboxTokenCreatedAt", "testerEnabled", "testerEnabledAt", "testerSignerId", "testPercent", "commitCron")
   ON public.companies TO ss_api;

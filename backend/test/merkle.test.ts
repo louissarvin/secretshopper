@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { fromHex32, merkleDepth, merkleProofHex, merkleRootHex, verifyMerkle } from '../src/lib/proof/merkle.ts';
 
 // Expected roots and proofs come from an independent Python hashlib computation, not from this code.
-// The contract's unit test asserts the same vectors (v2/32).
+// The contract's unit test asserts the same vectors.
 const fill = (b: number) => Buffer.alloc(32, b).toString('hex');
 const VECTORS = [
   { name: 'a_count_1', ids: [fill(0x11)], root: '4635e1fa62a599a7880a8d14a56f720a1d40f6e5448ab5a5e39bedc8bd87fa8e', proofs: [{ index: 0, proof: [] as string[] }] },
@@ -36,7 +36,7 @@ const flip = (hex: string, at = 0) => {
 };
 const verifyHex = (root: string, id: string, index: number, proof: string[], count: number) => verifyMerkle(b(root), b(id), index, proof.map(b), count);
 
-describe('release Merkle tree (v2/32) fixed vectors', () => {
+describe('release Merkle tree fixed vectors', () => {
   for (const v of VECTORS) {
     test(`${v.name} root`, () => expect(merkleRootHex(v.ids)).toBe(v.root));
     for (const p of v.proofs) {
@@ -106,7 +106,7 @@ describe('release Merkle tree properties', () => {
     }));
     const fixture = {
       description:
-        'v2/32 release tree: leaf = sha256(0x00 || id32), leaves sorted ascending, padded with 32 zero bytes to a power of two, node = sha256(0x01 || left || right), proof = siblings leaf to root. Lowercase hex. Checked by backend/test/merkle.test.ts',
+        'release Merkle tree: leaf = sha256(0x00 || id32), leaves sorted ascending, padded with 32 zero bytes to a power of two, node = sha256(0x01 || left || right), proof = siblings leaf to root. Lowercase hex. Checked by backend/test/merkle.test.ts',
       vectors,
     };
     writeFileSync(join(dir, 'merkle.json'), JSON.stringify(fixture, null, 2) + '\n');

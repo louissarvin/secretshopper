@@ -335,7 +335,7 @@ try {
   const reservedAccounts = [shopId, ft];
   const runTool = createRunTool({ ...vault, reservedAccounts, getVendor, intentsEnabled: false, tokenDecimals: 6 });
 
-  // v2/32 delivery proof: the tester posts the tick's root, the agent harness signs the root of what it received
+  // Delivery proof: the tester posts the tick's root, the agent harness signs the root of what it received
   const tickNs = releaseAtNs(deliveredAt);
   const postedRoot = testerRoot(inbox.map((it) => it.id));
   const release = await tester.releaseTx(tickNs, postedRoot, inbox.length);

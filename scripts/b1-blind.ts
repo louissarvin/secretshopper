@@ -1,5 +1,5 @@
 /**
- * B1 blind test (16a §5.3): can a strong model tell generated tests from real inbox items?
+ * B1 blind test: can a strong model tell generated tests from real inbox items?
  * Pass: accuracy <= 0.60 and AUC <= 0.65. Judge calls go through the verified client and every receipt is saved,
  * so the published number is itself checkable. Needs Bun >= 1.4.4.
  * Env: NEARAI_API_KEY_TESTER, JUDGE_MODEL (default z-ai/glm-5.3-flash), B1_RECEIPTS_OUT (default scripts/out/b1-receipts.json),

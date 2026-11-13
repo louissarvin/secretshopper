@@ -8,7 +8,7 @@ const lint = (filename: string, code: string) => {
   return { code: p.exitCode, out: p.stdout.toString() };
 };
 
-describe('API cannot import tester code (16b §5.3)', () => {
+describe('API cannot import tester code', () => {
   test('a route importing src/tester fails lint', () => {
     const r = lint('src/routes/evil.ts', "import { unseal } from '../tester/seal.ts';\nexport const x = unseal;\n");
     expect(r.code).toBe(1);

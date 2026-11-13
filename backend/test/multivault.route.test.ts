@@ -4,7 +4,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { TESTER_METHODS } from '../src/lib/proof/testerKey.ts';
 
-// v2/37 package A against Postgres (TEST_DATABASE_URL, a disposable database). Chain and FastNEAR tx API are a local
+// Multi-vault against Postgres (TEST_DATABASE_URL, a disposable database). Chain and FastNEAR tx API are a local
 // stand-in; the app runs in test/helpers/multivault.scenario.ts in its own process.
 const DB = process.env.TEST_DATABASE_URL;
 const HASH = '5pxQNdWnhTJiaTKs6HrVv4SadLi1tWuACeeYmyaxgHAs';

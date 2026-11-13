@@ -12,7 +12,7 @@ export interface NearConfig {
   fastnearApiKey: string;
 }
 
-// Endpoints per v2/19_testnet_path.md §3 and 14 §3.1.
+// Public endpoints per network; each can be overridden by env.
 const DEFAULTS: Record<NearNetwork, Omit<NearConfig, 'network' | 'fastnearApiKey'>> = {
   testnet: {
     rpcUrl: 'https://rpc.testnet.fastnear.com',

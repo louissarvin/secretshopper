@@ -1,6 +1,6 @@
 /**
  * K5 check: after `cd agent && bun --env-file=.env index.ts` processed one real invoice and one test,
- * print the on-chain decision for each (16b §9). Read-only. Env: NEAR_NETWORK, AGENT_VAULT_ID, INVOICE_IDS (comma list).
+ * print the on-chain decision for each. Read-only. Env: NEAR_NETWORK, AGENT_VAULT_ID, INVOICE_IDS (comma list).
  */
 import { req, view } from './lib/net.ts';
 

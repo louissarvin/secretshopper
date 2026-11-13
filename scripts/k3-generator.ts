@@ -1,5 +1,5 @@
 /**
- * K3: one test generation through NEAR AI Cloud with a verified receipt (16b §9).
+ * K3: one test generation through NEAR AI Cloud with a verified receipt.
  * Writes backend/test/fixtures/receipt-k3.json, which backend/test/receipt.verify.test.ts re-checks offline.
  * Needs Bun >= 1.4.4 (the SDK's Node TLS binding fails on 1.3.1). Env: NEARAI_API_KEY_TESTER, GENERATOR_MODEL, GENERATOR_FALLBACK_MODELS.
  */

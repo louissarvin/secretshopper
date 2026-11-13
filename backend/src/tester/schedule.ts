@@ -1,4 +1,4 @@
-// ADR-5 (v2/37): one commit cron per vault, reconciled as settings change. Config-free so tests need no env.
+// Multi-vault: one commit cron per vault, reconciled as settings change. Config-free so tests need no env.
 
 export interface StoppableTask {
   stop: () => void;

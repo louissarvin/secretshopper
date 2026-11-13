@@ -44,7 +44,7 @@ const bunAtLeast = (min: string): boolean => {
   const [x, y, z] = min.split('.').map(Number);
   return a !== x ? a > x : b !== y ? b > y : c >= z;
 };
-// @nearai/inference-sdk/node needs Bun >= 1.4.4 for its TLS binding (17a §5)
+// @nearai/inference-sdk/node needs Bun >= 1.4.4 for its TLS binding
 export const GENERATION_BLOCKER: string | null = !NEARAI_API_KEY_TESTER
   ? 'NEARAI_API_KEY_TESTER is not set'
   : !bunAtLeast('1.4.4')
@@ -85,7 +85,7 @@ export const SWEEP_FUNDER_KEY = sweepComplete ? process.env.SWEEP_FUNDER_KEY! : 
 export const SWEEP_FUND_NEAR = process.env.SWEEP_FUND_NEAR || '0.05'; // covers account storage plus gas at 0.001 NEAR/Tgas
 if (!/^\d+(\.\d{1,24})?$/.test(SWEEP_FUND_NEAR)) fatal('SWEEP_FUND_NEAR must be a decimal NEAR amount');
 
-// Multi-vault (v2/37). Unset seed: only the default vault (SHOP_CONTRACT_ID) is served, exactly as before.
+// Multi-vault (backend/README.md, Multiple vaults). Unset seed: only the default vault (SHOP_CONTRACT_ID) is served, exactly as before.
 const seedHex = process.env.TESTER_KEY_SEED || '';
 if (seedHex && !/^[0-9a-fA-F]{64}$/.test(seedHex)) fatal('TESTER_KEY_SEED must be 64 hex chars (32 bytes)');
 // never logged; derives one FC key per vault (src/tester/keys.ts)

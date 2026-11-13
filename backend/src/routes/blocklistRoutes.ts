@@ -34,7 +34,7 @@ const READ_TTL_MS = 5_000;
 const accountCache = createLru<Awaited<ReturnType<typeof entriesFor>>>(256, READ_TTL_MS);
 const listCache = createLru<Awaited<ReturnType<typeof listEntries>>>(64, READ_TTL_MS);
 
-// evidence is read on, and the entry recorded for, the reporter's own vault (v2/37 section 7)
+// evidence is read on, and the entry recorded for, the reporter's own vault
 const report = async (request: FastifyRequest, reply: FastifyReply, reporter: { kind: ReporterKind; id: string; vault: string }) => {
   const b = await parseOr400(reportBody, request.body, reply);
   if (!b.ok) return;

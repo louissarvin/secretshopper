@@ -2,7 +2,7 @@ import type { InboxItem } from './inbox.ts';
 import type { Release } from './vault.ts';
 import { merkleRootHex } from './merkle.ts';
 
-// v2/32: the agent signs one Merkle root per inbox release tick. A tick holds only ids the decision loop decided or
+// Delivery proof: the agent signs one Merkle root per inbox release tick. A tick holds only ids the decision loop decided or
 // found decided, so a backend that answers two walks differently cannot add an id (AG-01, AG-03).
 // Acks have their own rolling cap (48 per 24 h, V23-06) and never spend max_decisions_per_day; a refused ack backs off.
 

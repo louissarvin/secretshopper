@@ -12,7 +12,7 @@ import { handleError, handleNotFoundError, handleServerError, handleUpstreamErro
 import { accountIdSchema, parseOr400 } from '../utils/validation.ts';
 import { cached } from '../utils/ttlCache.ts';
 
-// Tester onboarding (v2/37 section 6): what key to add, and the owner's opt-in. The tester process writes the public
+// Tester onboarding: what key to add, and the owner's opt-in. The tester process writes the public
 // key and state; this API only reads them and never sees the seed.
 
 const shopParams = z.object({ shopId: accountIdSchema }).strict();
@@ -129,7 +129,7 @@ export const testerCompanyRoutes: FastifyPluginCallback = (app: FastifyInstance,
       data = { ...data, testerSignerId: r.signerId, ...(row!.testerEnabled ? {} : { testerEnabledAt: new Date() }) };
     }
     try {
-      // only columns ss_api may update (prisma/roles.sql, v2/37)
+      // only columns ss_api may update (prisma/roles.sql)
       const c = await prismaQuery.company.update({ where: { id: company.id }, data, select: testerSelect });
       registry.invalidate();
       request.log.info({ shop: company.shopContractId, enabled: c.testerEnabled }, 'tester settings changed');

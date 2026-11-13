@@ -2,7 +2,7 @@ import { AccountDoesNotExistError, ContractExecutionError, GlobalContractCodeDoe
 import { rpc } from './client.ts';
 import type { AccessKeyEntry, AccountState, VaultChain } from '../vault/plan.ts';
 
-// Single provider: "does not exist" is an answer here, and the failover provider would wrap it (14 §10.2).
+// Single provider: "does not exist" is an answer here, and the failover provider would wrap it.
 // Missing account, code or method is null; anything else (RPC down, timeouts) throws so callers answer 502.
 
 const missing = (e: unknown) => e instanceof AccountDoesNotExistError || e instanceof ContractExecutionError;

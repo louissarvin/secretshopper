@@ -1,4 +1,4 @@
-// Audit 2.1.0 findings (v2/27), turned into regressions after the fixes. Build the wasm first; run with --test-threads=4.
+// Audit 2.1.0 findings (V21-xx), turned into regressions after the fixes. Build the wasm first; run with --test-threads=4.
 mod common;
 use common::*;
 use near_workspaces::types::{AccessKeyPermission, Gas, KeyType, NearToken, SecretKey};

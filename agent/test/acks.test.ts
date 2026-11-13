@@ -72,7 +72,7 @@ const setup = (rows: { id: string; at: number }[], startMs: number) => {
   return { st, deps, c, logs, cur, next, sync, now: () => now, setNow: (t: number) => (now = t) };
 };
 
-describe('agent release acks (v2/32)', () => {
+describe('agent release acks', () => {
   test('one ack per tick over every id of that tick, after the release is posted', async () => {
     const tick1 = [id(3), id(1), id(2)];
     const tick2 = [id(9)];

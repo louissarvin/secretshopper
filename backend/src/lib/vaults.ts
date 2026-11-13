@@ -1,6 +1,6 @@
 import { createBudget } from './intents/quote.ts';
 
-// Registered vaults for the workers (v2/37 section 5). The default vault (SHOP_CONTRACT_ID) comes first.
+// Registered vaults for the workers. The default vault (SHOP_CONTRACT_ID) comes first.
 // No database import here: the loader comes from src/lib/registry.ts, so tests can import this module safely.
 
 export interface RegisteredVault {

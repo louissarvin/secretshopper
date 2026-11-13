@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
-// The agent never gets database credentials and never imports backend code (16b §5.3).
+// The agent never gets database credentials and never imports backend code.
 const root = join(import.meta.dir, '..');
 const DB_VAR = ['DATABASE', 'URL'].join('_'); // built so this file does not contain the literal
 

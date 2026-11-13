@@ -313,7 +313,7 @@ export const publicRoutes: FastifyPluginCallback = (app: FastifyInstance, _opts,
     }
   });
 
-  // v2/32: released ticks with their sorted invoice ids, so anyone can recompute the root posted on chain.
+  // Delivery proof: released ticks with their sorted invoice ids, so anyone can recompute the root posted on chain.
   // Closed ticks only (as the tester posts them), never a future tick: that would show when tests land.
   app.get('/releases/:shopId', { config: releasesLimit }, async (request: FastifyRequest, reply: FastifyReply) => {
     const p = await parseOr400(shopParams, request.params, reply);

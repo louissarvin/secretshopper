@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import { createQueue, forEachVault, perVaultGuard } from '../src/tester/runner.ts';
 import type { Logger } from '../src/utils/logger.ts';
 
-// ADR-4 (v2/37): one tester process serves every vault, so nothing one vault does may stop another.
+// Multi-vault: one tester process serves every vault, so nothing one vault does may stop another.
 const quiet: Logger = { debug: () => {}, info: () => {}, warn: () => {}, error: () => {} };
 const ctx = (shop: string) => ({ shop });
 

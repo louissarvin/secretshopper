@@ -204,7 +204,7 @@ describe('SS-B07 crash recovery timing', () => {
   test('recovery runs at tester start and every 10 minutes, not only at the next daily commit', () => {
     expect(TESTER_SCHEDULES.recover).toBe('*/10 * * * *');
     const entry = src('tester.ts');
-    // v2/37: every job takes a vault context; the default vault recovers first, then the scheduled run covers every vault
+    // multi-vault: every job takes a vault context; the default vault recovers first, then the scheduled run covers every vault
     expect(entry.indexOf('await recoverPrepared(def)')).toBeGreaterThan(-1);
     expect(entry.indexOf('await recoverPrepared(def)')).toBeLessThan(entry.indexOf('startTesterWorkers()'));
     expect(src('src/tester/workers.ts')).toContain('cron.schedule(TESTER_SCHEDULES.recover, each(recoverPrepared))');

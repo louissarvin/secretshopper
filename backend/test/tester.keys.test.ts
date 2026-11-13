@@ -4,7 +4,7 @@ import { KeyPair, type KeyPairString } from 'near-api-js';
 import { base58 } from '@scure/base';
 import { KEY_LABEL, publicKeyOf, testerKeyFor, testerSeedFor } from '../src/tester/keys.ts';
 
-// ADR-2 (v2/37): per-vault tester keys from one seed. The vector pins the derivation: changing it orphans every
+// Multi-vault: per-vault tester keys from one seed. The vector pins the derivation: changing it orphans every
 // key an owner has added, so a change must come with a new label (v2) and a re-add by each owner.
 const SEED = Buffer.from('00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff', 'hex');
 const VAULT = 'selfserve-e2e.ss-owner-e9c3db.testnet';

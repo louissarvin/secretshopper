@@ -1,5 +1,5 @@
 /**
- * K2: the locked, armed vault pays a never-existing implicit account twice (16b §9, testnet per v2/19 §2).
+ * K2: the locked, armed vault pays a never-existing implicit account twice, on testnet.
  * Pass: payee balance = 2 x amount; vault NEAR drops by one storage deposit, not two (second is refunded).
  * Spends real tokens on mainnet. Env: NEAR_NETWORK, AGENT_VAULT_ID, AGENT_PRIVATE_KEY, USDC_CONTRACT_ID, K2_AMOUNT (default 10000 = 0.01).
  */

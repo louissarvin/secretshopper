@@ -4,7 +4,7 @@ import type { FastifyInstance } from 'fastify';
 import { readOnlyAllows } from '../src/config/hosted.ts';
 import { appUrlOf, clientIpOf, handleWithFastify } from '../src/lib/hosted/bridge.ts';
 
-// HOSTED_READONLY=1 (docs/HOSTING.md): only public reads are served, nothing writes, and the Vercel bridge maps paths.
+// HOSTED_READONLY=1 (README, Deploy): only public reads are served, nothing writes, and the Vercel bridge maps paths.
 
 describe('readOnlyAllows', () => {
   test('public reads, health and preflight pass', () => {

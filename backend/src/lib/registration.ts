@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { readVault } from './vault/view.ts';
 import type { VaultChain } from './vault/plan.ts';
 
-// Self-serve vault registration (v2/37 section 2). Pure: chain, tx API and database come in through deps.
+// Self-serve vault registration. Pure: chain, tx API and database come in through deps.
 
 export interface RegistrationDeps {
   chain: VaultChain;

@@ -1,5 +1,5 @@
 {
-  "description": "v2/32 release tree: leaf = sha256(0x00 || id32), leaves sorted ascending, padded with 32 zero bytes to a power of two, node = sha256(0x01 || left || right), proof = siblings leaf to root. Lowercase hex. Checked by backend/test/merkle.test.ts",
+  "description": "release Merkle tree: leaf = sha256(0x00 || id32), leaves sorted ascending, padded with 32 zero bytes to a power of two, node = sha256(0x01 || left || right), proof = siblings leaf to root. Lowercase hex. Checked by backend/test/merkle.test.ts",
   "vectors": [
     {
       "name": "a_count_1",

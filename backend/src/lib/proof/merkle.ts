@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 
-// Release-tick Merkle tree (v2/32), byte for byte the contract's. agent/src/merkle.ts is a copy; the fixed vectors
+// Release-tick Merkle tree, byte for byte the contract's. agent/src/merkle.ts is a copy; the fixed vectors
 // in both test suites keep them equal. Domain bytes 0x00 (leaf) and 0x01 (node) stop a leaf passing as a node.
 
 const ZERO = new Uint8Array(32);
