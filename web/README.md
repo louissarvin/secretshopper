@@ -154,4 +154,4 @@ src/
 
 ## Logo
 
-`public/logo.svg` is a vector trace of `brand/logo-source.svg` (the original 887 KB export with embedded PNGs) in cobalt `#3A4CFF`; `public/favicon.svg`, `favicon.ico` and `apple-touch-icon.png` put it on ink. To retrace: render the source large with `rsvg-convert`, threshold its alpha and run `potrace -s --turdsize 20`.
+`public/logo.svg` is a vector trace of `brand/logo-source.svg` (the original 887 KB export with embedded PNGs) in cobalt `#3A4CFF`; `public/logo.svg` is also the tab icon; `favicon.ico` and `apple-touch-icon.png` are transparent renders of it. To retrace: render the source large with `rsvg-convert`, threshold its alpha and run `potrace -s --turdsize 20`.
