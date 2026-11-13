@@ -291,7 +291,7 @@ Plan request (strict; unknown fields are 400):
 | `name` | One account-id part (lowercase letters and digits, single `-` or `_` inside); the vault is `<name>.<ownerId>`, must not exist and must be a valid id (64 characters at most) |
 | `tokenId` | Optional, default `VAULT_DEFAULT_TOKEN_ID`; needs `ft_metadata` and `storage_balance_bounds` |
 | `policy` | Optional partial override of `defaultPolicy`, same field names and types as the contract `Policy`; the merge must pass `checkPolicy` and `storage_deposit` must be at least the token's `storage_balance_bounds.min` |
-| `fundNear` | Decimal NEAR, at least `minFundingYocto` for the merged policy (0.8606 NEAR for the default); the owner must be able to spend it plus the storage deposit and about 0.05 NEAR in fees |
+| `fundNear` | Decimal NEAR, at least `minFundingYocto` for the merged policy (1.1106 NEAR for the default gas-key policy: storage, float, the gas key, its re-key reserve and headroom); the owner must be able to spend it plus the storage deposit and about 0.05 NEAR in fees |
 
 Plan errors use the standard envelope with extra keys inside `error`. `fields` is `[{ field, message }]` with `field` one of `ownerId`, `name`, `vendorId`, `tokenId`, `fundNear` or `policy.<key>` (an unknown key gives its own path):
 

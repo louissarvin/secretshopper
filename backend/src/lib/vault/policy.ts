@@ -73,10 +73,13 @@ export const DEFAULT_POLICY_DECIMALS = 6; // DEFAULT_POLICY caps are tUSDC base 
 export const gasKeyCost = (p: Policy): bigint =>
   (p.key_nonces ?? 0) > 0 ? BigInt(p.key_allowance) + (GAS_KEY_BASE_BYTES + GAS_KEY_LANE_BYTES * BigInt(p.key_nonces ?? 0)) * BYTE : 0n;
 
-/** Least NEAR a new vault needs: its storage, the reveal float (the contract refuses writes below it), the first gas-key arming and headroom. */
+/** accept_key also needs key_allowance free beyond the gas key, held once Armed for the demotion re-key (V23-08). */
+export const rekeyReserve = (p: Policy): bigint => ((p.key_nonces ?? 0) > 0 ? BigInt(p.key_allowance) : 0n);
+
+/** Least NEAR a new vault needs: its storage, the reveal float (the contract refuses writes below it), the first gas-key arming, its re-key reserve and headroom. */
 export const minFunding = (c: Code, policy: Policy): bigint => {
   const code = c.kind === 'classic' ? BigInt(c.wasm.length) : 0n;
-  return (code + STATE_BYTES) * BYTE + BigInt(policy.min_near_float) + gasKeyCost(policy) + HEADROOM;
+  return (code + STATE_BYTES) * BYTE + BigInt(policy.min_near_float) + gasKeyCost(policy) + rekeyReserve(policy) + HEADROOM;
 };
 
 /** Refuses policies the contract or the tester would reject later, before anything is signed. */

@@ -266,7 +266,7 @@ export const buildVaultPlan = async (raw: unknown, cfg: PlanConfig, chain: Vault
   if (BigInt(policy.payee_delay) < MIN_PLAN_PAYEE_DELAY_NS)
     add('policy.payee_delay', `payee_delay must be at least 1 h (${MIN_PLAN_PAYEE_DELAY_NS} ns), so the owner cannot delist a payee and frame the agent in one block`);
   const need = minFunding({ kind: 'global', codeHash: new Uint8Array(32) }, policy);
-  if (fund < need) add('fundNear', `fund at least ${formatNear(need)} NEAR (storage, reveal float, first gas-key arming and headroom)`);
+  if (fund < need) add('fundNear', `fund at least ${formatNear(need)} NEAR (storage, reveal float, first gas-key arming, its re-key reserve and headroom)`);
 
   const [owner, vendor, vault, published, meta, bounds] = await Promise.all([
     chain.account(body.ownerId),

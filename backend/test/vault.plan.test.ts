@@ -67,8 +67,10 @@ describe('vault policy (moved from scripts/lib/vault-deploy.ts)', () => {
   });
 
   test('minimum funding for the default gas-key policy', () => {
-    // 600 B state + 0.5 float + 0.25 gas key + (120 + 4 * 85) B lanes + 0.1 headroom
-    expect(minFunding({ kind: 'global', codeHash: new Uint8Array(32) }, { ...DEFAULT_POLICY })).toBe(860_600_000_000_000_000_000_000n);
+    // 600 B state + 0.5 float + 0.25 gas key + (120 + 4 * 85) B lanes + 0.25 re-key reserve (V23-08) + 0.1 headroom
+    expect(minFunding({ kind: 'global', codeHash: new Uint8Array(32) }, { ...DEFAULT_POLICY })).toBe(1_110_600_000_000_000_000_000_000n);
+    // a classic agent key needs neither the gas key nor its reserve
+    expect(minFunding({ kind: 'global', codeHash: new Uint8Array(32) }, { ...DEFAULT_POLICY, key_nonces: 0 })).toBe(606_000_000_000_000_000_000_000n);
   });
 
   test('NEAR amounts convert exactly', () => {
@@ -117,7 +119,7 @@ describe('POST /public/vault-plan builder', () => {
       },
     ]);
     expect(r.plan.token).toEqual({ id: TOKEN, symbol: 'tUSDC', decimals: 6 });
-    expect(r.plan.minFundingYocto).toBe('860600000000000000000000');
+    expect(r.plan.minFundingYocto).toBe('1110600000000000000000000');
     expect(r.plan.warnings).toEqual([]);
     expect(r.plan.cli[0]).toBe(
       `near transaction construct-transaction ${OWNER} receiver-id shop.${OWNER} add-action create-account add-action transfer '1500000000000000000000000 yoctonear' ` +
@@ -171,8 +173,9 @@ describe('POST /public/vault-plan builder', () => {
   });
 
   test('funding below the minimum is refused', async () => {
-    const r = await refused(body({ fundNear: '0.86' }));
-    expect(r.problems).toEqual([{ field: 'fundNear', message: 'fund at least 0.8606 NEAR (storage, reveal float, first gas-key arming and headroom)' }]);
+    // 1 NEAR could not arm the default gas key on testnet (selfserve-e2e, 2026-11-13)
+    const r = await refused(body({ fundNear: '1' }));
+    expect(r.problems).toEqual([{ field: 'fundNear', message: 'fund at least 1.1106 NEAR (storage, reveal float, first gas-key arming, its re-key reserve and headroom)' }]);
   });
 
   test('a policy the contract would reject is refused', async () => {
