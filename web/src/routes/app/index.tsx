@@ -3,6 +3,7 @@ import ActivityFeed from '@/components/ActivityFeed'
 import { LedgerDownload } from '@/components/Downloads'
 import ScheduleLine from '@/components/ScheduleLine'
 import TwoSided from '@/components/TwoSided'
+import VaultNear from '@/components/VaultNear'
 import CountUp from '@/components/elements/CountUp'
 import { EmptyState, ErrorState, Skel } from '@/components/QueryState'
 import {
@@ -306,6 +307,16 @@ function Dashboard() {
             </EmptyState>
           )}
         </div>
+      </div>
+      <div
+        className="panel"
+        style={{ marginTop: 12, display: 'grid', gap: 12 }}
+      >
+        <div className="ptop">
+          <h3>Vault NEAR</h3>
+          <span className="src">gas, storage and reveals</span>
+        </div>
+        <VaultNear vault={shop} />
       </div>
       <div style={{ marginTop: 12 }}>
         <ActivityFeed
