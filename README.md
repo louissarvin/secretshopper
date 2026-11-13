@@ -575,7 +575,7 @@ NEAR HACKATHON (1 to 14 Nov 2026). Tracks: `security`, `business`.
 Disclosed per HACKATHON.md Q-003 and Q-005. All work was done from 2026-10-19 onward.
 
 - **Baseline:** `backend/` starts from our pre-hackathon Kwek Labs backend starter (Fastify, Prisma, config and error handling layout) and `web/` from the Kwek Labs web starter (TanStack Start, Vite, Tailwind). Everything else was written for this hackathon: the contract, the tester, the agent, the scripts, every Secret Shopper route, worker and page.
-- **Diff:** the tags `pre-hackathon` and `hackathon-submission` mark the baseline and the submission. The diff link is added here when the repository is published.
+- **Diff:** [pre-hackathon...hackathon-submission](https://github.com/louissarvin/secretshopper/compare/pre-hackathon...hackathon-submission). The history starts at the first commit (`597b94a`, 2026-11-01), so `pre-hackathon` marks that commit; the starter files were not kept as a separate commit.
 - **Vendored:** near-sdk-rs `examples/fungible-token/ft` at tag `near-sdk-v5.29.1`, unmodified, as the test-only tUSDC in `contracts/shop/tests/fixtures/ft` ([SOURCE.md](contracts/shop/tests/fixtures/ft/SOURCE.md)).
 - **Libraries:** near-sdk, near-workspaces, near-sandbox, near-api-js, @nearai/inference-sdk, openai, tlock-js, @hot-labs/near-connect, Fastify, Prisma, zod, ethers (EIP-191 recovery only), TanStack, GSAP, Lenis. Versions in [the stack](#the-stack) and each `package.json` and `Cargo.toml`.
 - **Other project:** some of us also built **Fair Warning** (tracks `defi`, `open`) at this hackathon. It is an independent project with its own repository and no shared code.
