@@ -23,7 +23,7 @@ Secret Shopper mixes committed fake fraud invoices into the inbox of an AI payme
 ![Tests](https://img.shields.io/badge/Tests-58_contract_·_378_backend_·_109_agent_·_79_e2e_checks-2ea44f)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-**[Live testnet run](#the-full-lifecycle-step-by-step-with-a-real-example)** · **[Check it yourself](#try-it-in-two-minutes)** · **[Deployed contracts](#live-deployment)** · **[What is real](#what-is-real-vs-simulated)** · **[Claims](#claims-and-how-to-check-them)** · **[For AI reviewers](AGENTS.md)**
+**[Live demo](https://secretshopper-web.vercel.app)** · **[Live testnet run](#the-full-lifecycle-step-by-step-with-a-real-example)** · **[Check it yourself](#try-it-in-two-minutes)** · **[Deployed contracts](#live-deployment)** · **[What is real](#what-is-real-vs-simulated)** · **[Claims](#claims-and-how-to-check-them)** · **[For AI reviewers](AGENTS.md)**
 
 </div>
 
@@ -179,7 +179,8 @@ sequenceDiagram
 | Policy | [scripts/fixtures/policy-testnet.json](scripts/fixtures/policy-testnet.json): 3 slots per batch every 6 h, test TTL 12 h, answer time `min_answer` 4 h, reveal grace 6 h, re-arm cooldown 1 h, payee delay 1 h, limits delay 24 h, `key_nonces` 4. Limits since `set_limits` [6BdUaNEn...](https://testnet.nearblocks.io/txns/6BdUaNEnx3ZKwZuDGhJp7gYGJUQhEF5qSVBgdgWv7rjg): 2 tUSDC per payment, 5 tUSDC per rolling 24 h, 4 new payees a day |
 | NEAR AI models | Agent `z-ai/glm-5.3-flash`; lure writer `Qwen/Qwen3.8-27B-abliterated` (NEAR AI RED). Both attested |
 | Older vaults (kept as evidence) | `shop3` (2.3.0, classic deploy, needs `--allow-unattested`), `shop2` (2.0.0, the phase A attack and the keeper reveals in [Live evidence](#live-evidence)), `shop` (v1, retired) |
-| Web app and API | Run locally ([Run locally](#run-locally)). No hosted deployment yet |
+| Web app | [secretshopper-web.vercel.app](https://secretshopper-web.vercel.app), read-only: the public scorecard, every test page, the ledger, the blocklist and the vault planner, with contract views read live from the RPC. The owner and vendor consoles need sign-in and run locally ([Run locally](#run-locally)) |
+| API | [api-production-cb6beffa.up.railway.app](https://api-production-cb6beffa.up.railway.app/public/config) on Railway, `HOSTED_READONLY=1`: public `GET` routes and the vault planner only, reading a snapshot of the public rows as the `SELECT`-only role `ss_ro` |
 
 The testnet wasm was built with `cargo near build non-reproducible-wasm` and reproduces byte for byte on another machine with the path remap in [Try it in two minutes](#try-it-in-two-minutes), step 4. The Docker-based reproducible build and the NEP-330 source link wait on the public repository URL.
 
@@ -363,9 +364,9 @@ Web app on http://localhost:3200, API on http://localhost:3700, vault shop4. The
 | Part | How |
 |:-|:-|
 | API and tester | `backend/Dockerfile` (Bun 1.4.4 slim) runs the API on port 3700; run the tester as a second container with `bun tester.ts`. Create the schema once with `bun run db:push` as the database owner, then apply [`backend/prisma/roles.sql`](backend/prisma/roles.sql) so the API connects as `ss_api` and the tester as `ss_tester` |
-| Read-only API on Vercel | `backend/vercel.json` deploys one Bun function, `api/server.ts`. `HOSTED_READONLY=1` (forced there) serves only `/`, `/health`, `/ready`, `GET /public/*` and `POST /public/vault-plan`, and its database role `ss_ro` ([`backend/prisma/readonly-role.sql`](backend/prisma/readonly-role.sql)) can only `SELECT` the public tables. Contract views stay live through the RPC |
+| Read-only API (hosted on Railway) | `backend/Dockerfile` with `HOSTED_READONLY=1`, deployed with `railway up ./backend --path-as-root`. It serves only `/`, `/health`, `/ready`, `GET /public/*` and `POST /public/vault-plan`, starts none of the writing workers, and connects over Railway's private network as `ss_ro` ([`backend/prisma/readonly-role.sql`](backend/prisma/readonly-role.sql)), which can only `SELECT` the public tables. Contract views stay live through the RPC. `backend/vercel.json` deploys the same API as one Vercel function (`api/server.ts`) instead |
 | Snapshot | `bun scripts/hosting-snapshot.ts --shop <vault>` copies public, revealed rows from the local database to the hosted one. It never copies the `tester` schema or sealed columns, refuses a non-empty target without `--replace`, and has `--dry-run`. Re-run after each reveal |
-| Web on Vercel | Nitro detects Vercel. Set `VITE_API_URL`, `VITE_NEAR_NETWORK`, `VITE_SHOP_CONTRACT_ID`, and `VITE_READONLY_DEMO=true` against the read-only API |
+| Web on Vercel | Nitro detects Vercel. Set `VITE_API_URL`, `VITE_NEAR_NETWORK`, `VITE_SHOP_CONTRACT_ID`, and `VITE_READONLY_DEMO=true` against the read-only API, and that API's `CORS_ORIGINS` and `AUTH_RECIPIENT` to the web's address. Live at [secretshopper-web.vercel.app](https://secretshopper-web.vercel.app) |
 | Configuration | `backend/.env.example`, `backend/.env.tester.example`, `agent/.env.example`; the config sources listed in [AGENTS.md](AGENTS.md#what-needs-secrets-and-what-does-not) are authoritative |
 
 Details: [backend/README.md](backend/README.md#run-it) and [web/README.md](web/README.md#hosting).
@@ -564,8 +565,9 @@ NEAR HACKATHON (1 to 14 Nov 2026). Tracks: `security`, `business`.
 |:-|:-|
 | Project | Secret Shopper |
 | Tracks | `security` (official prompt: agent key limits in this README, prompt-injection attack script and log), `business` (an AI-native payments workflow where humans only set the constraints and the vault enforces them) |
+| Live demo | [secretshopper-web.vercel.app](https://secretshopper-web.vercel.app) (read-only; the owner and vendor consoles run locally) |
 | Testnet contract | [`shop4.ss-owner-e9c3db.testnet`](https://testnet.nearblocks.io/address/shop4.ss-owner-e9c3db.testnet) |
-| Repository | Published before the deadline |
+| Repository | [github.com/louissarvin/secretshopper](https://github.com/louissarvin/secretshopper) |
 | Demo video | Published with the X post |
 
 ### What existed before, and what we used
