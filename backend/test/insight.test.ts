@@ -101,6 +101,79 @@ describe('GET /public/model-runs data equals the committed files', () => {
   });
 });
 
+describe('GET /public/schedule timing', () => {
+  const NS = 1_000_000n;
+  const T0 = Date.UTC(2026, 10, 12, 10, 0, 0);
+  const ns = (ms: number) => (BigInt(ms) * NS).toString();
+  const HOUR = 3_600_000;
+
+  const reads = (batches: ScheduleBatch[], slots: ScheduleSlot[], intervalMs = 6 * HOUR): ScheduleReads & { calls: string[] } => {
+    const calls: string[] = [];
+    return {
+      calls,
+      batches: async (from, n) => (calls.push(`batches:${from}`), batches.slice(from, from + Math.min(n, 100))),
+      tests: async (from, n) => (calls.push(`tests:${from}:${n}`), slots.slice(from, from + n)),
+      batchIntervalNs: async () => ns(intervalMs),
+    };
+  };
+  const batch = (i: number, committedMs: number, unrevealed: number, count = 3): ScheduleBatch => ({
+    first_slot: i * count,
+    count,
+    committed_at: ns(committedMs),
+    expires_at: ns(committedMs + 12 * HOUR),
+    unrevealed,
+  });
+
+  test('a vault with no batches has no batch timing', async () => {
+    expect(await readChainSchedule(reads([], []))).toEqual({ lastBatch: null, nextBatchEarliestAt: null, pending: 0, nextRevealAfter: null });
+  });
+
+  test('last batch, next batch from batch_interval, pending and the earliest open slot (expiry or drand round, whichever is later)', async () => {
+    const b = [batch(0, T0 - 30 * HOUR, 0), batch(1, T0 - 10 * HOUR, 3), batch(2, T0 - 4 * HOUR, 3)];
+    const exp1 = T0 + 2 * HOUR;
+    const round = drandRoundAt(exp1 + 30_000) + 1; // published 30 s or so after expiry
+    const slots: ScheduleSlot[] = [
+      ...Array.from({ length: 3 }, () => ({ expires_at: ns(T0 - 18 * HOUR), tlock_round: 1, status: 'Passed' })),
+      { expires_at: ns(exp1), tlock_round: round, status: 'Committed' },
+      { expires_at: ns(exp1), tlock_round: round, status: 'Committed' },
+      { expires_at: ns(exp1), tlock_round: round, status: 'Committed' },
+    ];
+    const r = reads(b, slots);
+    const s = await readChainSchedule(r);
+    expect(s.lastBatch).toEqual({ batchIndex: 2, committedAt: new Date(T0 - 4 * HOUR).toISOString(), expiresAt: new Date(T0 + 8 * HOUR).toISOString() });
+    expect(s.nextBatchEarliestAt).toBe(new Date(T0 + 2 * HOUR).toISOString());
+    expect(s.pending).toBe(6);
+    expect(s.nextRevealAfter).toBe(new Date(drandRoundTimeMs(round)).toISOString());
+    expect(drandRoundTimeMs(round)).toBeGreaterThan(exp1);
+    expect(r.calls).toEqual(['batches:0', 'tests:3:3']); // only the open batch's own slots
+  });
+
+  test('a slot whose round opened before expiry opens at expiry; revealed slots of the batch are ignored', async () => {
+    const exp = T0 + HOUR;
+    const b = [{ ...batch(0, T0 - 11 * HOUR, 1), expires_at: ns(exp) }];
+    const slots: ScheduleSlot[] = [
+      { expires_at: ns(exp), tlock_round: 1, status: 'Void' },
+      { expires_at: ns(exp), tlock_round: drandRoundAt(exp - 60_000), status: 'Committed' },
+      { expires_at: ns(exp), tlock_round: 1, status: 'Passed' },
+    ];
+    expect((await readChainSchedule(reads(b, slots))).nextRevealAfter).toBe(new Date(exp).toISOString());
+  });
+
+  test('pages past 100 batches', async () => {
+    const b = Array.from({ length: 230 }, (_, i) => batch(i, T0 - (230 - i) * HOUR, 0));
+    const r = reads(b, []);
+    const s = await readChainSchedule(r);
+    expect(s.lastBatch?.batchIndex).toBe(229);
+    expect(r.calls).toEqual(['batches:0', 'batches:100', 'batches:200']);
+  });
+
+  test('nextReleaseAt is the next UTC tick, strictly after now', () => {
+    const c = { lastBatch: null, nextBatchEarliestAt: null, pending: 0, nextRevealAfter: null };
+    expect(withClock(c, T0 + 1, 120).nextReleaseAt).toBe(new Date(T0 + 2 * HOUR).toISOString());
+    expect(withClock(c, T0, 120).nextReleaseAt).toBe(new Date(T0 + 2 * HOUR).toISOString());
+    expect(withClock(c, T0 + 59 * 60_000, 60).nextReleaseAt).toBe(new Date(T0 + HOUR).toISOString());
+  });
+
   test('the response carries batch-level timing only, nothing per inbox item or slot', async () => {
     const s = withClock(await readChainSchedule(reads([batch(0, T0, 3)], Array.from({ length: 3 }, () => ({ expires_at: ns(T0 + 12 * HOUR), tlock_round: 1, status: 'Committed' })))), T0, 120);
     expect(Object.keys(s).sort()).toEqual(['lastBatch', 'nextBatchEarliestAt', 'nextReleaseAt', 'nextRevealAfter', 'now', 'pending', 'releaseTickMinutes']);
