@@ -93,7 +93,7 @@ No keys, no installs, no funds. Everything below reads the live vault on NEAR te
      bun verify-evidence.ts shop4.ss-owner-e9c3db.testnet evidence/shop4.ss-owner-e9c3db.testnet.json
    ```
 
-   See `ALL CHECKS PASSED` (141 checks): vault provenance, every commitment, tlock ciphertext, delivery and NEAR AI receipt, re-read from chain and drand.
+   See `ALL CHECKS PASSED` (150 checks, 2026-11-12, including the bundle status check): vault provenance, every commitment, tlock ciphertext, delivery and NEAR AI receipt, re-read from chain and drand.
 6. **Run the whole loop locally.** `bun run setup`, build the two wasm files ([Run locally](#run-locally)), then `bun run demo`: 24 steps on a local nearcore sandbox in about 60 seconds, ending `PASS: all 33 checks held`.
 
 ---
@@ -189,7 +189,7 @@ Every run below can be repeated with the command shown; the transactions are pub
 
 | Run | Result |
 |:-|:-|
-| `verify-evidence` on shop4 after batch 3 (2026-11-12 12:04 UTC) | `ALL CHECKS PASSED`, 141 checks, no `--allow-unattested`. Rerun with [step 5 above](#try-it-in-two-minutes) |
+| `verify-evidence` on shop4 after batch 3 (2026-11-12 12:04 UTC) | `ALL CHECKS PASSED`, 141 checks at the time, no `--allow-unattested`. The same bundle now passes 150 checks, including the bundle status check. Rerun with [step 5 above](#try-it-in-two-minutes) |
 | `verify-evidence` on shop4 at creation (2026-11-11 10:08 UTC) | `ALL CHECKS PASSED`, 20 checks: created, given code by hash and initialized in one tx by its parent ([5dgatWYd...](https://testnet.nearblocks.io/txns/5dgatWYdyWeDUm216gMi5CWNiSdtu3xrNML9zXpNCopq)), one `GasKeyFunctionCall` key `ack,decline,pay` |
 | Deploy shop4, global (`create-vault.ts --code-hash`) | Create and init [5dgatWYd...](https://testnet.nearblocks.io/txns/5dgatWYdyWeDUm216gMi5CWNiSdtu3xrNML9zXpNCopq), token registration [2yZjZzmv...](https://testnet.nearblocks.io/txns/2yZjZzmvEdtBrethFU5SPC8TDyZAi91rNKdhBxZcw6Qj). Funded 1.5 NEAR (minimum 0.8606). Read back: 0 access keys, 654 B stored, version 2.3.0, `OK: vault matches the plan` |
 | Deploy shop3, classic (same code) | [BtG936cM...](https://testnet.nearblocks.io/txns/BtG936cMZy26jhj2gCTQR1cCyPDUmo79PGDrPN7h1yzv), [EqBd9sJd...](https://testnet.nearblocks.io/txns/EqBd9sJdhYxvDS88JevQH7YLhRA7pvAP1PMfduuvsE9S), token registration [BE5mdKFY...](https://testnet.nearblocks.io/txns/BE5mdKFYjt4duiyCppS9sofvTRJ1Be2eJBusw6Z8U741). 0 access keys, 336743 B stored |
@@ -237,6 +237,8 @@ Key files: `scripts/create-vault.ts`, `scripts/global-vault.ts` · live [5dgatWY
 ### A vault from one wallet transaction
 `POST /public/vault-plan` checks a company's settings against the chain (accounts, token, NEP-145 registration, policy bounds, funding) and returns two NEAR Connect transactions. The first creates `<name>.<owner>`, funds it, attaches the published global code by hash (`UseGlobalContract`) and calls `new`, all in one transaction, so the vault never holds a key and passes the same provenance check as shop4. The second registers the vault on the token.
 Key files: `backend/src/lib/vault/plan.ts`, `policy.ts` (shared with `scripts/create-vault.ts`) · `backend/src/routes/vaultRoutes.ts`
+
+One API and one tester then serve every registered vault. The owner registers the new vault (`POST /company`, checked against its code hash, owner and token), adds the tester key the backend derives for that vault as a function-call key on their own account, and enables testing (`PUT /company/tester`). Each vault's agent gets its own inbox token (`POST /company/inbox-token`) and refuses to start if the token serves another vault. A failure in one vault never stops another. Checked end to end on a sandbox by `scripts/multi-vault-e2e.ts` (23 checks).
 
 ### NEAR AI Cloud verified inference
 Every agent step and every lure generation is a TEE-signed completion. The agent verifies the signature and the model attestation before any tool runs and refuses gateway-only receipts. The tester binds the hash of the receipt that wrote a lure into its on-chain commitment, and publishes the receipt with its attestation at reveal.
@@ -359,7 +361,7 @@ Web app on http://localhost:3200, API on http://localhost:3700, vault shop4. The
 | Part | How |
 |:-|:-|
 | API and tester | `backend/Dockerfile` (Bun 1.4.4 slim) runs the API on port 3700; run the tester as a second container with `bun tester.ts`. Create the schema once with `bun run db:push` as the database owner, then apply [`backend/prisma/roles.sql`](backend/prisma/roles.sql) so the API connects as `ss_api` and the tester as `ss_tester` |
-| Read-only API on Vercel | `backend/vercel.json` deploys one Bun function, `api/server.ts`. `HOSTED_READONLY=1` (forced there) serves only `/`, `/health`, `/ready`, `GET /public/*` and `POST /public/vault-plan`, and its database role can only `SELECT` the public tables. Contract views stay live through the RPC |
+| Read-only API on Vercel | `backend/vercel.json` deploys one Bun function, `api/server.ts`. `HOSTED_READONLY=1` (forced there) serves only `/`, `/health`, `/ready`, `GET /public/*` and `POST /public/vault-plan`, and its database role `ss_ro` ([`backend/prisma/readonly-role.sql`](backend/prisma/readonly-role.sql)) can only `SELECT` the public tables. Contract views stay live through the RPC |
 | Snapshot | `bun scripts/hosting-snapshot.ts --shop <vault>` copies public, revealed rows from the local database to the hosted one. It never copies the `tester` schema or sealed columns, refuses a non-empty target without `--replace`, and has `--dry-run`. Re-run after each reveal |
 | Web on Vercel | Nitro detects Vercel. Set `VITE_API_URL`, `VITE_NEAR_NETWORK`, `VITE_SHOP_CONTRACT_ID`, and `VITE_READONLY_DEMO=true` against the read-only API |
 | Configuration | `backend/.env.example`, `backend/.env.tester.example`, `agent/.env.example`; the config sources listed in [AGENTS.md](AGENTS.md#what-needs-secrets-and-what-does-not) are authoritative |
@@ -455,7 +457,7 @@ Contract tests run with `cd contracts/shop && cargo test <name> -- --test-thread
 | 19 | The off-chain commitment equals the contract's byte for byte | `commitment_vectors`; `backend/test/commitment.parity.test.ts` | Shared vectors in `backend/test/fixtures/commitment.json` |
 | 20 | Agent gas comes off its own gas key, never the vault balance | `gas_key_policy_bounds`, `gas_key_rekey_is_reserved`; demo step 14 | `the agent decision cost the vault no gas: it came off the gas key` |
 | 21 | An agent cannot block its own demotion by burning gas | `v21_01_agent_gas_cannot_block_its_own_demotion` | 212 failing txs, the lure still reveals `Failed` and demotes |
-| 22 | Anyone can re-verify a run, and tampering is detected | `verify-evidence.ts`; demo steps 22, 23 | shop4 `ALL CHECKS PASSED`, 141 checks; a one-field edit fails |
+| 22 | Anyone can re-verify a run, and tampering is detected | `verify-evidence.ts`; demo steps 22, 23 | shop4 `ALL CHECKS PASSED`, 150 checks (2026-11-12, includes the bundle status check); a one-field edit fails |
 | 23 | Each lure was written by an attested model | `backend/test/attestation.binding.test.ts`; `verify-evidence` | Receipts for slots 0 to 5, 7 and 8 bind to the model's TEE attestation |
 | 24 | Real and test inbox items look the same, and the API never learns which is which | `backend/test/inbox.route.test.ts` (Postgres), `separation.test.ts`, `audit.regression.test.ts` | Identical keys; separate `tester` schema the API role cannot read |
 | 25 | The agent reads approved payees from the vault and runs an allow, warn or block preflight before signing | `agent/test/vendor.test.ts`, `preflight.test.ts` | Block signs nothing; a failed chain read blocks |
