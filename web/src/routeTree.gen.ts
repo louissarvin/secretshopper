@@ -9,42 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VendorRouteImport } from './routes/vendor'
-import { Route as NewRouteImport } from './routes/new'
-import { Route as DevicesRouteImport } from './routes/devices'
-import { Route as BlocklistRouteImport } from './routes/blocklist'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as AppRouteRouteImport } from './routes/app/route'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppIndexRouteImport } from './routes/app/index'
-import { Route as AppVendorsRouteImport } from './routes/app/vendors'
-import { Route as AppTestsRouteImport } from './routes/app/tests'
-import { Route as AppInboxRouteImport } from './routes/app/inbox'
-import { Route as AppApprovalsRouteImport } from './routes/app/approvals'
-import { Route as AppAgentRouteImport } from './routes/app/agent'
+import { Route as BlocklistRouteImport } from './routes/blocklist'
+import { Route as DevicesRouteImport } from './routes/devices'
+import { Route as NewRouteImport } from './routes/new'
+import { Route as VendorRouteImport } from './routes/vendor'
 import { Route as AgentVendorIdRouteImport } from './routes/agent/$vendorId'
+import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppAgentRouteImport } from './routes/app/agent'
+import { Route as AppApprovalsRouteImport } from './routes/app/approvals'
+import { Route as AppInboxRouteImport } from './routes/app/inbox'
+import { Route as AppTestsRouteImport } from './routes/app/tests'
+import { Route as AppVendorsRouteImport } from './routes/app/vendors'
 import { Route as SShopIdIndexRouteImport } from './routes/s/$shopId/index'
 import { Route as SShopIdLedgerRouteImport } from './routes/s/$shopId/ledger'
 import { Route as SShopIdTestsSlotRouteImport } from './routes/s/$shopId/tests/$slot'
 
-const VendorRoute = VendorRouteImport.update({
-  id: '/vendor',
-  path: '/vendor',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NewRoute = NewRouteImport.update({
-  id: '/new',
-  path: '/new',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DevicesRoute = DevicesRouteImport.update({
-  id: '/devices',
-  path: '/devices',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlocklistRoute = BlocklistRouteImport.update({
-  id: '/blocklist',
-  path: '/blocklist',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AgentsRoute = AgentsRouteImport.update({
@@ -57,9 +42,29 @@ const AppRouteRoute = AppRouteRouteImport.update({
   path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const BlocklistRoute = BlocklistRouteImport.update({
+  id: '/blocklist',
+  path: '/blocklist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevicesRoute = DevicesRouteImport.update({
+  id: '/devices',
+  path: '/devices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewRoute = NewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VendorRoute = VendorRouteImport.update({
+  id: '/vendor',
+  path: '/vendor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentVendorIdRoute = AgentVendorIdRouteImport.update({
+  id: '/agent/$vendorId',
+  path: '/agent/$vendorId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -67,19 +72,9 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRouteRoute,
 } as any)
-const AppVendorsRoute = AppVendorsRouteImport.update({
-  id: '/vendors',
-  path: '/vendors',
-  getParentRoute: () => AppRouteRoute,
-} as any)
-const AppTestsRoute = AppTestsRouteImport.update({
-  id: '/tests',
-  path: '/tests',
-  getParentRoute: () => AppRouteRoute,
-} as any)
-const AppInboxRoute = AppInboxRouteImport.update({
-  id: '/inbox',
-  path: '/inbox',
+const AppAgentRoute = AppAgentRouteImport.update({
+  id: '/agent',
+  path: '/agent',
   getParentRoute: () => AppRouteRoute,
 } as any)
 const AppApprovalsRoute = AppApprovalsRouteImport.update({
@@ -87,15 +82,20 @@ const AppApprovalsRoute = AppApprovalsRouteImport.update({
   path: '/approvals',
   getParentRoute: () => AppRouteRoute,
 } as any)
-const AppAgentRoute = AppAgentRouteImport.update({
-  id: '/agent',
-  path: '/agent',
+const AppInboxRoute = AppInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
   getParentRoute: () => AppRouteRoute,
 } as any)
-const AgentVendorIdRoute = AgentVendorIdRouteImport.update({
-  id: '/agent/$vendorId',
-  path: '/agent/$vendorId',
-  getParentRoute: () => rootRouteImport,
+const AppTestsRoute = AppTestsRouteImport.update({
+  id: '/tests',
+  path: '/tests',
+  getParentRoute: () => AppRouteRoute,
+} as any)
+const AppVendorsRoute = AppVendorsRouteImport.update({
+  id: '/vendors',
+  path: '/vendors',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const SShopIdIndexRoute = SShopIdIndexRouteImport.update({
   id: '/s/$shopId/',
@@ -129,7 +129,7 @@ export interface FileRoutesByFullPath {
   '/app/vendors': typeof AppVendorsRoute
   '/app/': typeof AppIndexRoute
   '/s/$shopId/ledger': typeof SShopIdLedgerRoute
-  '/s/$shopId': typeof SShopIdIndexRoute
+  '/s/$shopId/': typeof SShopIdIndexRoute
   '/s/$shopId/tests/$slot': typeof SShopIdTestsSlotRoute
 }
 export interface FileRoutesByTo {
@@ -188,7 +188,7 @@ export interface FileRouteTypes {
     | '/app/vendors'
     | '/app/'
     | '/s/$shopId/ledger'
-    | '/s/$shopId'
+    | '/s/$shopId/'
     | '/s/$shopId/tests/$slot'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -245,32 +245,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/vendor': {
-      id: '/vendor'
-      path: '/vendor'
-      fullPath: '/vendor'
-      preLoaderRoute: typeof VendorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/new': {
-      id: '/new'
-      path: '/new'
-      fullPath: '/new'
-      preLoaderRoute: typeof NewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/devices': {
-      id: '/devices'
-      path: '/devices'
-      fullPath: '/devices'
-      preLoaderRoute: typeof DevicesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blocklist': {
-      id: '/blocklist'
-      path: '/blocklist'
-      fullPath: '/blocklist'
-      preLoaderRoute: typeof BlocklistRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/agents': {
@@ -287,11 +266,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/blocklist': {
+      id: '/blocklist'
+      path: '/blocklist'
+      fullPath: '/blocklist'
+      preLoaderRoute: typeof BlocklistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/devices': {
+      id: '/devices'
+      path: '/devices'
+      fullPath: '/devices'
+      preLoaderRoute: typeof DevicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/new': {
+      id: '/new'
+      path: '/new'
+      fullPath: '/new'
+      preLoaderRoute: typeof NewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vendor': {
+      id: '/vendor'
+      path: '/vendor'
+      fullPath: '/vendor'
+      preLoaderRoute: typeof VendorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agent/$vendorId': {
+      id: '/agent/$vendorId'
+      path: '/agent/$vendorId'
+      fullPath: '/agent/$vendorId'
+      preLoaderRoute: typeof AgentVendorIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/': {
@@ -301,25 +308,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
-    '/app/vendors': {
-      id: '/app/vendors'
-      path: '/vendors'
-      fullPath: '/app/vendors'
-      preLoaderRoute: typeof AppVendorsRouteImport
-      parentRoute: typeof AppRouteRoute
-    }
-    '/app/tests': {
-      id: '/app/tests'
-      path: '/tests'
-      fullPath: '/app/tests'
-      preLoaderRoute: typeof AppTestsRouteImport
-      parentRoute: typeof AppRouteRoute
-    }
-    '/app/inbox': {
-      id: '/app/inbox'
-      path: '/inbox'
-      fullPath: '/app/inbox'
-      preLoaderRoute: typeof AppInboxRouteImport
+    '/app/agent': {
+      id: '/app/agent'
+      path: '/agent'
+      fullPath: '/app/agent'
+      preLoaderRoute: typeof AppAgentRouteImport
       parentRoute: typeof AppRouteRoute
     }
     '/app/approvals': {
@@ -329,24 +322,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppApprovalsRouteImport
       parentRoute: typeof AppRouteRoute
     }
-    '/app/agent': {
-      id: '/app/agent'
-      path: '/agent'
-      fullPath: '/app/agent'
-      preLoaderRoute: typeof AppAgentRouteImport
+    '/app/inbox': {
+      id: '/app/inbox'
+      path: '/inbox'
+      fullPath: '/app/inbox'
+      preLoaderRoute: typeof AppInboxRouteImport
       parentRoute: typeof AppRouteRoute
     }
-    '/agent/$vendorId': {
-      id: '/agent/$vendorId'
-      path: '/agent/$vendorId'
-      fullPath: '/agent/$vendorId'
-      preLoaderRoute: typeof AgentVendorIdRouteImport
-      parentRoute: typeof rootRouteImport
+    '/app/tests': {
+      id: '/app/tests'
+      path: '/tests'
+      fullPath: '/app/tests'
+      preLoaderRoute: typeof AppTestsRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/app/vendors': {
+      id: '/app/vendors'
+      path: '/vendors'
+      fullPath: '/app/vendors'
+      preLoaderRoute: typeof AppVendorsRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/s/$shopId/': {
       id: '/s/$shopId/'
       path: '/s/$shopId'
-      fullPath: '/s/$shopId'
+      fullPath: '/s/$shopId/'
       preLoaderRoute: typeof SShopIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
