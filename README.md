@@ -559,12 +559,12 @@ Seven rounds by an AI security-auditor agent, each with exploit tests that now r
 
 ## Submission
 
-NEAR HACKATHON (1 to 14 Nov 2026). Tracks: `security`, `business`.
+NEAR HACKATHON (1 to 14 Nov 2026). Tracks: `security`, `business`, `open`.
 
 | Field | Value |
 |:-|:-|
 | Project | Secret Shopper |
-| Tracks | `security` (official prompt: agent key limits in this README, prompt-injection attack script and log), `business` (an AI-native payments workflow where humans only set the constraints and the vault enforces them) |
+| Tracks | `security` (official prompt: agent key limits in this README, prompt-injection attack script and log), `business` (an AI-native payments workflow where humans only set the constraints and the vault enforces them), `open` (covert, on-chain testing of AI agents: a mystery shopper whose score nobody can fake) |
 | Live demo | [secretshopper-web.vercel.app](https://secretshopper-web.vercel.app) (read-only; the owner and vendor consoles run locally) |
 | Testnet contract | [`shop4.ss-owner-e9c3db.testnet`](https://testnet.nearblocks.io/address/shop4.ss-owner-e9c3db.testnet) |
 | Repository | [github.com/louissarvin/secretshopper](https://github.com/louissarvin/secretshopper) |
